@@ -107,6 +107,10 @@ export function parseStatsGovCityMarket(
     }
   }
 
+  if (secondaryHomePriceIndexMom === null || secondaryHomePriceIndexYoy === null) {
+    throw new Error(`Unable to locate stats-gov city row for ${city}`);
+  }
+
   return statsGovCityMarketSchema.parse({
     city,
     month,

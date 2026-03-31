@@ -18,4 +18,10 @@ describe("parseStatsGovCityMarket", () => {
       secondaryHomePriceIndexYoy: 94.0,
     });
   });
+
+  it("throws when the target city row cannot be found", () => {
+    expect(() =>
+      parseStatsGovCityMarket(readFixtureHtml(), "不存在市"),
+    ).toThrow();
+  });
 });

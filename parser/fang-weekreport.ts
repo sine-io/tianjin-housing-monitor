@@ -79,8 +79,24 @@ function parseSignedPercentage(
   return parsed;
 }
 
+function assertWeekreportFixtureShape($: cheerio.CheerioAPI): void {
+  const communityName =
+    normalizeText($(".cfj-tit h2").eq(1).text()) ||
+    normalizeText($("header .cent span").first().text());
+  const summary = normalizeText($(".cfj-data-intbox").first().text());
+  const referencePrice = normalizeText($(".cfj-data .data-num i").first().text());
+  const rangeCount = $(".cfj-gxdb-t .tab a").length;
+
+  if (communityName && summary && referencePrice && rangeCount > 0) {
+    return;
+  }
+
+  throw new Error("Invalid Fang weekreport fixture structure");
+}
+
 export function parseFangWeekreport(html: string): FangWeekreport {
   const $ = cheerio.load(html);
+  assertWeekreportFixtureShape($);
   const summary = normalizeText($(".cfj-data-intbox").first().text());
   const summaryMatch = summary.match(
     /本小区(?<label>\d+月)挂牌均价为(?<price>\d+)元\/m²，超过(?<district>.+?)(?<premium>\d+(?:\.\d+)?)%小区价格，环比上月(?<momDirection>上涨|下跌)(?<momValue>\d+(?:\.\d+)?)%，同比去年(?<yoyDirection>上涨|下跌)(?<yoyValue>\d+(?:\.\d+)?)%/,

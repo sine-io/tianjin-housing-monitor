@@ -66,8 +66,24 @@ function dedupe(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))];
 }
 
+function assertCommunityFixtureShape($: cheerio.CheerioAPI): void {
+  const communityName = normalizeText($("h1").first().text());
+  const referencePrice = normalizeText($(".r-trend-price strong").first().text());
+  const listingCount = $('.xqhouselist .firstnav[data-type="esfallhouse"]').attr(
+    "data-allcount",
+  );
+  const teaserCount = $(".houseList2 ul.esfallhouse li").length;
+
+  if (communityName && referencePrice && listingCount && teaserCount > 0) {
+    return;
+  }
+
+  throw new Error("Invalid Fang community fixture structure");
+}
+
 export function parseFangCommunity(html: string): FangCommunity {
   const $ = cheerio.load(html);
+  assertCommunityFixtureShape($);
   const bodyText = normalizeText($("body").text());
 
   const hotHints = $(".xq-hot-box2 .txt")

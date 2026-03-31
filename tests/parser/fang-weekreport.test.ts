@@ -97,4 +97,14 @@ describe("parseFangWeekreport", () => {
       expect(parsed.availableRangeLabels).toEqual(["近6月", "近1年", "近3年"]);
     },
   );
+
+  it("throws when given a structurally wrong page", () => {
+    const communityHtml = readFileSync(
+      resolve("tests/fixtures/fang/community/mingquan-huayuan.html"),
+      "utf8",
+    );
+
+    expect(() => parseFangWeekreport(communityHtml)).toThrow();
+    expect(() => parseFangWeekreport("<html><body>blocked</body></html>")).toThrow();
+  });
 });
