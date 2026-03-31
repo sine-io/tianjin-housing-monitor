@@ -1,0 +1,39 @@
+{
+  "name": "tianjin-housing-monitor",
+  "version": "1.0.0",
+  "description": "Free-first Tianjin housing monitor workspace",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "collect": "tsx scripts/collect.ts",
+    "promote:manual": "tsx scripts/promote-manual-inputs.ts",
+    "build:data": "tsx scripts/promote-manual-inputs.ts && tsx scripts/build-series.ts && tsx scripts/build-weekly-report.ts && tsx scripts/prepare-public-data.ts",
+    "build:site": "vite build",
+    "build": "npm run build:data && npm run build:site",
+    "test:e2e": "playwright test",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "tianjin",
+    "housing",
+    "monitor"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^29.0.1",
+    "playwright": "^1.58.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3",
+    "vitest": "^4.1.2"
+  }
+}

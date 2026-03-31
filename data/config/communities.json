@@ -1,0 +1,52 @@
+[
+  {
+    "id": "mingquan-huayuan",
+    "name": "鸣泉花园",
+    "city": "天津",
+    "district": "西青",
+    "sources": {
+      "fangCommunityUrl": "https://tj.esf.fang.com/loupan/1110750643.htm",
+      "fangWeekreportUrl": "https://tj.esf.fang.com/loupan/1110750643/weekreport.htm"
+    }
+  },
+  {
+    "id": "jiajun-huayuan",
+    "name": "富力津门湖嘉郡花园",
+    "city": "天津",
+    "district": "西青",
+    "sources": {
+      "fangCommunityUrl": "https://tj.esf.fang.com/loupan/1110778195.htm",
+      "fangWeekreportUrl": "https://tj.esf.fang.com/loupan/1110778195/weekreport.htm"
+    }
+  },
+  {
+    "id": "yunshu-huayuan",
+    "name": "富力津门湖云舒花园",
+    "city": "天津",
+    "district": "西青",
+    "sources": {
+      "fangCommunityUrl": "https://tj.esf.fang.com/loupan/1110750641.htm",
+      "fangWeekreportUrl": "https://tj.esf.fang.com/loupan/1110750641/weekreport.htm"
+    }
+  },
+  {
+    "id": "boxi-huayuan",
+    "name": "富力津门湖柏溪花园",
+    "city": "天津",
+    "district": "西青",
+    "sources": {
+      "fangCommunityUrl": "https://tj.esf.fang.com/loupan/1110661679.htm",
+      "fangWeekreportUrl": "https://tj.esf.fang.com/loupan/1110661679/weekreport.htm"
+    }
+  },
+  {
+    "id": "haiyi-changzhou-hanboyuan",
+    "name": "海逸长洲瀚波园",
+    "city": "天津",
+    "district": "西青",
+    "sources": {
+      "fangCommunityUrl": "https://tj.esf.fang.com/loupan/1110676739.htm",
+      "fangWeekreportUrl": "https://tj.esf.fang.com/loupan/1110676739/weekreport.htm"
+    }
+  }
+]

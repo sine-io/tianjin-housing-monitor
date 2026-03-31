@@ -1,0 +1,16 @@
+[
+  {
+    "id": "2br-87-90",
+    "label": "两居 87-90㎡",
+    "rooms": 2,
+    "areaMin": 87,
+    "areaMax": 90
+  },
+  {
+    "id": "3br-140-150",
+    "label": "三居 140-150㎡",
+    "rooms": 3,
+    "areaMin": 140,
+    "areaMax": 150
+  }
+]
