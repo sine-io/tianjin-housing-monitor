@@ -36,6 +36,11 @@ export interface ManualSampleSummary {
   manualLatestSampleAt: string | null;
 }
 
+interface ManualSampleWindow {
+  startAt: number;
+  endAt: number;
+}
+
 function readJsonFile(filePath: string): unknown {
   return JSON.parse(readFileSync(filePath, "utf8"));
 }
@@ -90,14 +95,48 @@ export function summarizeManualSamples(
   const windowStartDate = new Date(windowEndIso);
   windowStartDate.setUTCHours(0, 0, 0, 0);
   windowStartDate.setUTCDate(windowStartDate.getUTCDate() - 6);
-  const windowStart = windowStartDate.getTime();
+  return summarizeManualSamplesInWindow(
+    samples,
+    communityId,
+    segmentId,
+    {
+      startAt: windowStartDate.getTime(),
+      endAt: windowEnd,
+    },
+  );
+}
+
+export function summarizeManualSamplesInDateRange(
+  samples: ManualDealSample[],
+  communityId: string,
+  segmentId: string,
+  windowStartDate: string,
+  windowEndDate: string,
+): ManualSampleSummary {
+  return summarizeManualSamplesInWindow(
+    samples,
+    communityId,
+    segmentId,
+    {
+      startAt: Date.parse(`${windowStartDate}T00:00:00.000Z`),
+      endAt: Date.parse(`${windowEndDate}T23:59:59.999Z`),
+    },
+  );
+}
+
+function summarizeManualSamplesInWindow(
+  samples: ManualDealSample[],
+  communityId: string,
+  segmentId: string,
+  window: ManualSampleWindow,
+): ManualSampleSummary {
   const matchingSamples = samples.filter((sample) => {
     if (sample.communityId !== communityId || sample.segmentId !== segmentId) {
       return false;
     }
 
     const sampleAt = Date.parse(sample.sampleAt);
-    return sampleAt >= windowStart && sampleAt <= windowEnd;
+    return sampleAt >= window.startAt && sampleAt <= window.endAt;
   });
 
   if (matchingSamples.length === 0) {

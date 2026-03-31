@@ -9,6 +9,10 @@ import { resolve } from "node:path";
 
 import { loadCommunities, loadSegments } from "../lib/config";
 import {
+  loadAcceptedManualInputFiles,
+  summarizeManualSamplesInDateRange,
+} from "../lib/manual-input";
+import {
   aggregateSegmentWindow,
   type AggregatedSegmentWindow,
   type SegmentWindowObservation,
@@ -92,11 +96,25 @@ async function main(): Promise<void> {
   const cityMarketSeries = existsSync(cityMarketPath)
     ? readJsonFile<{ city: string; series: CityMarketSeriesEntry[] }>(cityMarketPath)
     : { city: "天津", series: [] };
+
+  rmSync(paths.reportsDir, { recursive: true, force: true });
+  mkdirSync(paths.reportsDir, { recursive: true });
+
   const latestDate = cityMarketSeries.series.at(-1)?.date;
 
   if (!latestDate) {
     return;
   }
+
+  const validCommunityIds = new Set(communities.map((community) => community.id));
+  const validSegmentIds = new Set(segments.map((segment) => segment.id));
+  const manualSamples = existsSync(paths.manualAcceptedDir)
+    ? loadAcceptedManualInputFiles(
+        paths.manualAcceptedDir,
+        validCommunityIds,
+        validSegmentIds,
+      )
+    : [];
 
   const windows = {
     w0: {
@@ -155,17 +173,52 @@ async function main(): Promise<void> {
               windows.w0.start,
               windows.w0.end,
             );
+            const wMinus2ManualSummary = summarizeManualSamplesInDateRange(
+              manualSamples,
+              community.id,
+              segment.id,
+              windows.wMinus2.start,
+              windows.wMinus2.end,
+            );
+            const wMinus1ManualSummary = summarizeManualSamplesInDateRange(
+              manualSamples,
+              community.id,
+              segment.id,
+              windows.wMinus1.start,
+              windows.wMinus1.end,
+            );
+            const w0ManualSummary = summarizeManualSamplesInDateRange(
+              manualSamples,
+              community.id,
+              segment.id,
+              windows.w0.start,
+              windows.w0.end,
+            );
+            const wMinus2WithExactManual = {
+              ...wMinus2,
+              manualDealCount: wMinus2ManualSummary.manualDealCount,
+            };
+            const wMinus1WithExactManual = {
+              ...wMinus1,
+              manualDealCount: wMinus1ManualSummary.manualDealCount,
+            };
+            const w0WithExactManual = {
+              ...w0,
+              manualDealCount: w0ManualSummary.manualDealCount,
+            };
 
             return [
               segment.id,
               {
                 label: segment.label,
                 verdict: getSegmentVerdict([
-                  wMinus2,
-                  wMinus1,
-                  w0,
+                  wMinus2WithExactManual,
+                  wMinus1WithExactManual,
+                  w0WithExactManual,
                 ]),
-                latest: hasAggregatedObservations(w0) ? w0 : null,
+                latest: hasAggregatedObservations(w0WithExactManual)
+                  ? w0WithExactManual
+                  : null,
               },
             ];
           }),
@@ -183,8 +236,6 @@ async function main(): Promise<void> {
     ),
   };
 
-  rmSync(paths.reportsDir, { recursive: true, force: true });
-  mkdirSync(paths.reportsDir, { recursive: true });
   writeFileSync(
     resolve(paths.reportsDir, `${latestDate}.json`),
     JSON.stringify(report, null, 2),
