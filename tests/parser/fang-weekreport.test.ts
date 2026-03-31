@@ -76,6 +76,13 @@ function readFixtureHtml(fileName: string): string {
   );
 }
 
+function makeDriftedSummaryHtml(html: string): string {
+  return html.replace(
+    /本小区3月挂牌均价为23006元\/m²，超过西青7\.72%小区价格，环比上月上涨0\.99%，同比去年下跌10\.72%。（添加关注，价格变动随时看）/,
+    "本小区3月价格保持平稳，和上月相比变化不大，请以页面展示为准。",
+  );
+}
+
 describe("parseFangWeekreport", () => {
   it.each(weekreportFixtures)(
     "parses the mobile price fixture for $fileName",
@@ -106,5 +113,13 @@ describe("parseFangWeekreport", () => {
 
     expect(() => parseFangWeekreport(communityHtml)).toThrow();
     expect(() => parseFangWeekreport("<html><body>blocked</body></html>")).toThrow();
+  });
+
+  it("throws when the summary block drifts away from the expected wording", () => {
+    const driftedHtml = makeDriftedSummaryHtml(
+      readFixtureHtml("mingquan-huayuan.html"),
+    );
+
+    expect(() => parseFangWeekreport(driftedHtml)).toThrow();
   });
 });

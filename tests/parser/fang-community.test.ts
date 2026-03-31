@@ -169,6 +169,15 @@ function readFixtureHtml(fileName: string): string {
   );
 }
 
+function makeZeroListingCommunityHtml(html: string): string {
+  return html
+    .replace('data-allcount="90"', 'data-allcount="0"')
+    .replace(
+      /<ul class="esfallhouse" style="display: none;">[\s\S]*?<\/ul>/,
+      '<ul class="esfallhouse" style="display: none;"></ul>',
+    );
+}
+
 describe("parseFangCommunity", () => {
   it.each(communityFixtures)(
     "parses the mobile community fixture for $fileName",
@@ -202,5 +211,20 @@ describe("parseFangCommunity", () => {
 
     expect(() => parseFangCommunity(weekreportHtml)).toThrow();
     expect(() => parseFangCommunity("<html><body>blocked</body></html>")).toThrow();
+  });
+
+  it("accepts a structurally valid zero-listing community page", () => {
+    const zeroListingHtml = makeZeroListingCommunityHtml(
+      readFixtureHtml("mingquan-huayuan.html"),
+    );
+
+    expect(parseFangCommunity(zeroListingHtml)).toEqual(
+      expect.objectContaining({
+        communityName: "富力津门湖鸣泉花园",
+        referencePriceYuanPerSqm: 23007,
+        listingCount: 0,
+        currentListingTeasers: [],
+      }),
+    );
   });
 });

@@ -69,12 +69,15 @@ function dedupe(values: string[]): string[] {
 function assertCommunityFixtureShape($: cheerio.CheerioAPI): void {
   const communityName = normalizeText($("h1").first().text());
   const referencePrice = normalizeText($(".r-trend-price strong").first().text());
-  const listingCount = $('.xqhouselist .firstnav[data-type="esfallhouse"]').attr(
-    "data-allcount",
+  const listingCount = parseNullableInteger(
+    $('.xqhouselist .firstnav[data-type="esfallhouse"]').attr("data-allcount"),
   );
   const teaserCount = $(".houseList2 ul.esfallhouse li").length;
 
-  if (communityName && referencePrice && listingCount && teaserCount > 0) {
+  const hasConsistentTeasers =
+    listingCount === 0 ? teaserCount === 0 : listingCount !== null && teaserCount > 0;
+
+  if (communityName && referencePrice && listingCount !== null && hasConsistentTeasers) {
     return;
   }
 

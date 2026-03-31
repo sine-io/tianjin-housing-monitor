@@ -102,6 +102,10 @@ export function parseFangWeekreport(html: string): FangWeekreport {
     /本小区(?<label>\d+月)挂牌均价为(?<price>\d+)元\/m²，超过(?<district>.+?)(?<premium>\d+(?:\.\d+)?)%小区价格，环比上月(?<momDirection>上涨|下跌)(?<momValue>\d+(?:\.\d+)?)%，同比去年(?<yoyDirection>上涨|下跌)(?<yoyValue>\d+(?:\.\d+)?)%/,
   );
 
+  if (!summaryMatch) {
+    throw new Error("Unexpected Fang weekreport summary format");
+  }
+
   const latestLabel = summaryMatch?.groups?.label ?? null;
   const latestPrice =
     parseNullableInteger(summaryMatch?.groups?.price ?? null) ??
