@@ -9,9 +9,11 @@ import { resolve } from "node:path";
 
 import { loadCommunities, loadSegments } from "../lib/config";
 import {
-  getSegmentVerdict,
-  type SegmentVerdictWindow,
-} from "../lib/verdicts";
+  aggregateSegmentWindow,
+  type AggregatedSegmentWindow,
+  type SegmentWindowObservation,
+} from "../lib/metrics";
+import { getSegmentVerdict } from "../lib/verdicts";
 import { DATA_DIR, resolveDataPaths } from "../lib/paths";
 
 interface CityMarketSeriesEntry {
@@ -71,41 +73,14 @@ function shiftDate(dateString: string, offsetDays: number): string {
   return formatDate(date);
 }
 
-function inWindow(date: string, windowStart: string, windowEnd: string): boolean {
-  return date >= windowStart && date <= windowEnd;
-}
-
-function latestEntryWithinWindow<T extends { date: string; generatedAt: string }>(
-  series: T[],
-  windowStart: string,
-  windowEnd: string,
-): T | null {
+function hasAggregatedObservations(window: AggregatedSegmentWindow): boolean {
   return (
-    series
-      .filter((entry) => inWindow(entry.date, windowStart, windowEnd))
-      .sort((left, right) => left.generatedAt.localeCompare(right.generatedAt))
-      .at(-1) ?? null
+    window.listingUnitPriceMedian !== null ||
+    window.listingUnitPriceMin !== null ||
+    window.listingsCount > 0 ||
+    window.suspectedDealCount > 0 ||
+    window.manualDealCount > 0
   );
-}
-
-function toVerdictWindow(entry: CommunitySegmentSeriesEntry | null): SegmentVerdictWindow {
-  if (!entry) {
-    return {
-      listingUnitPriceMedian: null,
-      listingUnitPriceMin: null,
-      listingsCount: 0,
-      suspectedDealCount: 0,
-      manualDealCount: 0,
-    };
-  }
-
-  return {
-    listingUnitPriceMedian: entry.listingUnitPriceMedian,
-    listingUnitPriceMin: entry.listingUnitPriceMin,
-    listingsCount: entry.listingsCount,
-    suspectedDealCount: entry.suspectedDealCount,
-    manualDealCount: entry.manualDealCount,
-  };
 }
 
 async function main(): Promise<void> {
@@ -155,18 +130,28 @@ async function main(): Promise<void> {
             const seriesFile = existsSync(seriesPath)
               ? readJsonFile<{ series: CommunitySegmentSeriesEntry[] }>(seriesPath)
               : { series: [] };
-            const wMinus2 = latestEntryWithinWindow(
-              seriesFile.series,
+            const observations: SegmentWindowObservation[] = seriesFile.series.map(
+              (entry) => ({
+                date: entry.date,
+                listingUnitPriceMedian: entry.listingUnitPriceMedian,
+                listingUnitPriceMin: entry.listingUnitPriceMin,
+                listingsCount: entry.listingsCount,
+                suspectedDealCount: entry.suspectedDealCount,
+                manualDealCount: entry.manualDealCount,
+              }),
+            );
+            const wMinus2 = aggregateSegmentWindow(
+              observations,
               windows.wMinus2.start,
               windows.wMinus2.end,
             );
-            const wMinus1 = latestEntryWithinWindow(
-              seriesFile.series,
+            const wMinus1 = aggregateSegmentWindow(
+              observations,
               windows.wMinus1.start,
               windows.wMinus1.end,
             );
-            const w0 = latestEntryWithinWindow(
-              seriesFile.series,
+            const w0 = aggregateSegmentWindow(
+              observations,
               windows.w0.start,
               windows.w0.end,
             );
@@ -176,11 +161,11 @@ async function main(): Promise<void> {
               {
                 label: segment.label,
                 verdict: getSegmentVerdict([
-                  toVerdictWindow(wMinus2),
-                  toVerdictWindow(wMinus1),
-                  toVerdictWindow(w0),
+                  wMinus2,
+                  wMinus1,
+                  w0,
                 ]),
-                latest: w0,
+                latest: hasAggregatedObservations(w0) ? w0 : null,
               },
             ];
           }),

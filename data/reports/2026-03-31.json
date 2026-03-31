@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-31T13:38:06.569Z",
+  "generatedAt": "2026-03-31T14:01:12.209Z",
   "weekEnding": "2026-03-31",
   "cityMarket": {
     "date": "2026-03-31",
@@ -18,32 +18,22 @@
           "label": "两居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 23006,
             "listingUnitPriceMin": 23006,
             "listingsCount": 1,
             "suspectedDealCount": 177,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         },
         "3br-140-150": {
           "label": "三居 140-150㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 23006,
             "listingUnitPriceMin": 23006,
             "listingsCount": 0,
             "suspectedDealCount": 177,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         }
       }
@@ -56,32 +46,22 @@
           "label": "两居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 22233,
             "listingUnitPriceMin": 22233,
             "listingsCount": 0,
             "suspectedDealCount": 193,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         },
         "3br-140-150": {
           "label": "三居 140-150㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 22233,
             "listingUnitPriceMin": 22233,
             "listingsCount": 0,
             "suspectedDealCount": 193,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         }
       }
@@ -94,32 +74,22 @@
           "label": "两居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 23402,
             "listingUnitPriceMin": 23402,
             "listingsCount": 1,
             "suspectedDealCount": 235,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         },
         "3br-140-150": {
           "label": "三居 140-150㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 23402,
             "listingUnitPriceMin": 23402,
             "listingsCount": 1,
             "suspectedDealCount": 235,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         }
       }
@@ -132,32 +102,22 @@
           "label": "两居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 25301,
             "listingUnitPriceMin": 25301,
             "listingsCount": 0,
             "suspectedDealCount": 122,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         },
         "3br-140-150": {
           "label": "三居 140-150㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 25301,
             "listingUnitPriceMin": 25301,
             "listingsCount": 0,
             "suspectedDealCount": 122,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         }
       }
@@ -170,32 +130,22 @@
           "label": "两居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 28064,
             "listingUnitPriceMin": 28064,
             "listingsCount": 1,
             "suspectedDealCount": 210,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         },
         "3br-140-150": {
           "label": "三居 140-150㎡",
           "verdict": "样本不足",
           "latest": {
-            "date": "2026-03-31",
-            "generatedAt": "2026-03-31T13:34:33.572Z",
-            "derivedFrom": "community-fallback",
             "listingUnitPriceMedian": 28064,
             "listingUnitPriceMin": 28064,
             "listingsCount": 0,
             "suspectedDealCount": 210,
-            "manualDealCount": 0,
-            "manualDealUnitPriceMedian": null,
-            "manualLatestSampleAt": null
+            "manualDealCount": 0
           }
         }
       }

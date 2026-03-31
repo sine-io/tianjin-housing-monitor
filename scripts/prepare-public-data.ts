@@ -1,11 +1,14 @@
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { readFileSync, readdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { DATA_DIR, resolveDataPaths } from "../lib/paths";
 
-function parseCommandLineArguments(argv: string[]): { dataDir: string } {
+function parseCommandLineArguments(argv: string[]): {
+  dataDir: string;
+  publicDataDir?: string;
+} {
   let dataDir = DATA_DIR;
+  let publicDataDir: string | undefined;
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
@@ -20,17 +23,39 @@ function parseCommandLineArguments(argv: string[]): { dataDir: string } {
       dataDir = resolve(candidate);
       index += 1;
     }
+
+    if (argument === "--public-data-dir") {
+      const candidate = argv[index + 1];
+
+      if (!candidate || candidate.startsWith("-")) {
+        throw new Error("--public-data-dir requires a path");
+      }
+
+      publicDataDir = resolve(candidate);
+      index += 1;
+    }
   }
 
-  return { dataDir };
+  return { dataDir, publicDataDir };
 }
 
 async function main(): Promise<void> {
-  const { dataDir } = parseCommandLineArguments(process.argv.slice(2));
-  const paths = resolveDataPaths(dataDir);
+  const { dataDir, publicDataDir } = parseCommandLineArguments(
+    process.argv.slice(2),
+  );
+  const paths = resolveDataPaths(dataDir, publicDataDir);
+  const legacyPublicDir = resolve(paths.dataDir, "public");
+
+  if (legacyPublicDir !== paths.publicDir) {
+    rmSync(legacyPublicDir, { recursive: true, force: true });
+  }
 
   rmSync(paths.publicDir, { recursive: true, force: true });
   mkdirSync(paths.publicDir, { recursive: true });
+
+  if (existsSync(paths.configDir)) {
+    cpSync(paths.configDir, resolve(paths.publicDir, "config"), { recursive: true });
+  }
 
   if (existsSync(paths.seriesDir)) {
     cpSync(paths.seriesDir, resolve(paths.publicDir, "series"), { recursive: true });
@@ -40,18 +65,6 @@ async function main(): Promise<void> {
     cpSync(paths.reportsDir, resolve(paths.publicDir, "reports"), {
       recursive: true,
     });
-
-    const latestReport = readdirSync(paths.reportsDir)
-      .filter((entry) => entry.endsWith(".json"))
-      .sort()
-      .at(-1);
-
-    if (latestReport) {
-      writeFileSync(
-        resolve(paths.publicDir, "latest-report.json"),
-        readFileSync(resolve(paths.reportsDir, latestReport), "utf8"),
-      );
-    }
   }
 }
 

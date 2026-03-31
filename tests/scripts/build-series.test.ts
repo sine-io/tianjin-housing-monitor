@@ -20,11 +20,13 @@ import { loadCommunities, loadSegments } from "../../lib/config";
 const DEFAULT_FIXTURE_ROOT = resolve("tests/fixtures");
 const REPO_REPORTS_DIR = resolve("data/reports");
 const REPO_SERIES_DIR = resolve("data/series");
+const REPO_SITE_PUBLIC_DATA_DIR = resolve("site/public/data");
 const TSX_PATH = resolve("node_modules/.bin/tsx");
 
 const temporaryRoots: string[] = [];
 
 interface TempWorkspace {
+  rootDir: string;
   dataDir: string;
   fixtureRoot: string;
   runsDir: string;
@@ -50,6 +52,7 @@ function makeWorkspace(): TempWorkspace {
   cpSync(DEFAULT_FIXTURE_ROOT, fixtureRoot, { recursive: true });
 
   return {
+    rootDir: tempRoot,
     dataDir,
     fixtureRoot,
     runsDir,
@@ -185,6 +188,7 @@ describe("scripts/build-series.ts", () => {
     const workspace = makeWorkspace();
     const repoSeriesBefore = snapshotTree(REPO_SERIES_DIR);
     const repoReportsBefore = snapshotTree(REPO_REPORTS_DIR);
+    const repoPublicDataBefore = snapshotTree(REPO_SITE_PUBLIC_DATA_DIR);
 
     collectFixturesIntoRuns(workspace);
     overwriteRunArtifactsForTeaserCoverage(workspace.runsDir);
@@ -192,9 +196,11 @@ describe("scripts/build-series.ts", () => {
 
     runScript("scripts/build-series.ts", "--data-dir", workspace.dataDir);
     runScript("scripts/build-weekly-report.ts", "--data-dir", workspace.dataDir);
+    runScript("scripts/prepare-public-data.ts", "--data-dir", workspace.dataDir);
 
     expect(snapshotTree(REPO_SERIES_DIR)).toEqual(repoSeriesBefore);
     expect(snapshotTree(REPO_REPORTS_DIR)).toEqual(repoReportsBefore);
+    expect(snapshotTree(REPO_SITE_PUBLIC_DATA_DIR)).toEqual(repoPublicDataBefore);
 
     const cityMarketPath = resolve(
       workspace.dataDir,
@@ -323,5 +329,20 @@ describe("scripts/build-series.ts", () => {
     expect(
       weeklyReport.communities["yunshu-huayuan"]?.segments["2br-87-90"]?.verdict,
     ).toBe("样本不足");
+
+    const publicDataDir = resolve(workspace.rootDir, "site", "public", "data");
+    expect(existsSync(resolve(publicDataDir, "config", "communities.json"))).toBe(
+      true,
+    );
+    expect(existsSync(resolve(publicDataDir, "config", "segments.json"))).toBe(
+      true,
+    );
+    expect(existsSync(resolve(publicDataDir, "series", "city-market", "tianjin.json"))).toBe(
+      true,
+    );
+    expect(
+      existsSync(resolve(publicDataDir, "reports", reportFiles[0]!)),
+    ).toBe(true);
+    expect(existsSync(resolve(publicDataDir, "latest-report.json"))).toBe(false);
   }, 15_000);
 });

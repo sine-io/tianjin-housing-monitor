@@ -57,3 +57,72 @@ export function inventoryDelta(previous: number, next: number): {
     isFall: isSignificant && difference < 0,
   };
 }
+
+export interface SegmentWindowObservation {
+  date: string;
+  listingUnitPriceMedian: number | null;
+  listingUnitPriceMin: number | null;
+  listingsCount: number;
+  suspectedDealCount?: number | null;
+  manualDealCount?: number | null;
+}
+
+export interface AggregatedSegmentWindow {
+  listingUnitPriceMedian: number | null;
+  listingUnitPriceMin: number | null;
+  listingsCount: number;
+  suspectedDealCount: number;
+  manualDealCount: number;
+}
+
+function maxOrZero(values: Array<number | null | undefined>): number {
+  return values.reduce<number>((maximum, value) => {
+    if (value === null || value === undefined) {
+      return maximum;
+    }
+
+    return Math.max(maximum, value);
+  }, 0);
+}
+
+export function aggregateSegmentWindow(
+  entries: SegmentWindowObservation[],
+  windowStart: string,
+  windowEnd: string,
+): AggregatedSegmentWindow {
+  const windowEntries = entries.filter(
+    (entry) => entry.date >= windowStart && entry.date <= windowEnd,
+  );
+
+  if (windowEntries.length === 0) {
+    return {
+      listingUnitPriceMedian: null,
+      listingUnitPriceMin: null,
+      listingsCount: 0,
+      suspectedDealCount: 0,
+      manualDealCount: 0,
+    };
+  }
+
+  return {
+    listingUnitPriceMedian: median(
+      windowEntries
+        .map((entry) => entry.listingUnitPriceMedian)
+        .filter((value): value is number => value !== null),
+    ),
+    listingUnitPriceMin: median(
+      windowEntries
+        .map((entry) => entry.listingUnitPriceMin)
+        .filter((value): value is number => value !== null),
+    ),
+    listingsCount: Math.round(
+      median(windowEntries.map((entry) => entry.listingsCount)) ?? 0,
+    ),
+    suspectedDealCount: maxOrZero(
+      windowEntries.map((entry) => entry.suspectedDealCount),
+    ),
+    manualDealCount: maxOrZero(
+      windowEntries.map((entry) => entry.manualDealCount),
+    ),
+  };
+}

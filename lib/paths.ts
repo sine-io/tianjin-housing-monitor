@@ -24,7 +24,14 @@ export interface DataPaths {
   segmentsConfigPath: string;
 }
 
-export function resolveDataPaths(dataDir: string = DATA_DIR): DataPaths {
+export function defaultPublicDataDir(dataDir: string = DATA_DIR): string {
+  return resolve(dataDir, "..", "site", "public", "data");
+}
+
+export function resolveDataPaths(
+  dataDir: string = DATA_DIR,
+  publicDir: string = defaultPublicDataDir(dataDir),
+): DataPaths {
   const resolvedDataDir = resolve(dataDir);
   const configDir = resolve(resolvedDataDir, "config");
   const manualDir = resolve(resolvedDataDir, "manual");
@@ -34,7 +41,7 @@ export function resolveDataPaths(dataDir: string = DATA_DIR): DataPaths {
     configDir,
     runsDir: resolve(resolvedDataDir, "runs"),
     reportsDir: resolve(resolvedDataDir, "reports"),
-    publicDir: resolve(resolvedDataDir, "public"),
+    publicDir: resolve(publicDir),
     seriesDir: resolve(resolvedDataDir, "series"),
     manualDir,
     manualIncomingDir: resolve(manualDir, "incoming"),
