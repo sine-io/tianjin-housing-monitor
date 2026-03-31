@@ -85,25 +85,35 @@ function deriveLatestAnomalies(
 
 function buildWeeklySummaryText(
   data: DashboardData,
-  primaryCommunityId: string,
   primaryCommunityName: string,
+  insufficientSegmentCount: number,
 ): string {
-  const report = data.latestReport;
+  const currentMarketEntry =
+    data.latestReport?.cityMarket ?? data.cityMarket.series.at(-1) ?? null;
+  const summaryDate = data.latestReport?.weekEnding ?? currentMarketEntry?.date ?? null;
 
-  if (!report || !report.cityMarket) {
+  if (!currentMarketEntry || !summaryDate) {
     return "暂无最新周报摘要，等待下一次数据构建。";
   }
 
-  const primaryCommunity = report.communities[primaryCommunityId];
-  const insufficientCount = Object.values(primaryCommunity?.segments ?? {}).filter(
-    (segment) => segment.verdict === "样本不足",
-  ).length;
+  const communitySummary =
+    insufficientSegmentCount > 0
+      ? `；${primaryCommunityName} 当前有 ${insufficientSegmentCount} 个监控户型处于样本不足。`
+      : "。";
 
-  return `${report.weekEnding} 天津二手房市场${report.cityMarket.verdict}，环比指数 ${report.cityMarket.secondaryHomePriceIndexMom.toFixed(
+  return `${summaryDate} ${data.cityMarket.city}二手房市场${currentMarketEntry.verdict}，环比指数 ${currentMarketEntry.secondaryHomePriceIndexMom.toFixed(
     1,
-  )}，同比指数 ${report.cityMarket.secondaryHomePriceIndexYoy.toFixed(
+  )}，同比指数 ${currentMarketEntry.secondaryHomePriceIndexYoy.toFixed(
     1,
-  )}；${primaryCommunityName} 当前有 ${insufficientCount} 个监控户型处于样本不足。`;
+  )}${communitySummary}`;
+}
+
+function countInsufficientSegments(
+  segments: Array<{
+    verdict: string | null;
+  }>,
+): number {
+  return segments.filter((segment) => segment.verdict === "样本不足").length;
 }
 
 export default function App({
@@ -208,12 +218,13 @@ export default function App({
     primaryCommunity.name,
     primarySegments,
   ).slice(0, 3);
+  const insufficientSegmentCount = countInsufficientSegments(primarySegments);
   const currentMarketEntry =
     data.latestReport?.cityMarket ?? data.cityMarket.series.at(-1) ?? null;
   const weeklySummaryText = buildWeeklySummaryText(
     data,
-    primaryCommunity.id,
     primaryCommunity.name,
+    insufficientSegmentCount,
   );
   const selectedSegment =
     primarySegments.find((segment) => segment.segment.id === selectedSegmentId) ?? null;

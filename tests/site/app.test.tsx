@@ -632,5 +632,57 @@ describe("site App", () => {
     expect(await screen.findByTestId("current-market-verdict")).toHaveTextContent(
       "偏弱",
     );
+
+    const weeklySummary = screen.getByTestId("weekly-summary");
+    expect(within(weeklySummary).getByText(/2026-03-31/)).toBeInTheDocument();
+    expect(
+      within(weeklySummary).getByText(/天津二手房市场偏弱/),
+    ).toBeInTheDocument();
+    expect(
+      within(weeklySummary).queryByText(/暂无最新周报摘要/),
+    ).not.toBeInTheDocument();
+  });
+
+  it("derives the detail conclusion from the latest series entry when the weekly snapshot latest block is missing", async () => {
+    render(
+      <App
+        issueFormUrl={issueFormUrl}
+        loader={async () => ({
+          ...sampleData,
+          latestReport: sampleData.latestReport
+            ? {
+                ...sampleData.latestReport,
+                communities: {
+                  ...sampleData.latestReport.communities,
+                  "mingquan-huayuan": {
+                    ...sampleData.latestReport.communities["mingquan-huayuan"],
+                    segments: {
+                      ...sampleData.latestReport.communities["mingquan-huayuan"]
+                        .segments,
+                      "2br-87-90": {
+                        ...sampleData.latestReport.communities["mingquan-huayuan"]
+                          .segments["2br-87-90"],
+                        latest: null,
+                      },
+                    },
+                  },
+                },
+              }
+            : null,
+        })}
+        primaryCommunityId="mingquan-huayuan"
+      />,
+    );
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "查看 两居 87-90㎡ 详情" }),
+    );
+
+    expect(
+      await screen.findByText(
+        /最新挂牌中位价 23,006 元\/㎡，挂牌 1 套，疑似成交 177 套/,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/当前缺少最新结论/)).not.toBeInTheDocument();
   });
 });

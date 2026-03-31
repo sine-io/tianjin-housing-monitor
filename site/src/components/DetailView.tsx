@@ -42,14 +42,21 @@ function buildConclusionText(
   segmentLabel: string,
   verdict: string | null,
   latest: WeeklyReportLatestSnapshot | null,
+  latestSeriesEntry: CommunitySegmentSeriesEntry | null,
 ): string {
-  if (!latest) {
-    return `${communityName} ${segmentLabel} 当前缺少最新结论，等待下一次周报构建。`;
+  if (latest) {
+    return `${communityName} ${segmentLabel} 当前判定为${verdict ?? "待观察"}，最新挂牌中位价 ${formatPrice(
+      latest.listingUnitPriceMedian,
+    )}，挂牌 ${latest.listingsCount} 套，疑似成交 ${latest.suspectedDealCount} 套。`;
   }
 
-  return `${communityName} ${segmentLabel} 当前判定为${verdict ?? "待观察"}，最新挂牌中位价 ${formatPrice(
-    latest.listingUnitPriceMedian,
-  )}，挂牌 ${latest.listingsCount} 套，疑似成交 ${latest.suspectedDealCount} 套。`;
+  if (latestSeriesEntry) {
+    return `${communityName} ${segmentLabel} 当前判定为${verdict ?? "待观察"}，最新挂牌中位价 ${formatPrice(
+      latestSeriesEntry.listingUnitPriceMedian,
+    )}，挂牌 ${latestSeriesEntry.listingsCount} 套，疑似成交 ${latestSeriesEntry.suspectedDealCount} 套。`;
+  }
+
+  return `${communityName} ${segmentLabel} 当前缺少最新结论，等待下一次周报构建。`;
 }
 
 export default function DetailView({
@@ -68,6 +75,7 @@ export default function DetailView({
     segmentLabel,
     verdict,
     latest,
+    latestSeriesEntry,
   );
 
   return (
