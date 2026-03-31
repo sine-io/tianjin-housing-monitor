@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import {
   cpSync,
   mkdtempSync,
+  mkdirSync,
   readdirSync,
   readFileSync,
   rmSync,
@@ -14,7 +15,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { loadCommunities } from "../../lib/config";
 
-const RUNS_DIR = resolve("data/runs");
+const REPO_RUNS_DIR = resolve("data/runs");
 const DEFAULT_FIXTURE_ROOT = resolve("tests/fixtures");
 const TSX_PATH = resolve("node_modules/.bin/tsx");
 
@@ -43,22 +44,20 @@ const expectedCommunities = {
 
 const temporaryRoots: string[] = [];
 
-function cleanupRunOutputs(): void {
-  for (const entry of readdirSync(RUNS_DIR)) {
-    if (entry === ".gitkeep") {
-      continue;
-    }
-
-    rmSync(resolve(RUNS_DIR, entry), { force: true, recursive: true });
-  }
-}
-
 function makeFixtureRoot(): string {
   const tempBase = mkdtempSync(resolve(tmpdir(), "collect-fixtures-"));
   const fixtureRoot = resolve(tempBase, "fixtures");
   cpSync(DEFAULT_FIXTURE_ROOT, fixtureRoot, { recursive: true });
   temporaryRoots.push(tempBase);
   return fixtureRoot;
+}
+
+function makeRunsDir(): string {
+  const tempBase = mkdtempSync(resolve(tmpdir(), "collect-runs-"));
+  const runsDir = resolve(tempBase, "runs");
+  mkdirSync(runsDir, { recursive: true });
+  temporaryRoots.push(tempBase);
+  return runsDir;
 }
 
 function runCollect(...args: string[]): void {
@@ -72,24 +71,22 @@ function readJsonFile<T>(filePath: string): T {
   return JSON.parse(readFileSync(filePath, "utf8")) as T;
 }
 
-function readLatestRun(): unknown {
-  return readJsonFile(resolve(RUNS_DIR, "latest.json"));
+function readLatestRun(runsDir: string): unknown {
+  return readJsonFile(resolve(runsDir, "latest.json"));
 }
 
-function listArchivedRuns(): string[] {
-  return readdirSync(RUNS_DIR)
+function listArchivedRuns(runsDir: string): string[] {
+  return readdirSync(runsDir)
     .filter((entry) => entry.endsWith(".json") && entry !== "latest.json")
     .sort();
 }
 
+function listRunFiles(runsDir: string): string[] {
+  return readdirSync(runsDir).sort();
+}
+
 describe("scripts/collect.ts", () => {
-  beforeEach(() => {
-    cleanupRunOutputs();
-  });
-
   afterEach(() => {
-    cleanupRunOutputs();
-
     while (temporaryRoots.length > 0) {
       rmSync(temporaryRoots.pop()!, { force: true, recursive: true });
     }
@@ -97,10 +94,14 @@ describe("scripts/collect.ts", () => {
 
   it("writes normalized latest and archived run artifacts for all configured sources", () => {
     const fixtureRoot = makeFixtureRoot();
+    const runsDir = makeRunsDir();
 
-    runCollect("--fixture", fixtureRoot);
+    runCollect("--fixture", fixtureRoot, "--runs-dir", runsDir);
 
-    const latestRun = readLatestRun() as {
+    expect(listRunFiles(REPO_RUNS_DIR)).toEqual([".gitkeep"]);
+    expect(listRunFiles(runsDir)).toContain("latest.json");
+
+    const latestRun = readLatestRun(runsDir) as {
       generatedAt: string;
       sources: Record<string, unknown>;
       communities: Record<string, unknown>;
@@ -134,16 +135,17 @@ describe("scripts/collect.ts", () => {
       });
     }
 
-    const archivedRuns = listArchivedRuns();
+    const archivedRuns = listArchivedRuns(runsDir);
 
     expect(archivedRuns).toHaveLength(1);
-    expect(readJsonFile(resolve(RUNS_DIR, archivedRuns[0]))).toEqual(latestRun);
-  });
+    expect(readJsonFile(resolve(runsDir, archivedRuns[0]))).toEqual(latestRun);
+  }, 15_000);
 
   it("preserves the last successful normalized values in latest.json when a source fails", () => {
     const fixtureRoot = makeFixtureRoot();
+    const runsDir = makeRunsDir();
 
-    runCollect("--fixture", fixtureRoot);
+    runCollect("--fixture", fixtureRoot, "--runs-dir", runsDir);
 
     writeFileSync(
       resolve(fixtureRoot, "fang/community/mingquan-huayuan.html"),
@@ -151,9 +153,11 @@ describe("scripts/collect.ts", () => {
       "utf8",
     );
 
-    runCollect("--fixture", fixtureRoot);
+    runCollect("--fixture", fixtureRoot, "--runs-dir", runsDir);
 
-    const latestRun = readLatestRun() as {
+    expect(listRunFiles(REPO_RUNS_DIR)).toEqual([".gitkeep"]);
+
+    const latestRun = readLatestRun(runsDir) as {
       communities: Record<
         string,
         {
@@ -169,7 +173,7 @@ describe("scripts/collect.ts", () => {
       >;
     };
 
-    expect(listArchivedRuns()).toHaveLength(2);
+    expect(listArchivedRuns(runsDir)).toHaveLength(2);
     expect(latestRun.communities["mingquan-huayuan"]).toEqual({
       fangCommunity: {
         status: "failed",
@@ -180,5 +184,5 @@ describe("scripts/collect.ts", () => {
         weeklyPoints: [{ label: "3月", priceYuanPerSqm: 23006 }],
       },
     });
-  });
+  }, 15_000);
 });

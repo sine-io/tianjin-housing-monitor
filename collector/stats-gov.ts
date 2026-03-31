@@ -17,11 +17,14 @@ function normalizeText(value: string | undefined | null): string {
   return value?.replace(/\s+/g, " ").trim() ?? "";
 }
 
-function toAbsoluteUrl(url: string): string {
-  return new URL(url, STATS_GOV_RELEASES_URL).toString();
+function toAbsoluteUrl(url: string, baseUrl: string): string {
+  return new URL(url, baseUrl).toString();
 }
 
-function findLatestStatsGovReportUrl(html: string): string | null {
+export function findLatestStatsGovReportUrl(
+  html: string,
+  baseUrl: string,
+): string | null {
   const $ = cheerio.load(html);
 
   for (const link of $("a").toArray()) {
@@ -32,7 +35,7 @@ function findLatestStatsGovReportUrl(html: string): string | null {
       continue;
     }
 
-    return toAbsoluteUrl(href);
+    return toAbsoluteUrl(href, baseUrl);
   }
 
   const matchedHref =
@@ -40,13 +43,16 @@ function findLatestStatsGovReportUrl(html: string): string | null {
       /href="(?<href>[^"]+)"[^>]*>\s*[^<]*70个大中城市商品住宅销售价格变动情况/,
     )?.groups?.href ?? null;
 
-  return matchedHref ? toAbsoluteUrl(matchedHref) : null;
+  return matchedHref ? toAbsoluteUrl(matchedHref, baseUrl) : null;
 }
 
 async function fetchLatestStatsGovReportPage(): Promise<CollectedPage> {
   try {
     const primaryIndexHtml = await fetchHtmlWithBrowser(STATS_GOV_RELEASES_URL);
-    const primaryReportUrl = findLatestStatsGovReportUrl(primaryIndexHtml);
+    const primaryReportUrl = findLatestStatsGovReportUrl(
+      primaryIndexHtml,
+      STATS_GOV_RELEASES_URL,
+    );
 
     if (primaryReportUrl) {
       return {
@@ -59,7 +65,10 @@ async function fetchLatestStatsGovReportPage(): Promise<CollectedPage> {
   }
 
   const fallbackIndexHtml = await fetchHtmlWithBrowser(STATS_GOV_FALLBACK_RELEASES_URL);
-  const fallbackReportUrl = findLatestStatsGovReportUrl(fallbackIndexHtml);
+  const fallbackReportUrl = findLatestStatsGovReportUrl(
+    fallbackIndexHtml,
+    STATS_GOV_FALLBACK_RELEASES_URL,
+  );
 
   if (!fallbackReportUrl) {
     throw new Error("Unable to locate the latest stats-gov report URL");

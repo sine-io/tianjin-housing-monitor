@@ -54,34 +54,69 @@ interface RunArtifact {
   communities: Record<string, CommunityRunSources>;
 }
 
-const RUNS_DIR = resolve(DATA_DIR, "runs");
-const LATEST_RUN_PATH = resolve(RUNS_DIR, "latest.json");
+const DEFAULT_RUNS_DIR = resolve(DATA_DIR, "runs");
 const STATS_GOV_CITY = "天津";
 const DEFAULT_FIXTURE_ROOT = resolve("tests/fixtures");
+const RUNS_DIR_ENV_VAR = "ZHAOFANG_RUNS_DIR";
 
-function parseCommandLineArguments(argv: string[]): { fixtureRoot?: string } {
-  const fixtureFlagIndex = argv.indexOf("--fixture");
-
-  if (fixtureFlagIndex === -1) {
-    return {};
+function resolveOptionalPath(value: string | undefined): string | undefined {
+  if (!value || value.startsWith("-")) {
+    return undefined;
   }
 
-  const fixtureRootCandidate = argv[fixtureFlagIndex + 1];
-
-  if (!fixtureRootCandidate || fixtureRootCandidate.startsWith("-")) {
-    return { fixtureRoot: DEFAULT_FIXTURE_ROOT };
-  }
-
-  return { fixtureRoot: resolve(fixtureRootCandidate) };
+  return resolve(value);
 }
 
-function readPreviousRun(): RunArtifact | null {
-  if (!existsSync(LATEST_RUN_PATH)) {
+function parseCommandLineArguments(argv: string[]): {
+  fixtureRoot?: string;
+  runsDir: string;
+} {
+  let fixtureRoot: string | undefined;
+  let runsDir = process.env[RUNS_DIR_ENV_VAR]
+    ? resolve(process.env[RUNS_DIR_ENV_VAR]!)
+    : DEFAULT_RUNS_DIR;
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const argument = argv[index];
+
+    if (argument === "--fixture") {
+      const candidate = resolveOptionalPath(argv[index + 1]);
+      fixtureRoot = candidate ?? DEFAULT_FIXTURE_ROOT;
+
+      if (candidate) {
+        index += 1;
+      }
+      continue;
+    }
+
+    if (argument === "--runs-dir") {
+      const candidate = resolveOptionalPath(argv[index + 1]);
+
+      if (!candidate) {
+        throw new Error("--runs-dir requires a path");
+      }
+
+      runsDir = candidate;
+      index += 1;
+    }
+  }
+
+  return { fixtureRoot, runsDir };
+}
+
+function latestRunPath(runsDir: string): string {
+  return resolve(runsDir, "latest.json");
+}
+
+function readPreviousRun(runsDir: string): RunArtifact | null {
+  const latestPath = latestRunPath(runsDir);
+
+  if (!existsSync(latestPath)) {
     return null;
   }
 
   try {
-    return JSON.parse(readFileSync(LATEST_RUN_PATH, "utf8")) as RunArtifact;
+    return JSON.parse(readFileSync(latestPath, "utf8")) as RunArtifact;
   } catch {
     return null;
   }
@@ -140,14 +175,14 @@ function mergeFangWeekreportRun(
   };
 }
 
-function makeArchivedRunPath(generatedAt: string): string {
+function makeArchivedRunPath(runsDir: string, generatedAt: string): string {
   const baseName = `${generatedAt.replaceAll(":", "-")}.json`;
-  let filePath = resolve(RUNS_DIR, baseName);
+  let filePath = resolve(runsDir, baseName);
   let suffix = 1;
 
   while (existsSync(filePath)) {
     filePath = resolve(
-      RUNS_DIR,
+      runsDir,
       `${generatedAt.replaceAll(":", "-")}-${suffix}.json`,
     );
     suffix += 1;
@@ -156,13 +191,13 @@ function makeArchivedRunPath(generatedAt: string): string {
   return filePath;
 }
 
-function writeRunArtifacts(runArtifact: RunArtifact): void {
-  mkdirSync(RUNS_DIR, { recursive: true });
+function writeRunArtifacts(runsDir: string, runArtifact: RunArtifact): void {
+  mkdirSync(runsDir, { recursive: true });
 
   const serialized = JSON.stringify(runArtifact, null, 2);
 
-  writeFileSync(LATEST_RUN_PATH, serialized);
-  writeFileSync(makeArchivedRunPath(runArtifact.generatedAt), serialized);
+  writeFileSync(latestRunPath(runsDir), serialized);
+  writeFileSync(makeArchivedRunPath(runsDir, runArtifact.generatedAt), serialized);
 }
 
 async function collectStatsGovRun(
@@ -256,8 +291,8 @@ async function collectCommunityRun(
 }
 
 async function main(): Promise<void> {
-  const { fixtureRoot } = parseCommandLineArguments(process.argv.slice(2));
-  const previousRun = readPreviousRun();
+  const { fixtureRoot, runsDir } = parseCommandLineArguments(process.argv.slice(2));
+  const previousRun = readPreviousRun(runsDir);
   const generatedAt = new Date().toISOString();
   const communities = loadCommunities();
   const communityRuns: Record<string, CommunityRunSources> = {};
@@ -272,7 +307,7 @@ async function main(): Promise<void> {
     );
   }
 
-  writeRunArtifacts({
+  writeRunArtifacts(runsDir, {
     generatedAt,
     sources: {
       "stats-gov": statsGovRun,

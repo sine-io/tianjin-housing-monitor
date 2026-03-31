@@ -3,4 +3,3 @@ dist/
 playwright-report/
 test-results/
 .superpowers/
-data/runs/*.json
