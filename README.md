@@ -2,6 +2,8 @@
 
 Static Tianjin housing monitor workspace. Data is collected into JSON, copied to `site/public/data`, and served as a Vite-built static dashboard.
 
+For day-to-day operations, see the runbook in [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
+
 ## Requirements
 
 - Node.js 22
