@@ -54,4 +54,26 @@ describe("GitHub automation workflows", () => {
       expect(workflow).toContain(HARDENED_INSTALL_STEP);
     }
   });
+
+  it("builds pages before configuring the pages environment", () => {
+    const workflow = readWorkflow(".github/workflows/deploy-pages.yml");
+    const expectedStepOrder = [
+      "      - name: Check out main",
+      "      - name: Set up Node.js",
+      "      - name: Install dependencies",
+      "      - name: Build static site",
+      "      - name: Configure Pages",
+      "      - name: Upload Pages artifact",
+    ];
+
+    const stepPositions = expectedStepOrder.map((step) => workflow.indexOf(step));
+
+    for (const position of stepPositions) {
+      expect(position).toBeGreaterThanOrEqual(0);
+    }
+
+    for (let index = 1; index < stepPositions.length; index += 1) {
+      expect(stepPositions[index]).toBeGreaterThan(stepPositions[index - 1]);
+    }
+  });
 });
