@@ -3,6 +3,7 @@ name: Weekly Report
 on:
   schedule:
     - cron: "0 1 * * 1"
+  workflow_dispatch:
 
 concurrency:
   group: repo-main-write-serialization

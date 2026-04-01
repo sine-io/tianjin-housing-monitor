@@ -95,4 +95,12 @@ describe("GitHub automation workflows", () => {
       "if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'",
     );
   });
+  it("allows weekly-report to be started manually", () => {
+    const workflow = readWorkflow(".github/workflows/weekly-report.yml");
+
+    expect(workflow).toContain(`on:
+  schedule:
+    - cron: "0 1 * * 1"
+  workflow_dispatch:`);
+  });
 });
