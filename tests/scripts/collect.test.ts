@@ -11,7 +11,7 @@ import {
 import { resolve } from "node:path";
 import { tmpdir } from "node:os";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import { loadCommunities } from "../../lib/config";
 
@@ -19,7 +19,7 @@ const REPO_RUNS_DIR = resolve("data/runs");
 const DEFAULT_FIXTURE_ROOT = resolve("tests/fixtures");
 const TSX_PATH = resolve("node_modules/.bin/tsx");
 
-const expectedCommunities = {
+const expectedActiveCommunities = {
   "mingquan-huayuan": {
     referenceUnitPrice: 23007,
     listingCount: 90,
@@ -41,49 +41,6 @@ const expectedCommunities = {
     momChangePct: 0.99,
     yoyChangePct: -10.72,
   },
-  "jiajun-huayuan": {
-    referenceUnitPrice: 22234,
-    listingCount: 144,
-    recentDealHints: [
-      "西青人气小区榜第66名",
-      "关注量超过同城98%的楼盘",
-      "二手房历史成交(193)",
-    ],
-    firstListing: {
-      title: "西青 富力津门湖嘉郡花园 5室3厅 280.00㎡ 580万",
-      roomCount: 5,
-      areaSqm: 280,
-      totalPriceWan: 580,
-      unitPriceYuanPerSqm: 20714,
-    },
-    pricePoints: [{ label: "3月", priceYuanPerSqm: 22233 }],
-    districtName: "西青",
-    districtPremiumPct: 8.69,
-    momChangePct: -0.53,
-    yoyChangePct: -6.83,
-  },
-  "yunshu-huayuan": {
-    referenceUnitPrice: 23403,
-    listingCount: 104,
-    recentDealHints: [
-      "西青人气小区榜第63名",
-      "关注量超过同城98%的楼盘",
-      "二手房历史成交(234)",
-      "法拍房历史成交(1)",
-    ],
-    firstListing: {
-      title: "富力津门湖云舒花园2室2厅1卫南朝向173.00万出售",
-      roomCount: 2,
-      areaSqm: 89,
-      totalPriceWan: 173,
-      unitPriceYuanPerSqm: 19438,
-    },
-    pricePoints: [{ label: "3月", priceYuanPerSqm: 23402 }],
-    districtName: "西青",
-    districtPremiumPct: 7.24,
-    momChangePct: 2.69,
-    yoyChangePct: -4.49,
-  },
   "boxi-huayuan": {
     referenceUnitPrice: 25302,
     listingCount: 58,
@@ -104,27 +61,6 @@ const expectedCommunities = {
     districtPremiumPct: 5.91,
     momChangePct: 1.05,
     yoyChangePct: -7.32,
-  },
-  "haiyi-changzhou-hanboyuan": {
-    referenceUnitPrice: 28064,
-    listingCount: 70,
-    recentDealHints: [
-      "西青热搜小区榜第85名",
-      "关注量超过同城98%的楼盘",
-      "二手房历史成交(210)",
-    ],
-    firstListing: {
-      title: "河西精装海逸长洲瀚波园 2室1厅",
-      roomCount: 2,
-      areaSqm: 89.14,
-      totalPriceWan: 198,
-      unitPriceYuanPerSqm: 22212,
-    },
-    pricePoints: [{ label: "3月", priceYuanPerSqm: 28064 }],
-    districtName: "西青",
-    districtPremiumPct: 4.1,
-    momChangePct: -1.4,
-    yoyChangePct: -11.19,
   },
 } as const;
 
@@ -187,7 +123,7 @@ describe("scripts/collect.ts", () => {
     }
   });
 
-  it("writes normalized latest and archived run artifacts for all configured sources", () => {
+  it("marks pending-verification communities as skipped while preserving them in the run artifact", () => {
     const fixtureRoot = makeFixtureRoot();
     const runsDir = makeRunsDir();
     const repoRunsBefore = snapshotRunFiles(REPO_RUNS_DIR);
@@ -200,7 +136,34 @@ describe("scripts/collect.ts", () => {
     const latestRun = readLatestRun(runsDir) as {
       generatedAt: string;
       sources: Record<string, unknown>;
-      communities: Record<string, unknown>;
+      communities: Record<
+        string,
+        {
+          fangCommunity: {
+            status: string;
+            referenceUnitPrice?: number;
+            listingCount?: number;
+            recentDealHints?: string[];
+            currentListingTeasers?: Array<{
+              title: string | null;
+              roomCount: number | null;
+              areaSqm: number | null;
+              totalPriceWan: number | null;
+              unitPriceYuanPerSqm: number | null;
+            }>;
+          };
+          fangWeekreport: {
+            status: string;
+            pricePoints?: Array<{ label: string; priceYuanPerSqm: number | null }>;
+            listingCount?: number | null;
+            districtName?: string | null;
+            districtPremiumPct?: number | null;
+            momChangePct?: number | null;
+            yoyChangePct?: number | null;
+            availableRangeLabels?: string[];
+          };
+        }
+      >;
     };
 
     expect(Number.isNaN(Date.parse(latestRun.generatedAt))).toBe(false);
@@ -214,14 +177,31 @@ describe("scripts/collect.ts", () => {
       },
     });
 
+    const communities = loadCommunities();
+
     expect(Object.keys(latestRun.communities).sort()).toEqual(
-      loadCommunities()
-        .map((community) => community.id)
-        .sort(),
+      communities.map((community) => community.id).sort(),
     );
 
-    for (const [communityId, expected] of Object.entries(expectedCommunities)) {
-      expect(latestRun.communities[communityId]).toEqual({
+    for (const community of communities) {
+      if (community.status === "pending_verification") {
+        expect(latestRun.communities[community.id]).toEqual({
+          fangCommunity: {
+            status: "skipped",
+          },
+          fangWeekreport: {
+            status: "skipped",
+          },
+        });
+        continue;
+      }
+
+      const expected = expectedActiveCommunities[
+        community.id as keyof typeof expectedActiveCommunities
+      ];
+
+      expect(expected).toBeDefined();
+      expect(latestRun.communities[community.id]).toEqual({
         fangCommunity: {
           status: "success",
           referenceUnitPrice: expected.referenceUnitPrice,
@@ -250,7 +230,7 @@ describe("scripts/collect.ts", () => {
     expect(readJsonFile(resolve(runsDir, archivedRuns[0]))).toEqual(latestRun);
   }, 15_000);
 
-  it("preserves the last successful normalized values in latest.json when a source fails", () => {
+  it("preserves the last successful normalized values when an active Fang source fails", () => {
     const fixtureRoot = makeFixtureRoot();
     const runsDir = makeRunsDir();
     const repoRunsBefore = snapshotRunFiles(REPO_RUNS_DIR);
@@ -328,6 +308,14 @@ describe("scripts/collect.ts", () => {
         momChangePct: 0.99,
         yoyChangePct: -10.72,
         availableRangeLabels: ["近6月", "近1年", "近3年"],
+      },
+    });
+    expect(latestRun.communities["lianhai-yuan"]).toEqual({
+      fangCommunity: {
+        status: "skipped",
+      },
+      fangWeekreport: {
+        status: "skipped",
       },
     });
   }, 15_000);

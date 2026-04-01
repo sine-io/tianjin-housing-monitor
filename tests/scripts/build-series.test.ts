@@ -111,7 +111,7 @@ function collectFixturesIntoRuns({
   runScript("scripts/collect.ts", "--fixture", fixtureRoot, "--runs-dir", runsDir);
 }
 
-function overwriteRunArtifactsForTeaserCoverage(runsDir: string): void {
+function overwriteRunArtifactsForPrimarySegmentCoverage(runsDir: string): void {
   for (const fileName of listJsonFiles(runsDir)) {
     const filePath = resolve(runsDir, fileName);
     const runArtifact = readJsonFile<{
@@ -125,28 +125,28 @@ function overwriteRunArtifactsForTeaserCoverage(runsDir: string): void {
       >;
     }>(filePath);
 
-    runArtifact.communities["yunshu-huayuan"]!.fangCommunity.currentListingTeasers =
+    runArtifact.communities["mingquan-huayuan"]!.fangCommunity.currentListingTeasers =
       [
         {
-          title: "两居样本 A",
+          title: "鸣泉两居样本 A",
           roomCount: 2,
-          areaSqm: 89,
-          totalPriceWan: 173,
-          unitPriceYuanPerSqm: 19_438,
+          areaSqm: 88.42,
+          totalPriceWan: 199,
+          unitPriceYuanPerSqm: 22_506,
         },
         {
-          title: "两居样本 B",
+          title: "鸣泉两居样本 B",
           roomCount: 2,
-          areaSqm: 88,
-          totalPriceWan: 178,
-          unitPriceYuanPerSqm: 20_200,
+          areaSqm: 89.1,
+          totalPriceWan: 205,
+          unitPriceYuanPerSqm: 23_008,
         },
         {
-          title: "两居样本 C",
+          title: "鸣泉两居样本 C",
           roomCount: 2,
           areaSqm: 87.5,
-          totalPriceWan: 184,
-          unitPriceYuanPerSqm: 21_000,
+          totalPriceWan: 198,
+          unitPriceYuanPerSqm: 22_912,
         },
       ];
 
@@ -163,11 +163,11 @@ function writeAcceptedManualInput(dataDir: string): void {
         submittedAt: "2026-03-31T09:00:00.000Z",
         samples: [
           {
-            communityId: "yunshu-huayuan",
-            segmentId: "2br-87-90",
+            communityId: "mingquan-huayuan",
+            segmentId: "mingquan-2br-87-90",
             sampleAt: "2026-03-30T12:00:00.000Z",
             dealCount: 1,
-            dealUnitPriceYuanPerSqm: 19_300,
+            dealUnitPriceYuanPerSqm: 22_700,
           },
         ],
       },
@@ -184,14 +184,14 @@ describe("scripts/build-series.ts", () => {
     }
   });
 
-  it("builds the city market series, all community segment series, and one weekly report inside a temp data dir", () => {
+  it("builds exactly one primary segment series per community with no community-by-segment expansion", () => {
     const workspace = makeWorkspace();
     const repoSeriesBefore = snapshotTree(REPO_SERIES_DIR);
     const repoReportsBefore = snapshotTree(REPO_REPORTS_DIR);
     const repoPublicDataBefore = snapshotTree(REPO_SITE_PUBLIC_DATA_DIR);
 
     collectFixturesIntoRuns(workspace);
-    overwriteRunArtifactsForTeaserCoverage(workspace.runsDir);
+    overwriteRunArtifactsForPrimarySegmentCoverage(workspace.runsDir);
     writeAcceptedManualInput(workspace.dataDir);
 
     runScript("scripts/build-series.ts", "--data-dir", workspace.dataDir);
@@ -229,21 +229,45 @@ describe("scripts/build-series.ts", () => {
       }),
     );
 
-    for (const community of loadCommunities(resolve(workspace.dataDir, "config", "communities.json"))) {
-      for (const segment of loadSegments(resolve(workspace.dataDir, "config", "segments.json"))) {
-        expect(
-          existsSync(
-            resolve(
-              workspace.dataDir,
-              "series",
-              "communities",
-              community.id,
-              `${segment.id}.json`,
-            ),
-          ),
-        ).toBe(true);
+    const communities = loadCommunities(
+      resolve(workspace.dataDir, "config", "communities.json"),
+    );
+    const segments = loadSegments(
+      resolve(workspace.dataDir, "config", "segments.json"),
+      communities,
+    );
+    const primarySegmentByCommunity = new Map(
+      segments.map((segment) => [segment.communityId, segment]),
+    );
+
+    let totalCommunitySeriesFiles = 0;
+
+    for (const community of communities) {
+      const primarySegment = primarySegmentByCommunity.get(community.id);
+      const communityDir = resolve(
+        workspace.dataDir,
+        "series",
+        "communities",
+        community.id,
+      );
+
+      expect(primarySegment).toBeDefined();
+      expect(listJsonFiles(communityDir)).toEqual([`${primarySegment!.id}.json`]);
+
+      totalCommunitySeriesFiles += listJsonFiles(communityDir).length;
+
+      for (const segment of segments) {
+        const segmentPath = resolve(communityDir, `${segment.id}.json`);
+
+        if (segment.communityId === community.id) {
+          expect(existsSync(segmentPath)).toBe(true);
+        } else {
+          expect(existsSync(segmentPath)).toBe(false);
+        }
       }
     }
+
+    expect(totalCommunitySeriesFiles).toBe(communities.length);
 
     const teaserDerivedSeries = readJsonFile<{
       series: Array<{
@@ -260,8 +284,8 @@ describe("scripts/build-series.ts", () => {
         workspace.dataDir,
         "series",
         "communities",
-        "yunshu-huayuan",
-        "2br-87-90.json",
+        "mingquan-huayuan",
+        "mingquan-2br-87-90.json",
       ),
     );
 
@@ -269,11 +293,11 @@ describe("scripts/build-series.ts", () => {
     expect(teaserDerivedSeries.series[0]).toEqual(
       expect.objectContaining({
         derivedFrom: "segment-teasers",
-        listingUnitPriceMedian: 20_200,
-        listingUnitPriceMin: 19_438,
+        listingUnitPriceMedian: 22_912,
+        listingUnitPriceMin: 22_506,
         listingsCount: 3,
         manualDealCount: 1,
-        manualDealUnitPriceMedian: 19_300,
+        manualDealUnitPriceMedian: 22_700,
         manualLatestSampleAt: "2026-03-30T12:00:00.000Z",
       }),
     );
@@ -282,16 +306,14 @@ describe("scripts/build-series.ts", () => {
       series: Array<{
         derivedFrom: string;
         listingUnitPriceMedian: number;
-        listingUnitPriceMin: number;
-        listingsCount: number;
       }>;
     }>(
       resolve(
         workspace.dataDir,
         "series",
         "communities",
-        "mingquan-huayuan",
-        "3br-140-150.json",
+        "boxi-huayuan",
+        "boxi-2br-100-120.json",
       ),
     );
 
@@ -299,9 +321,7 @@ describe("scripts/build-series.ts", () => {
     expect(fallbackSeries.series[0]).toEqual(
       expect.objectContaining({
         derivedFrom: "community-fallback",
-        listingUnitPriceMedian: 23_006,
-        listingUnitPriceMin: 23_006,
-        listingsCount: 0,
+        listingUnitPriceMedian: 25_301,
       }),
     );
 
@@ -326,9 +346,13 @@ describe("scripts/build-series.ts", () => {
     }>(resolve(workspace.dataDir, "reports", reportFiles[0]!));
 
     expect(weeklyReport.cityMarket.verdict).toBe("偏弱");
-    expect(
-      weeklyReport.communities["yunshu-huayuan"]?.segments["2br-87-90"]?.verdict,
-    ).toBe("样本不足");
+
+    for (const community of communities) {
+      const primarySegment = primarySegmentByCommunity.get(community.id);
+      expect(Object.keys(weeklyReport.communities[community.id]!.segments)).toEqual([
+        primarySegment!.id,
+      ]);
+    }
 
     const publicDataDir = resolve(workspace.rootDir, "site", "public", "data");
     expect(existsSync(resolve(publicDataDir, "config", "communities.json"))).toBe(
@@ -337,12 +361,12 @@ describe("scripts/build-series.ts", () => {
     expect(existsSync(resolve(publicDataDir, "config", "segments.json"))).toBe(
       true,
     );
-    expect(existsSync(resolve(publicDataDir, "series", "city-market", "tianjin.json"))).toBe(
+    expect(
+      existsSync(resolve(publicDataDir, "series", "city-market", "tianjin.json")),
+    ).toBe(true);
+    expect(existsSync(resolve(publicDataDir, "reports", reportFiles[0]!))).toBe(
       true,
     );
-    expect(
-      existsSync(resolve(publicDataDir, "reports", reportFiles[0]!)),
-    ).toBe(true);
     expect(existsSync(resolve(publicDataDir, "latest-report.json"))).toBe(false);
   }, 15_000);
 });

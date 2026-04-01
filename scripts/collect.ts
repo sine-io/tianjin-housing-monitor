@@ -278,6 +278,13 @@ async function collectCommunityRun(
     status: "skipped",
   });
 
+  if (community.status === "pending_verification") {
+    return {
+      fangCommunity: fangCommunityRun,
+      fangWeekreport: fangWeekreportRun,
+    };
+  }
+
   const communitySourceUrl = fixtureRoot
     ? resolve(fixtureRoot, "fang/community", `${community.id}.html`)
     : deriveFangCommunityMobileUrl(community);

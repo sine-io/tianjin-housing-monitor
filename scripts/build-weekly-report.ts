@@ -117,7 +117,10 @@ async function main(): Promise<void> {
   const { dataDir } = parseCommandLineArguments(process.argv.slice(2));
   const paths = resolveDataPaths(dataDir);
   const communities = loadCommunities(paths.communitiesConfigPath);
-  const segments = loadSegments(paths.segmentsConfigPath);
+  const segments = loadSegments(paths.segmentsConfigPath, communities);
+  const primarySegmentByCommunity = new Map(
+    segments.map((segment) => [segment.communityId, segment]),
+  );
   const cityMarketPath = resolve(paths.seriesDir, "city-market", "tianjin.json");
   const cityMarketSeries = existsSync(cityMarketPath)
     ? readJsonFile<{ city: string; series: CityMarketSeriesEntry[] }>(cityMarketPath)
@@ -163,63 +166,54 @@ async function main(): Promise<void> {
     cityMarket: cityMarketSeries.series.at(-1) ?? null,
     communities: Object.fromEntries(
       communities.map((community) => {
-        const segmentsReport = Object.fromEntries(
-          segments.map((segment) => {
-            const seriesPath = resolve(
-              paths.seriesDir,
-              "communities",
-              community.id,
-              `${segment.id}.json`,
-            );
-            const seriesFile = existsSync(seriesPath)
-              ? readJsonFile<{ series: CommunitySegmentSeriesEntry[] }>(seriesPath)
-              : { series: [] };
-            const observations: SegmentWindowObservation[] = seriesFile.series.map(
-              (entry) => ({
-                date: entry.date,
-                listingUnitPriceMedian: entry.listingUnitPriceMedian,
-                listingUnitPriceMin: entry.listingUnitPriceMin,
-                listingsCount: entry.listingsCount,
-                suspectedDealCount: entry.suspectedDealCount,
-                manualDealCount: entry.manualDealCount,
-              }),
-            );
-            const wMinus2 = buildWeeklySegmentWindowFromAcceptedManualSamples(
-              observations,
-              manualSamples,
-              community.id,
-              segment.id,
-              windows.wMinus2.start,
-              windows.wMinus2.end,
-            );
-            const wMinus1 = buildWeeklySegmentWindowFromAcceptedManualSamples(
-              observations,
-              manualSamples,
-              community.id,
-              segment.id,
-              windows.wMinus1.start,
-              windows.wMinus1.end,
-            );
-            const w0 = buildWeeklySegmentWindowFromAcceptedManualSamples(
-              observations,
-              manualSamples,
-              community.id,
-              segment.id,
-              windows.w0.start,
-              windows.w0.end,
-            );
+        const segment = primarySegmentByCommunity.get(community.id);
 
-            return [
-              segment.id,
-              {
-                label: segment.label,
-                verdict: getSegmentVerdict([wMinus2, wMinus1, w0]),
-                latest: hasAggregatedObservations(w0)
-                  ? w0
-                  : null,
-              },
-            ];
+        if (!segment) {
+          throw new Error(`Missing primary segment for community: ${community.id}`);
+        }
+
+        const seriesPath = resolve(
+          paths.seriesDir,
+          "communities",
+          community.id,
+          `${segment.id}.json`,
+        );
+        const seriesFile = existsSync(seriesPath)
+          ? readJsonFile<{ series: CommunitySegmentSeriesEntry[] }>(seriesPath)
+          : { series: [] };
+        const observations: SegmentWindowObservation[] = seriesFile.series.map(
+          (entry) => ({
+            date: entry.date,
+            listingUnitPriceMedian: entry.listingUnitPriceMedian,
+            listingUnitPriceMin: entry.listingUnitPriceMin,
+            listingsCount: entry.listingsCount,
+            suspectedDealCount: entry.suspectedDealCount,
+            manualDealCount: entry.manualDealCount,
           }),
+        );
+        const wMinus2 = buildWeeklySegmentWindowFromAcceptedManualSamples(
+          observations,
+          manualSamples,
+          community.id,
+          segment.id,
+          windows.wMinus2.start,
+          windows.wMinus2.end,
+        );
+        const wMinus1 = buildWeeklySegmentWindowFromAcceptedManualSamples(
+          observations,
+          manualSamples,
+          community.id,
+          segment.id,
+          windows.wMinus1.start,
+          windows.wMinus1.end,
+        );
+        const w0 = buildWeeklySegmentWindowFromAcceptedManualSamples(
+          observations,
+          manualSamples,
+          community.id,
+          segment.id,
+          windows.w0.start,
+          windows.w0.end,
         );
 
         return [
@@ -227,7 +221,13 @@ async function main(): Promise<void> {
           {
             name: community.name,
             district: community.district,
-            segments: segmentsReport,
+            segments: {
+              [segment.id]: {
+                label: segment.label,
+                verdict: getSegmentVerdict([wMinus2, wMinus1, w0]),
+                latest: hasAggregatedObservations(w0) ? w0 : null,
+              },
+            },
           },
         ];
       }),

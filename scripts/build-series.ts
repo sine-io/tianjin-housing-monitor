@@ -273,7 +273,10 @@ async function main(): Promise<void> {
   const { dataDir } = parseCommandLineArguments(process.argv.slice(2));
   const paths = resolveDataPaths(dataDir);
   const communities = loadCommunities(paths.communitiesConfigPath);
-  const segments = loadSegments(paths.segmentsConfigPath);
+  const segments = loadSegments(paths.segmentsConfigPath, communities);
+  const primarySegmentByCommunity = new Map(
+    segments.map((segment) => [segment.communityId, segment]),
+  );
   const validCommunityIds = new Set(communities.map((community) => community.id));
   const validSegmentIds = new Set(segments.map((segment) => segment.id));
   const runArtifacts = readRunArtifacts(paths.runsDir);
@@ -311,40 +314,44 @@ async function main(): Promise<void> {
   }
 
   for (const community of communities) {
-    for (const segment of segments) {
-      const seriesEntries = dedupeLatestEntryPerDate(
-        runArtifacts.map((runArtifact) =>
-          buildCommunitySegmentSeriesEntry(
-            runArtifact,
-            community.id,
-            segment.rooms,
-            segment.areaMin,
-            segment.areaMax,
-            manualSamples,
-            segment.id,
-          ),
-        ),
-      );
+    const segment = primarySegmentByCommunity.get(community.id);
 
-      writeJsonFile(
-        resolve(
-          paths.seriesDir,
-          "communities",
-          community.id,
-          `${segment.id}.json`,
-        ),
-        {
-          communityId: community.id,
-          communityName: community.name,
-          segmentId: segment.id,
-          segmentLabel: segment.label,
-          rooms: segment.rooms,
-          areaMin: segment.areaMin,
-          areaMax: segment.areaMax,
-          series: seriesEntries,
-        },
-      );
+    if (!segment) {
+      throw new Error(`Missing primary segment for community: ${community.id}`);
     }
+
+    const seriesEntries = dedupeLatestEntryPerDate(
+      runArtifacts.map((runArtifact) =>
+        buildCommunitySegmentSeriesEntry(
+          runArtifact,
+          community.id,
+          segment.rooms,
+          segment.areaMin,
+          segment.areaMax,
+          manualSamples,
+          segment.id,
+        ),
+      ),
+    );
+
+    writeJsonFile(
+      resolve(
+        paths.seriesDir,
+        "communities",
+        community.id,
+        `${segment.id}.json`,
+      ),
+      {
+        communityId: community.id,
+        communityName: community.name,
+        segmentId: segment.id,
+        segmentLabel: segment.label,
+        rooms: segment.rooms,
+        areaMin: segment.areaMin,
+        areaMax: segment.areaMax,
+        series: seriesEntries,
+      },
+    );
   }
 }
 
