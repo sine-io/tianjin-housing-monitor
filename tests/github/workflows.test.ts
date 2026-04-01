@@ -8,6 +8,7 @@ const SHARED_WRITE_CONCURRENCY_BLOCK = `concurrency:
   cancel-in-progress: false`;
 const HARDENED_INSTALL_STEP = `      - name: Install dependencies
         run: |
+          npm install -g npm@10.9.4
           npm cache clean --force
           npm ci`;
 
@@ -37,7 +38,7 @@ describe("GitHub automation workflows", () => {
     }
   });
 
-  it("uses cache-free clean installs in node-based workflows", () => {
+  it("pins npm before running clean installs in node-based workflows", () => {
     const workflowPaths = [
       ".github/workflows/manual-input.yml",
       ".github/workflows/collect.yml",
