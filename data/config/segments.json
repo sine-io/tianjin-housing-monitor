@@ -1,16 +1,42 @@
 [
   {
-    "id": "2br-87-90",
-    "label": "两居 87-90㎡",
+    "communityId": "mingquan-huayuan",
+    "id": "mingquan-2br-87-90",
+    "label": "2居 87-90㎡",
     "rooms": 2,
     "areaMin": 87,
     "areaMax": 90
   },
   {
-    "id": "3br-140-150",
-    "label": "三居 140-150㎡",
+    "communityId": "boxi-huayuan",
+    "id": "boxi-2br-100-120",
+    "label": "2居 100-120㎡",
+    "rooms": 2,
+    "areaMin": 100,
+    "areaMax": 120
+  },
+  {
+    "communityId": "lianhai-yuan",
+    "id": "lianhai-2br-90-110",
+    "label": "2居 90-110㎡",
+    "rooms": 2,
+    "areaMin": 90,
+    "areaMax": 110
+  },
+  {
+    "communityId": "wanke-dongdi",
+    "id": "wanke-3br-100-105",
+    "label": "3居 100-105㎡",
     "rooms": 3,
-    "areaMin": 140,
-    "areaMax": 150
+    "areaMin": 100,
+    "areaMax": 105
+  },
+  {
+    "communityId": "yijing-cun",
+    "id": "yijing-2br-75-90",
+    "label": "2居 75-90㎡",
+    "rooms": 2,
+    "areaMin": 75,
+    "areaMax": 90
   }
 ]

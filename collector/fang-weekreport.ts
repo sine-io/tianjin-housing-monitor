@@ -10,8 +10,8 @@ export interface CollectedPage {
   sourceUrl: string;
 }
 
-function extractFangId(url: string): string | null {
-  const matchedId = url.match(/\/(\d+)(?:\/weekreport)?\.htm$/)?.[1];
+function extractFangId(url: string | null): string | null {
+  const matchedId = url?.match(/\/(\d+)(?:\/weekreport)?\.htm$/)?.[1];
 
   return matchedId ?? null;
 }

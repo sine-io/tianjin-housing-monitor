@@ -26,10 +26,12 @@ function withUniqueIds<T extends { id: string }>(
 
 export const communitySourcesSchema = z
   .object({
-    fangCommunityUrl: z.string().url(),
-    fangWeekreportUrl: z.string().url(),
+    fangCommunityUrl: z.string().url().nullable(),
+    fangWeekreportUrl: z.string().url().nullable(),
   })
   .strict();
+
+export const communityStatusSchema = z.enum(["active", "pending_verification"]);
 
 export const communitySchema = z
   .object({
@@ -37,6 +39,7 @@ export const communitySchema = z
     name: z.string().min(1),
     city: z.string().min(1),
     district: z.string().min(1),
+    status: communityStatusSchema,
     sources: communitySourcesSchema,
   })
   .strict();
@@ -48,6 +51,7 @@ export const communitiesSchema = withUniqueIds(
 
 export const segmentTemplateSchema = z
   .object({
+    communityId: slugSchema,
     id: slugSchema,
     label: z.string().min(1),
     rooms: z.number().int().positive(),

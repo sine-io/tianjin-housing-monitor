@@ -17,6 +17,7 @@ const sampleData: DashboardData = {
       name: "鸣泉花园",
       city: "天津",
       district: "西青",
+      status: "active",
       sources: {
         fangCommunityUrl: "https://example.com/mingquan/community",
         fangWeekreportUrl: "https://example.com/mingquan/weekreport",
@@ -27,6 +28,7 @@ const sampleData: DashboardData = {
       name: "富力津门湖嘉郡花园",
       city: "天津",
       district: "西青",
+      status: "active",
       sources: {
         fangCommunityUrl: "https://example.com/jiajun/community",
         fangWeekreportUrl: "https://example.com/jiajun/weekreport",
@@ -37,6 +39,7 @@ const sampleData: DashboardData = {
       name: "富力津门湖云舒花园",
       city: "天津",
       district: "西青",
+      status: "active",
       sources: {
         fangCommunityUrl: "https://example.com/yunshu/community",
         fangWeekreportUrl: "https://example.com/yunshu/weekreport",
@@ -47,6 +50,7 @@ const sampleData: DashboardData = {
       name: "富力津门湖柏溪花园",
       city: "天津",
       district: "西青",
+      status: "active",
       sources: {
         fangCommunityUrl: "https://example.com/boxi/community",
         fangWeekreportUrl: "https://example.com/boxi/weekreport",
@@ -57,6 +61,7 @@ const sampleData: DashboardData = {
       name: "海逸长洲瀚波园",
       city: "天津",
       district: "西青",
+      status: "active",
       sources: {
         fangCommunityUrl: "https://example.com/haiyi/community",
         fangWeekreportUrl: "https://example.com/haiyi/weekreport",
@@ -65,6 +70,7 @@ const sampleData: DashboardData = {
   ],
   segments: [
     {
+      communityId: "mingquan-huayuan",
       id: "2br-87-90",
       label: "两居 87-90㎡",
       rooms: 2,
@@ -72,6 +78,7 @@ const sampleData: DashboardData = {
       areaMax: 90,
     },
     {
+      communityId: "haiyi-changzhou-hanboyuan",
       id: "3br-140-150",
       label: "三居 140-150㎡",
       rooms: 3,
