@@ -153,6 +153,42 @@ describe("loadCommunities", () => {
     ]);
   });
 
+  it("rejects active communities with null Fang source URLs", () => {
+    const fixturePath = writeJsonFixture("communities.json", [
+      {
+        id: "active-missing-community-url",
+        name: "缺少房天下链接",
+        city: "天津",
+        district: "西青",
+        status: "active",
+        sources: {
+          fangCommunityUrl: null,
+          fangWeekreportUrl: "https://example.com/community/weekreport",
+        },
+      },
+    ]);
+
+    expect(() => loadCommunities(fixturePath)).toThrow(/fang.*url|active/i);
+  });
+
+  it("rejects active communities with a null Fang weekreport URL", () => {
+    const fixturePath = writeJsonFixture("communities.json", [
+      {
+        id: "active-missing-weekreport-url",
+        name: "缺少周报链接",
+        city: "天津",
+        district: "西青",
+        status: "active",
+        sources: {
+          fangCommunityUrl: "https://example.com/community",
+          fangWeekreportUrl: null,
+        },
+      },
+    ]);
+
+    expect(() => loadCommunities(fixturePath)).toThrow(/fang.*url|active/i);
+  });
+
   it("rejects duplicate community ids at load time", () => {
     const fixturePath = writeJsonFixture("communities.json", [
       {
@@ -262,5 +298,99 @@ describe("loadSegments", () => {
     ]);
 
     expect(() => loadSegments(fixturePath)).toThrow(/Duplicate segment id/);
+  });
+
+  it("rejects segments that reference an unknown community id", () => {
+    const fixturePath = writeJsonFixture("segments.json", [
+      {
+        communityId: "unknown-community",
+        id: "unknown-community-2br-87-90",
+        label: "两居 87-90㎡",
+        rooms: 2,
+        areaMin: 87,
+        areaMax: 90,
+      },
+    ]);
+
+    expect(() => loadSegments(fixturePath, [])).toThrow(
+      /Unknown segment communityId/,
+    );
+  });
+
+  it("rejects fixtures when one community is missing a segment", () => {
+    const fixturePath = writeJsonFixture("segments.json", [
+      {
+        communityId: "community-a",
+        id: "community-a-2br-87-90",
+        label: "两居 87-90㎡",
+        rooms: 2,
+        areaMin: 87,
+        areaMax: 90,
+      },
+    ]);
+
+    expect(() =>
+      loadSegments(fixturePath, [
+        {
+          id: "community-a",
+          name: "社区 A",
+          city: "天津",
+          district: "西青",
+          status: "active",
+          sources: {
+            fangCommunityUrl: "https://example.com/community-a",
+            fangWeekreportUrl: "https://example.com/community-a/weekreport",
+          },
+        },
+        {
+          id: "community-b",
+          name: "社区 B",
+          city: "天津",
+          district: "西青",
+          status: "active",
+          sources: {
+            fangCommunityUrl: "https://example.com/community-b",
+            fangWeekreportUrl: "https://example.com/community-b/weekreport",
+          },
+        },
+      ]),
+    ).toThrow(/Expected exactly one segment for community: community-b/);
+  });
+
+  it("rejects fixtures when one community has multiple segments", () => {
+    const fixturePath = writeJsonFixture("segments.json", [
+      {
+        communityId: "community-a",
+        id: "community-a-2br-87-90",
+        label: "两居 87-90㎡",
+        rooms: 2,
+        areaMin: 87,
+        areaMax: 90,
+      },
+      {
+        communityId: "community-a",
+        id: "community-a-3br-100-110",
+        label: "三居 100-110㎡",
+        rooms: 3,
+        areaMin: 100,
+        areaMax: 110,
+      },
+    ]);
+
+    expect(() =>
+      loadSegments(fixturePath, [
+        {
+          id: "community-a",
+          name: "社区 A",
+          city: "天津",
+          district: "西青",
+          status: "active",
+          sources: {
+            fangCommunityUrl: "https://example.com/community-a",
+            fangWeekreportUrl: "https://example.com/community-a/weekreport",
+          },
+        },
+      ]),
+    ).toThrow(/Expected exactly one segment for community: community-a/);
   });
 });

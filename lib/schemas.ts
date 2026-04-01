@@ -42,7 +42,30 @@ export const communitySchema = z
     status: communityStatusSchema,
     sources: communitySourcesSchema,
   })
-  .strict();
+  .strict()
+  .superRefine((community, context) => {
+    if (community.status !== "active") {
+      return;
+    }
+
+    if (community.sources.fangCommunityUrl === null) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "Active communities must define a non-null fangCommunityUrl",
+        path: ["sources", "fangCommunityUrl"],
+      });
+    }
+
+    if (community.sources.fangWeekreportUrl === null) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "Active communities must define a non-null fangWeekreportUrl",
+        path: ["sources", "fangWeekreportUrl"],
+      });
+    }
+  });
 
 export const communitiesSchema = withUniqueIds(
   z.array(communitySchema).min(1),
