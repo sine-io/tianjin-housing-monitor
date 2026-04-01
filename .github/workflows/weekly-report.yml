@@ -30,7 +30,7 @@ jobs:
         run: |
           npm install -g npm@10.9.4
           npm cache clean --force
-          npm ci
+          npm install --no-fund --no-audit
 
       - name: Refresh weekly report outputs
         run: npm run build:data

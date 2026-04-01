@@ -10,7 +10,7 @@ const HARDENED_INSTALL_STEP = `      - name: Install dependencies
         run: |
           npm install -g npm@10.9.4
           npm cache clean --force
-          npm ci`;
+          npm install --no-fund --no-audit`;
 
 function readWorkflow(relativePath: string): string {
   return readFileSync(resolve(relativePath), "utf8");
@@ -50,6 +50,7 @@ describe("GitHub automation workflows", () => {
       const workflow = readWorkflow(workflowPath);
 
       expect(workflow).not.toContain("cache: npm");
+      expect(workflow).not.toContain("npm ci");
       expect(workflow).toContain(HARDENED_INSTALL_STEP);
     }
   });

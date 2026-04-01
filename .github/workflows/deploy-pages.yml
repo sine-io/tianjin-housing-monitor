@@ -41,7 +41,7 @@ jobs:
         run: |
           npm install -g npm@10.9.4
           npm cache clean --force
-          npm ci
+          npm install --no-fund --no-audit
 
       - name: Build static site
         run: npm run build:site

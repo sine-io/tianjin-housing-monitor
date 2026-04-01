@@ -65,7 +65,7 @@ jobs:
         run: |
           npm install -g npm@10.9.4
           npm cache clean --force
-          npm ci
+          npm install --no-fund --no-audit
 
       - name: Ingest manual issue
         run: npx tsx scripts/ingest-manual-issue.ts
