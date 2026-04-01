@@ -28,9 +28,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install -g npm@10.9.4
-          npm cache clean --force
-          npm install --no-fund --no-audit
+          npm install -g pnpm@9
+          pnpm install --no-frozen-lockfile
 
       - name: Refresh weekly report outputs
         run: npm run build:data

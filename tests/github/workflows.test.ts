@@ -6,11 +6,15 @@ import { describe, expect, it } from "vitest";
 const SHARED_WRITE_CONCURRENCY_BLOCK = `concurrency:
   group: repo-main-write-serialization
   cancel-in-progress: false`;
-const HARDENED_INSTALL_STEP = `      - name: Install dependencies
+const LEGACY_NPM_INSTALL_STEP = `      - name: Install dependencies
         run: |
           npm install -g npm@10.9.4
           npm cache clean --force
           npm install --no-fund --no-audit`;
+const PNPM_BACKED_INSTALL_STEP = `      - name: Install dependencies
+        run: |
+          npm install -g pnpm@9
+          pnpm install --no-frozen-lockfile`;
 
 function readWorkflow(relativePath: string): string {
   return readFileSync(resolve(relativePath), "utf8");
@@ -38,7 +42,7 @@ describe("GitHub automation workflows", () => {
     }
   });
 
-  it("pins npm before running clean installs in node-based workflows", () => {
+  it("uses pnpm-backed dependency installs in node-based workflows", () => {
     const workflowPaths = [
       ".github/workflows/manual-input.yml",
       ".github/workflows/collect.yml",
@@ -51,7 +55,8 @@ describe("GitHub automation workflows", () => {
 
       expect(workflow).not.toContain("cache: npm");
       expect(workflow).not.toContain("npm ci");
-      expect(workflow).toContain(HARDENED_INSTALL_STEP);
+      expect(workflow).not.toContain(LEGACY_NPM_INSTALL_STEP);
+      expect(workflow).toContain(PNPM_BACKED_INSTALL_STEP);
     }
   });
 
