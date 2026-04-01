@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-01T07:52:16.764Z",
+  "generatedAt": "2026-04-01T15:49:05.942Z",
   "weekEnding": "2026-04-01",
   "cityMarket": {
     "date": "2026-04-01",
@@ -14,139 +14,66 @@
       "name": "鸣泉花园",
       "district": "西青",
       "segments": {
-        "2br-87-90": {
-          "label": "两居 87-90㎡",
+        "mingquan-2br-87-90": {
+          "label": "2居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
             "listingUnitPriceMedian": 23006,
             "listingUnitPriceMin": 23006,
             "listingsCount": 1,
             "suspectedDealCount": 177,
-            "manualDealCount": 0
-          }
-        },
-        "3br-140-150": {
-          "label": "三居 140-150㎡",
-          "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 23006,
-            "listingUnitPriceMin": 23006,
-            "listingsCount": 1,
-            "suspectedDealCount": 177,
-            "manualDealCount": 0
-          }
-        }
-      }
-    },
-    "jiajun-huayuan": {
-      "name": "富力津门湖嘉郡花园",
-      "district": "西青",
-      "segments": {
-        "2br-87-90": {
-          "label": "两居 87-90㎡",
-          "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 22233,
-            "listingUnitPriceMin": 22233,
-            "listingsCount": 0,
-            "suspectedDealCount": 193,
-            "manualDealCount": 0
-          }
-        },
-        "3br-140-150": {
-          "label": "三居 140-150㎡",
-          "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 22233,
-            "listingUnitPriceMin": 22233,
-            "listingsCount": 0,
-            "suspectedDealCount": 193,
-            "manualDealCount": 0
-          }
-        }
-      }
-    },
-    "yunshu-huayuan": {
-      "name": "富力津门湖云舒花园",
-      "district": "西青",
-      "segments": {
-        "2br-87-90": {
-          "label": "两居 87-90㎡",
-          "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 23402,
-            "listingUnitPriceMin": 23402,
-            "listingsCount": 2,
-            "suspectedDealCount": 235,
-            "manualDealCount": 0
-          }
-        },
-        "3br-140-150": {
-          "label": "三居 140-150㎡",
-          "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 23402,
-            "listingUnitPriceMin": 23402,
-            "listingsCount": 1,
-            "suspectedDealCount": 235,
             "manualDealCount": 0
           }
         }
       }
     },
     "boxi-huayuan": {
-      "name": "富力津门湖柏溪花园",
+      "name": "柏溪花园",
       "district": "西青",
       "segments": {
-        "2br-87-90": {
-          "label": "两居 87-90㎡",
+        "boxi-2br-100-120": {
+          "label": "2居 100-120㎡",
           "verdict": "样本不足",
           "latest": {
             "listingUnitPriceMedian": 25301,
             "listingUnitPriceMin": 25301,
-            "listingsCount": 0,
-            "suspectedDealCount": 122,
-            "manualDealCount": 0
-          }
-        },
-        "3br-140-150": {
-          "label": "三居 140-150㎡",
-          "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 25301,
-            "listingUnitPriceMin": 25301,
-            "listingsCount": 0,
+            "listingsCount": 1,
             "suspectedDealCount": 122,
             "manualDealCount": 0
           }
         }
       }
     },
-    "haiyi-changzhou-hanboyuan": {
-      "name": "海逸长洲瀚波园",
-      "district": "西青",
+    "lianhai-yuan": {
+      "name": "恋海园",
+      "district": "待确认",
       "segments": {
-        "2br-87-90": {
-          "label": "两居 87-90㎡",
+        "lianhai-2br-90-110": {
+          "label": "2居 90-110㎡",
           "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 28064,
-            "listingUnitPriceMin": 28064,
-            "listingsCount": 1,
-            "suspectedDealCount": 210,
-            "manualDealCount": 0
-          }
-        },
-        "3br-140-150": {
-          "label": "三居 140-150㎡",
+          "latest": null
+        }
+      }
+    },
+    "wanke-dongdi": {
+      "name": "万科东第",
+      "district": "待确认",
+      "segments": {
+        "wanke-3br-100-105": {
+          "label": "3居 100-105㎡",
           "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": 28064,
-            "listingUnitPriceMin": 28064,
-            "listingsCount": 0,
-            "suspectedDealCount": 210,
-            "manualDealCount": 0
-          }
+          "latest": null
+        }
+      }
+    },
+    "yijing-cun": {
+      "name": "谊景村",
+      "district": "待确认",
+      "segments": {
+        "yijing-2br-75-90": {
+          "label": "2居 75-90㎡",
+          "verdict": "样本不足",
+          "latest": null
         }
       }
     }
