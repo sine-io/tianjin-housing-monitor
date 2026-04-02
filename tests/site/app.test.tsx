@@ -40,22 +40,21 @@ function makeSampleData(): DashboardData {
         },
       },
       {
-        id: "wanke-dongdi",
-        name: "万科东第",
+        id: "lianhai-yuan",
+        name: "恋海园",
         city: "天津",
         district: "待确认",
-        status: "active",
-        sourceProvider: "anjuke_sale_search",
+        status: "pending_verification",
+        sourceProvider: "none",
         sources: {
           fangCommunityUrl: null,
           fangWeekreportUrl: null,
-          anjukeSaleSearchUrl:
-            "https://m.anjuke.com/tj/sale/?kw=%E4%B8%87%E7%A7%91%E4%B8%9C%E7%AC%AC",
+          anjukeSaleSearchUrl: null,
         },
       },
       {
-        id: "lianhai-yuan",
-        name: "恋海园",
+        id: "wanke-dongdi",
+        name: "万科东第",
         city: "天津",
         district: "待确认",
         status: "pending_verification",
@@ -98,20 +97,20 @@ function makeSampleData(): DashboardData {
         areaMax: 120,
       },
       {
-        communityId: "wanke-dongdi",
-        id: "wanke-2br-85-90",
-        label: "2居 85-90㎡",
-        rooms: 2,
-        areaMin: 85,
-        areaMax: 90,
-      },
-      {
         communityId: "lianhai-yuan",
         id: "lianhai-2br-90-110",
         label: "2居 90-110㎡",
         rooms: 2,
         areaMin: 90,
         areaMax: 110,
+      },
+      {
+        communityId: "wanke-dongdi",
+        id: "wanke-3br-100-105",
+        label: "3居 100-105㎡",
+        rooms: 3,
+        areaMin: 100,
+        areaMax: 105,
       },
       {
         communityId: "yijing-cun",
@@ -210,8 +209,8 @@ function makeSampleData(): DashboardData {
           name: "万科东第",
           district: "待确认",
           segments: {
-            "wanke-2br-85-90": {
-              label: "2居 85-90㎡",
+            "wanke-3br-100-105": {
+              label: "3居 100-105㎡",
               verdict: "横盘",
               latest: {
                 listingUnitPriceMedian: 26800,
@@ -269,11 +268,11 @@ function makeSampleData(): DashboardData {
       },
       "wanke-dongdi": {
         communityId: "wanke-dongdi",
-        id: "wanke-2br-85-90",
-        label: "2居 85-90㎡",
-        rooms: 2,
-        areaMin: 85,
-        areaMax: 90,
+        id: "wanke-3br-100-105",
+        label: "3居 100-105㎡",
+        rooms: 3,
+        areaMin: 100,
+        areaMax: 105,
       },
       "yijing-cun": {
         communityId: "yijing-cun",
@@ -373,14 +372,14 @@ function makeSampleData(): DashboardData {
         },
       },
       "wanke-dongdi": {
-        "wanke-2br-85-90": {
+        "wanke-3br-100-105": {
           communityId: "wanke-dongdi",
           communityName: "万科东第",
-          segmentId: "wanke-2br-85-90",
-          segmentLabel: "2居 85-90㎡",
-          rooms: 2,
-          areaMin: 85,
-          areaMax: 90,
+          segmentId: "wanke-3br-100-105",
+          segmentLabel: "3居 100-105㎡",
+          rooms: 3,
+          areaMin: 100,
+          areaMax: 105,
           series: [
             {
               date: "2026-04-01",
@@ -489,9 +488,9 @@ describe("site App", () => {
 
     const wankeRow = within(comparisonView).getByText("万科东第").closest("li");
     expect(wankeRow).not.toBeNull();
-    expect(within(wankeRow!).getByText("2居 85-90㎡")).toBeInTheDocument();
-    expect(within(wankeRow!).getByText("横盘")).toBeInTheDocument();
-    expect(within(wankeRow!).getByText("26,800 元/㎡")).toBeInTheDocument();
+    expect(within(wankeRow!).getByText("3居 100-105㎡")).toBeInTheDocument();
+    expect(within(wankeRow!).getByText("待复核")).toBeInTheDocument();
+    expect(within(wankeRow!).queryByText("横盘")).not.toBeInTheDocument();
 
     const yijingRow = within(comparisonView).getByText("谊景村").closest("li");
     expect(yijingRow).not.toBeNull();

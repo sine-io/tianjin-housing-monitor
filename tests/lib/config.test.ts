@@ -458,4 +458,35 @@ describe("loadSegments", () => {
       ]),
     ).toThrow(/Expected exactly one segment for community: community-a/);
   });
+
+  it("does not freeze exact primary segment ids for non-wanke communities", () => {
+    const fixturePath = writeJsonFixture("segments.json", [
+      {
+        communityId: "mingquan-huayuan",
+        id: "mingquan-custom-primary",
+        label: "两居 自定义主段",
+        rooms: 2,
+        areaMin: 86,
+        areaMax: 91,
+      },
+    ]);
+
+    expect(() =>
+      loadSegments(fixturePath, [
+        {
+          id: "mingquan-huayuan",
+          name: "鸣泉花园",
+          city: "天津",
+          district: "西青",
+          status: "active",
+          sourceProvider: "fang_mobile",
+          sources: {
+            fangCommunityUrl: "https://example.com/mingquan-huayuan",
+            fangWeekreportUrl: "https://example.com/mingquan-huayuan/weekreport",
+            anjukeSaleSearchUrl: null,
+          },
+        },
+      ]),
+    ).not.toThrow();
+  });
 });
