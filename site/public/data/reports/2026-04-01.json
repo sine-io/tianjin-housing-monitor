@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-04-01T15:53:30.561Z",
+  "generatedAt": "2026-04-02T08:26:01.932Z",
   "weekEnding": "2026-04-01",
   "cityMarket": {
     "date": "2026-04-01",
-    "generatedAt": "2026-04-01T07:32:04.312Z",
+    "generatedAt": "2026-04-01T14:46:36.602Z",
     "sourceMonth": "2026-02",
     "secondaryHomePriceIndexMom": 99.5,
     "secondaryHomePriceIndexYoy": 94,
@@ -44,23 +44,23 @@
         }
       }
     },
+    "wanke-dongdi": {
+      "name": "万科东第",
+      "district": "待确认",
+      "segments": {
+        "wanke-2br-85-90": {
+          "label": "2居 85-90㎡",
+          "verdict": "样本不足",
+          "latest": null
+        }
+      }
+    },
     "lianhai-yuan": {
       "name": "恋海园",
       "district": "待确认",
       "segments": {
         "lianhai-2br-90-110": {
           "label": "2居 90-110㎡",
-          "verdict": "样本不足",
-          "latest": null
-        }
-      }
-    },
-    "wanke-dongdi": {
-      "name": "万科东第",
-      "district": "待确认",
-      "segments": {
-        "wanke-3br-100-105": {
-          "label": "3居 100-105㎡",
           "verdict": "样本不足",
           "latest": null
         }

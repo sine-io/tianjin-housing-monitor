@@ -38,7 +38,7 @@ test("shows the built dashboard smoke path on mobile", async ({ page }) => {
   await expect(comparisonView).toContainText("谊景村");
   await expect(comparisonView).toContainText("2居 100-120㎡");
   await expect(comparisonView).toContainText("2居 90-110㎡");
-  await expect(comparisonView).toContainText("3居 100-105㎡");
+  await expect(comparisonView).toContainText("2居 85-90㎡");
   await expect(comparisonView).toContainText("2居 75-90㎡");
   await expect(comparisonView).toContainText("待复核");
 

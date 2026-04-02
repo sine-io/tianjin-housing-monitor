@@ -1,11 +1,11 @@
 {
   "communityId": "wanke-dongdi",
   "communityName": "万科东第",
-  "segmentId": "wanke-3br-100-105",
-  "segmentLabel": "3居 100-105㎡",
-  "rooms": 3,
-  "areaMin": 100,
-  "areaMax": 105,
+  "segmentId": "wanke-2br-85-90",
+  "segmentLabel": "2居 85-90㎡",
+  "rooms": 2,
+  "areaMin": 85,
+  "areaMax": 90,
   "series": [
     {
       "date": "2026-03-31",
