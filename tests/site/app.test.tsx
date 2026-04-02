@@ -480,31 +480,36 @@ describe("site App", () => {
     ).toBeInTheDocument();
 
     const comparisonView = screen.getByTestId("comparison-communities");
+    const boxiRow = within(comparisonView).getByTestId(
+      "comparison-community-boxi-huayuan",
+    );
+    expect(within(boxiRow).getByText("2居 100-120㎡")).toBeInTheDocument();
+    expect(within(boxiRow).getByText("下跌")).toBeInTheDocument();
+    expect(within(boxiRow).getByText("25,301 元/㎡")).toBeInTheDocument();
 
-    const boxiRow = within(comparisonView).getByText("柏溪花园").closest("li");
-    expect(boxiRow).not.toBeNull();
-    expect(within(boxiRow!).getByText("2居 100-120㎡")).toBeInTheDocument();
-    expect(within(boxiRow!).getByText("下跌")).toBeInTheDocument();
-    expect(within(boxiRow!).getByText("25,301 元/㎡")).toBeInTheDocument();
+    const lianhaiRow = within(comparisonView).getByTestId(
+      "comparison-community-lianhai-yuan",
+    );
+    expect(within(lianhaiRow).getByText("2居 90-110㎡")).toBeInTheDocument();
+    expect(within(lianhaiRow).getByText("待复核")).toBeInTheDocument();
+    expect(within(lianhaiRow).queryByText("上涨")).not.toBeInTheDocument();
 
-    const lianhaiRow = within(comparisonView).getByText("恋海园").closest("li");
-    expect(lianhaiRow).not.toBeNull();
-    expect(within(lianhaiRow!).getByText("2居 90-110㎡")).toBeInTheDocument();
-    expect(within(lianhaiRow!).getByText("待复核")).toBeInTheDocument();
-    expect(within(lianhaiRow!).queryByText("上涨")).not.toBeInTheDocument();
+    const wankeRow = within(comparisonView).getByTestId(
+      "comparison-community-wanke-dongdi",
+    );
+    expect(within(wankeRow).getByText("2居 85-90㎡")).toBeInTheDocument();
+    expect(within(wankeRow).getByText("样本不足")).toBeInTheDocument();
+    expect(within(wankeRow).queryByText("待复核")).not.toBeInTheDocument();
+    expect(within(wankeRow).getByText("暂无")).toBeInTheDocument();
+    expect(within(wankeRow).getByText("0 套")).toBeInTheDocument();
 
-    const wankeRow = within(comparisonView).getByText("万科东第").closest("li");
-    expect(wankeRow).not.toBeNull();
-    expect(within(wankeRow!).getByText("2居 85-90㎡")).toBeInTheDocument();
-    expect(within(wankeRow!).getByText("样本不足")).toBeInTheDocument();
-    expect(within(wankeRow!).getByText("暂无")).toBeInTheDocument();
-    expect(within(wankeRow!).getByText("0 套")).toBeInTheDocument();
-
-    const yijingRow = within(comparisonView).getByText("谊景村").closest("li");
-    expect(yijingRow).not.toBeNull();
-    expect(within(yijingRow!).getByText("2居 75-90㎡")).toBeInTheDocument();
-    expect(within(yijingRow!).getByText("待复核")).toBeInTheDocument();
-    expect(within(yijingRow!).queryByText("以价换量")).not.toBeInTheDocument();
+    const yijingRow = within(comparisonView).getByTestId(
+      "comparison-community-yijing-cun",
+    );
+    expect(within(yijingRow).getByText("2居 75-90㎡")).toBeInTheDocument();
+    expect(within(yijingRow).getByText("待复核")).toBeInTheDocument();
+    expect(within(yijingRow).queryByText("以价换量")).not.toBeInTheDocument();
+    expect(within(comparisonView).getAllByText("待复核")).toHaveLength(2);
 
     const manualInputLink = screen.getByRole("link", {
       name: "新增一条样本",

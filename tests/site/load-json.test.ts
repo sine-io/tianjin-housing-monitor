@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { loadDashboardData } from "../../site/src/lib/load-json";
@@ -24,6 +26,33 @@ function installFetchMock(routes: Record<string, Response>): void {
       }
 
       return new Response("not found", { status: 404 });
+    }),
+  );
+}
+
+function installPublicDataFetchMock(): void {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      const relativePath = url.match(/data\/.+$/)?.[0];
+
+      if (!relativePath) {
+        return new Response("not found", { status: 404 });
+      }
+
+      const fileUrl = new URL(`../../site/public/${relativePath}`, import.meta.url);
+
+      if (!existsSync(fileUrl)) {
+        return new Response("not found", { status: 404 });
+      }
+
+      return new Response(readFileSync(fileUrl, "utf8"), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     }),
   );
 }
@@ -216,5 +245,30 @@ describe("loadDashboardData", () => {
     await expect(loadDashboardData()).rejects.toThrow(
       /mingquan-huayuan.+exactly one primary segment/i,
     );
+  });
+
+  it("loads generated public communities with sourceProvider and all three source keys", async () => {
+    installPublicDataFetchMock();
+
+    const data = await loadDashboardData();
+    const wanke = data.communities.find((community) => community.id === "wanke-dongdi");
+
+    expect(wanke).toMatchObject({
+      id: "wanke-dongdi",
+      sourceProvider: "anjuke_sale_search",
+      sources: {
+        fangCommunityUrl: null,
+        fangWeekreportUrl: null,
+      },
+    });
+    expect(wanke?.sources.anjukeSaleSearchUrl).toMatch(/anjuke\.com/);
+
+    for (const community of data.communities) {
+      expect(Object.keys(community.sources).sort()).toEqual([
+        "anjukeSaleSearchUrl",
+        "fangCommunityUrl",
+        "fangWeekreportUrl",
+      ]);
+    }
   });
 });
