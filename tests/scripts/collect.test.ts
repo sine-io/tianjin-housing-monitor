@@ -123,7 +123,7 @@ describe("scripts/collect.ts", () => {
     }
   });
 
-  it("marks pending-verification communities as skipped while preserving them in the run artifact", () => {
+  it("skips pending-verification and non-fang providers while preserving every community in the run artifact", () => {
     const fixtureRoot = makeFixtureRoot();
     const runsDir = makeRunsDir();
     const repoRunsBefore = snapshotRunFiles(REPO_RUNS_DIR);
@@ -184,7 +184,10 @@ describe("scripts/collect.ts", () => {
     );
 
     for (const community of communities) {
-      if (community.status === "pending_verification") {
+      if (
+        community.status === "pending_verification" ||
+        community.sourceProvider !== "fang_mobile"
+      ) {
         expect(latestRun.communities[community.id]).toEqual({
           fangCommunity: {
             status: "skipped",
@@ -311,6 +314,14 @@ describe("scripts/collect.ts", () => {
       },
     });
     expect(latestRun.communities["lianhai-yuan"]).toEqual({
+      fangCommunity: {
+        status: "skipped",
+      },
+      fangWeekreport: {
+        status: "skipped",
+      },
+    });
+    expect(latestRun.communities["wanke-dongdi"]).toEqual({
       fangCommunity: {
         status: "skipped",
       },

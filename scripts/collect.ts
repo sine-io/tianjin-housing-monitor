@@ -278,7 +278,10 @@ async function collectCommunityRun(
     status: "skipped",
   });
 
-  if (community.status === "pending_verification") {
+  if (
+    community.status === "pending_verification" ||
+    community.sourceProvider !== "fang_mobile"
+  ) {
     return {
       fangCommunity: fangCommunityRun,
       fangWeekreport: fangWeekreportRun,

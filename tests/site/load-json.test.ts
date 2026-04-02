@@ -43,9 +43,11 @@ describe("loadDashboardData", () => {
           city: "天津",
           district: "西青",
           status: "active",
+          sourceProvider: "fang_mobile",
           sources: {
             fangCommunityUrl: "https://example.com/mingquan/community",
             fangWeekreportUrl: "https://example.com/mingquan/weekreport",
+            anjukeSaleSearchUrl: null,
           },
         },
         {
@@ -54,9 +56,11 @@ describe("loadDashboardData", () => {
           city: "天津",
           district: "西青",
           status: "active",
+          sourceProvider: "fang_mobile",
           sources: {
             fangCommunityUrl: "https://example.com/boxi/community",
             fangWeekreportUrl: "https://example.com/boxi/weekreport",
+            anjukeSaleSearchUrl: null,
           },
         },
       ]),
@@ -123,9 +127,11 @@ describe("loadDashboardData", () => {
           name: "恋海园",
           city: "天津",
           district: "待确认",
+          sourceProvider: "none",
           sources: {
             fangCommunityUrl: null,
             fangWeekreportUrl: null,
+            anjukeSaleSearchUrl: null,
           },
         },
       ]),
@@ -166,9 +172,11 @@ describe("loadDashboardData", () => {
           city: "天津",
           district: "西青",
           status: "active",
+          sourceProvider: "fang_mobile",
           sources: {
             fangCommunityUrl: "https://example.com/mingquan/community",
             fangWeekreportUrl: "https://example.com/mingquan/weekreport",
+            anjukeSaleSearchUrl: null,
           },
         },
       ]),
