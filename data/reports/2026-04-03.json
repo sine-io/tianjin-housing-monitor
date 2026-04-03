@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-04-02T14:38:08.777Z",
-  "weekEnding": "2026-04-02",
+  "generatedAt": "2026-04-03T04:04:38.333Z",
+  "weekEnding": "2026-04-03",
   "cityMarket": {
-    "date": "2026-04-02",
-    "generatedAt": "2026-04-02T14:36:36.237Z",
+    "date": "2026-04-03",
+    "generatedAt": "2026-04-03T04:03:08.329Z",
     "sourceMonth": "2026-02",
     "secondaryHomePriceIndexMom": 99.5,
     "secondaryHomePriceIndexYoy": 94,
@@ -18,8 +18,8 @@
           "label": "2居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
-            "listingUnitPriceMedian": 23006,
-            "listingUnitPriceMin": 23006,
+            "listingUnitPriceMedian": 22993,
+            "listingUnitPriceMin": 22993,
             "listingsCount": 1,
             "suspectedDealCount": 177,
             "manualDealCount": 0
@@ -35,8 +35,8 @@
           "label": "2居 100-120㎡",
           "verdict": "样本不足",
           "latest": {
-            "listingUnitPriceMedian": 25301,
-            "listingUnitPriceMin": 25301,
+            "listingUnitPriceMedian": 25377,
+            "listingUnitPriceMin": 25377,
             "listingsCount": 1,
             "suspectedDealCount": 122,
             "manualDealCount": 0

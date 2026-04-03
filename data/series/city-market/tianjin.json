@@ -24,6 +24,14 @@
       "secondaryHomePriceIndexMom": 99.5,
       "secondaryHomePriceIndexYoy": 94,
       "verdict": "偏弱"
+    },
+    {
+      "date": "2026-04-03",
+      "generatedAt": "2026-04-03T04:03:08.329Z",
+      "sourceMonth": "2026-02",
+      "secondaryHomePriceIndexMom": 99.5,
+      "secondaryHomePriceIndexYoy": 94,
+      "verdict": "偏弱"
     }
   ]
 }
