@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-04-02T10:23:24.174Z",
+  "generatedAt": "2026-04-03T14:08:04.569Z",
   "sources": {
     "stats-gov": {
-      "status": "success",
+      "status": "failed",
       "latestMonth": "2026-02",
       "city": "天津",
       "secondaryHomePriceIndexMom": 99.5,
@@ -13,10 +13,10 @@
     "mingquan-huayuan": {
       "fangCommunity": {
         "status": "success",
-        "referenceUnitPrice": 23007,
+        "referenceUnitPrice": 22981,
         "listingCount": 90,
         "recentDealHints": [
-          "西青热搜小区榜第60名",
+          "西青人气小区榜第100名",
           "关注量超过同城98%的楼盘",
           "二手房历史成交(177)"
         ],
@@ -29,18 +29,18 @@
             "unitPriceYuanPerSqm": 22506
           },
           {
-            "title": "鸣泉花园精装三室临梅江公园小区临湖",
-            "roomCount": 3,
-            "areaSqm": 132.77,
-            "totalPriceWan": 280,
-            "unitPriceYuanPerSqm": 21090
-          },
-          {
             "title": "津门湖鸣泉花园,满五年唯一,有车位",
             "roomCount": 4,
             "areaSqm": 179.5,
             "totalPriceWan": 320,
             "unitPriceYuanPerSqm": 17828
+          },
+          {
+            "title": "富力津门湖鸣泉花园3室2厅南",
+            "roomCount": 3,
+            "areaSqm": 147.57,
+            "totalPriceWan": 260,
+            "unitPriceYuanPerSqm": 17619
           }
         ]
       },
@@ -48,15 +48,15 @@
         "status": "success",
         "pricePoints": [
           {
-            "label": "3月",
-            "priceYuanPerSqm": 23006
+            "label": "4月",
+            "priceYuanPerSqm": 22980
           }
         ],
         "listingCount": null,
         "districtName": "西青",
-        "districtPremiumPct": 7.72,
-        "momChangePct": 0.99,
-        "yoyChangePct": -10.72,
+        "districtPremiumPct": 7.94,
+        "momChangePct": -0.11,
+        "yoyChangePct": -10.44,
         "availableRangeLabels": [
           "近6月",
           "近1年",
@@ -67,7 +67,7 @@
     "boxi-huayuan": {
       "fangCommunity": {
         "status": "success",
-        "referenceUnitPrice": 25302,
+        "referenceUnitPrice": 25453,
         "listingCount": 58,
         "recentDealHints": [
           "西青热搜小区榜第37名",
@@ -76,25 +76,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "采光棒能观湖新装修3个月拎包入住给孩子换房出售",
+            "title": "此房满五年,精装修。通透户型,好楼层,可观湖。",
             "roomCount": 3,
-            "areaSqm": 160.08,
-            "totalPriceWan": 418,
-            "unitPriceYuanPerSqm": 26112
+            "areaSqm": 130.23,
+            "totalPriceWan": 350,
+            "unitPriceYuanPerSqm": 26876
           },
           {
-            "title": "梅江,1楼大两室,H户型,环境好,适合养老。",
+            "title": "业主诚意出售可观湖景明厨明卫有意咨询",
             "roomCount": 2,
-            "areaSqm": 116.25,
-            "totalPriceWan": 258,
-            "unitPriceYuanPerSqm": 22194
+            "areaSqm": 97.93,
+            "totalPriceWan": 246,
+            "unitPriceYuanPerSqm": 25120
           },
           {
-            "title": "满五没尾款中间楼层能观湖景诚意出售",
-            "roomCount": 2,
-            "areaSqm": 103.18,
-            "totalPriceWan": 206,
-            "unitPriceYuanPerSqm": 19966
+            "title": "津门湖柏溪花园 精装大三室 方便看房诚信出售",
+            "roomCount": 3,
+            "areaSqm": 155.26,
+            "totalPriceWan": 430,
+            "unitPriceYuanPerSqm": 27695
           }
         ]
       },
@@ -102,15 +102,15 @@
         "status": "success",
         "pricePoints": [
           {
-            "label": "3月",
-            "priceYuanPerSqm": 25301
+            "label": "4月",
+            "priceYuanPerSqm": 25453
           }
         ],
         "listingCount": null,
         "districtName": "西青",
-        "districtPremiumPct": 5.91,
-        "momChangePct": 1.05,
-        "yoyChangePct": -7.32,
+        "districtPremiumPct": 5.9,
+        "momChangePct": 0.6,
+        "yoyChangePct": -5.58,
         "availableRangeLabels": [
           "近6月",
           "近1年",
@@ -118,40 +118,15 @@
         ]
       }
     },
-    "wanke-dongdi": {
+    "lianhai-yuan": {
       "fangCommunity": {
-        "status": "success",
-        "referenceUnitPrice": 18410,
-        "listingCount": 3,
-        "currentListingTeasers": [
-          {
-            "title": "万科东第 南北通透两居",
-            "roomCount": 2,
-            "areaSqm": 89.3,
-            "totalPriceWan": 155,
-            "unitPriceYuanPerSqm": 17357
-          },
-          {
-            "title": "万科·东第 精装三室",
-            "roomCount": 3,
-            "areaSqm": 127.1,
-            "totalPriceWan": 238,
-            "unitPriceYuanPerSqm": 18726
-          },
-          {
-            "title": "万科 东第 高楼层采光好",
-            "roomCount": 2,
-            "areaSqm": 88,
-            "totalPriceWan": 162,
-            "unitPriceYuanPerSqm": 18410
-          }
-        ]
+        "status": "skipped"
       },
       "fangWeekreport": {
         "status": "skipped"
       }
     },
-    "lianhai-yuan": {
+    "wanke-dongdi": {
       "fangCommunity": {
         "status": "skipped"
       },

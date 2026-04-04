@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-04-02T10:45:51.093Z",
-  "weekEnding": "2026-04-02",
+  "generatedAt": "2026-04-04T09:33:08.275Z",
+  "weekEnding": "2026-04-04",
   "cityMarket": {
-    "date": "2026-04-02",
-    "generatedAt": "2026-04-02T10:23:24.174Z",
+    "date": "2026-04-04",
+    "generatedAt": "2026-04-04T03:43:21.849Z",
     "sourceMonth": "2026-02",
     "secondaryHomePriceIndexMom": 99.5,
     "secondaryHomePriceIndexYoy": 94,
@@ -18,8 +18,8 @@
           "label": "2居 87-90㎡",
           "verdict": "样本不足",
           "latest": {
-            "listingUnitPriceMedian": 23006,
-            "listingUnitPriceMin": 23006,
+            "listingUnitPriceMedian": 22980,
+            "listingUnitPriceMin": 22980,
             "listingsCount": 1,
             "suspectedDealCount": 177,
             "manualDealCount": 0
@@ -35,8 +35,8 @@
           "label": "2居 100-120㎡",
           "verdict": "样本不足",
           "latest": {
-            "listingUnitPriceMedian": 25301,
-            "listingUnitPriceMin": 25301,
+            "listingUnitPriceMedian": 25453,
+            "listingUnitPriceMin": 25453,
             "listingsCount": 2,
             "suspectedDealCount": 122,
             "manualDealCount": 0
@@ -51,13 +51,7 @@
         "wanke-2br-85-90": {
           "label": "2居 85-90㎡",
           "verdict": "样本不足",
-          "latest": {
-            "listingUnitPriceMedian": null,
-            "listingUnitPriceMin": null,
-            "listingsCount": 2,
-            "suspectedDealCount": 0,
-            "manualDealCount": 0
-          }
+          "latest": null
         }
       }
     },
