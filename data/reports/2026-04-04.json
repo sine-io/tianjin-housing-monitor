@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-04T12:56:45.294Z",
+  "generatedAt": "2026-04-04T14:01:31.792Z",
   "weekEnding": "2026-04-04",
   "cityMarket": {
     "date": "2026-04-04",
@@ -37,7 +37,7 @@
           "latest": {
             "listingUnitPriceMedian": 25453,
             "listingUnitPriceMin": 25453,
-            "listingsCount": 1,
+            "listingsCount": 2,
             "suspectedDealCount": 122,
             "manualDealCount": 0
           }
