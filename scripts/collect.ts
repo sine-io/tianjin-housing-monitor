@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { closeBrowser } from "../collector/browser";
+import { collectAnjukeSaleSearchHtml } from "../collector/anjuke-sale-search";
 import {
   collectFangCommunityHtml,
   deriveFangCommunityMobileUrl,
@@ -12,8 +13,10 @@ import {
 } from "../collector/fang-weekreport";
 import { collectStatsGovHtml } from "../collector/stats-gov";
 import { loadCommunities } from "../lib/config";
+import { median } from "../lib/metrics";
 import { DATA_DIR } from "../lib/paths";
 import type { Community } from "../lib/types";
+import { parseAnjukeSaleSearch } from "../parser/anjuke-sale-search";
 import { parseFangCommunity } from "../parser/fang-community";
 import { parseFangWeekreport } from "../parser/fang-weekreport";
 import { parseStatsGovCityMarket } from "../parser/stats-gov";
@@ -278,7 +281,57 @@ async function collectCommunityRun(
     status: "skipped",
   });
 
-  if (community.status === "pending_verification") {
+  if (
+    community.status === "pending_verification" ||
+    community.sourceProvider === "none"
+  ) {
+    return {
+      fangCommunity: fangCommunityRun,
+      fangWeekreport: fangWeekreportRun,
+    };
+  }
+
+  if (community.sourceProvider === "anjuke_sale_search") {
+    try {
+      const { html } = await collectAnjukeSaleSearchHtml(community, fixtureRoot);
+      const parsed = parseAnjukeSaleSearch(html, community.name);
+
+      if (parsed.pageState !== "results" || parsed.listings.length === 0) {
+        fangCommunityRun = {
+          status: "failed",
+          referenceUnitPrice: null,
+          listingCount: null,
+          currentListingTeasers: [],
+        };
+      } else {
+        const currentListingTeasers = parsed.listings.map((listing) => ({
+          title: listing.title,
+          roomCount: listing.roomCount,
+          areaSqm: listing.areaSqm,
+          totalPriceWan: listing.totalPriceWan,
+          unitPriceYuanPerSqm: listing.unitPriceYuanPerSqm,
+        }));
+
+        fangCommunityRun = mergeFangCommunityRun(previousCommunity?.fangCommunity, {
+          status: "success",
+          referenceUnitPrice: median(
+            currentListingTeasers.map(
+              (listing) => listing.unitPriceYuanPerSqm ?? null,
+            ).filter((value): value is number => value !== null),
+          ),
+          listingCount: currentListingTeasers.length,
+          currentListingTeasers,
+        });
+      }
+    } catch {
+      fangCommunityRun = {
+        status: "failed",
+        referenceUnitPrice: null,
+        listingCount: null,
+        currentListingTeasers: [],
+      };
+    }
+
     return {
       fangCommunity: fangCommunityRun,
       fangWeekreport: fangWeekreportRun,

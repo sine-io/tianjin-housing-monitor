@@ -19,9 +19,11 @@ function makeSampleData(): DashboardData {
         city: "天津",
         district: "西青",
         status: "active",
+        sourceProvider: "fang_mobile",
         sources: {
           fangCommunityUrl: "https://example.com/mingquan/community",
           fangWeekreportUrl: "https://example.com/mingquan/weekreport",
+          anjukeSaleSearchUrl: null,
         },
       },
       {
@@ -30,9 +32,11 @@ function makeSampleData(): DashboardData {
         city: "天津",
         district: "西青",
         status: "active",
+        sourceProvider: "fang_mobile",
         sources: {
           fangCommunityUrl: "https://example.com/boxi/community",
           fangWeekreportUrl: "https://example.com/boxi/weekreport",
+          anjukeSaleSearchUrl: null,
         },
       },
       {
@@ -41,9 +45,11 @@ function makeSampleData(): DashboardData {
         city: "天津",
         district: "待确认",
         status: "pending_verification",
+        sourceProvider: "none",
         sources: {
           fangCommunityUrl: null,
           fangWeekreportUrl: null,
+          anjukeSaleSearchUrl: null,
         },
       },
       {
@@ -51,10 +57,13 @@ function makeSampleData(): DashboardData {
         name: "万科东第",
         city: "天津",
         district: "待确认",
-        status: "pending_verification",
+        status: "active",
+        sourceProvider: "anjuke_sale_search",
         sources: {
           fangCommunityUrl: null,
           fangWeekreportUrl: null,
+          anjukeSaleSearchUrl:
+            "https://m.anjuke.com/tj/sale/?kw=%E4%B8%87%E7%A7%91%E4%B8%9C%E7%AC%AC",
         },
       },
       {
@@ -63,9 +72,11 @@ function makeSampleData(): DashboardData {
         city: "天津",
         district: "待确认",
         status: "pending_verification",
+        sourceProvider: "none",
         sources: {
           fangCommunityUrl: null,
           fangWeekreportUrl: null,
+          anjukeSaleSearchUrl: null,
         },
       },
     ],
@@ -96,11 +107,11 @@ function makeSampleData(): DashboardData {
       },
       {
         communityId: "wanke-dongdi",
-        id: "wanke-3br-100-105",
-        label: "3居 100-105㎡",
-        rooms: 3,
-        areaMin: 100,
-        areaMax: 105,
+        id: "wanke-2br-85-90",
+        label: "2居 85-90㎡",
+        rooms: 2,
+        areaMin: 85,
+        areaMax: 90,
       },
       {
         communityId: "yijing-cun",
@@ -199,16 +210,10 @@ function makeSampleData(): DashboardData {
           name: "万科东第",
           district: "待确认",
           segments: {
-            "wanke-3br-100-105": {
-              label: "3居 100-105㎡",
-              verdict: "横盘",
-              latest: {
-                listingUnitPriceMedian: 26800,
-                listingUnitPriceMin: 26600,
-                listingsCount: 3,
-                suspectedDealCount: 1,
-                manualDealCount: 1,
-              },
+            "wanke-2br-85-90": {
+              label: "2居 85-90㎡",
+              verdict: "样本不足",
+              latest: null,
             },
           },
         },
@@ -258,11 +263,11 @@ function makeSampleData(): DashboardData {
       },
       "wanke-dongdi": {
         communityId: "wanke-dongdi",
-        id: "wanke-3br-100-105",
-        label: "3居 100-105㎡",
-        rooms: 3,
-        areaMin: 100,
-        areaMax: 105,
+        id: "wanke-2br-85-90",
+        label: "2居 85-90㎡",
+        rooms: 2,
+        areaMin: 85,
+        areaMax: 90,
       },
       "yijing-cun": {
         communityId: "yijing-cun",
@@ -362,26 +367,38 @@ function makeSampleData(): DashboardData {
         },
       },
       "wanke-dongdi": {
-        "wanke-3br-100-105": {
+        "wanke-2br-85-90": {
           communityId: "wanke-dongdi",
           communityName: "万科东第",
-          segmentId: "wanke-3br-100-105",
-          segmentLabel: "3居 100-105㎡",
-          rooms: 3,
-          areaMin: 100,
-          areaMax: 105,
+          segmentId: "wanke-2br-85-90",
+          segmentLabel: "2居 85-90㎡",
+          rooms: 2,
+          areaMin: 85,
+          areaMax: 90,
           series: [
             {
+              date: "2026-03-31",
+              generatedAt: "2026-03-31T13:34:33.572Z",
+              derivedFrom: "community-fallback",
+              listingUnitPriceMedian: null,
+              listingUnitPriceMin: null,
+              listingsCount: 0,
+              suspectedDealCount: 0,
+              manualDealCount: 0,
+              manualDealUnitPriceMedian: null,
+              manualLatestSampleAt: null,
+            },
+            {
               date: "2026-04-01",
-              generatedAt: "2026-04-01T07:32:04.312Z",
-              derivedFrom: "segment-teasers",
-              listingUnitPriceMedian: 26800,
-              listingUnitPriceMin: 26600,
-              listingsCount: 3,
-              suspectedDealCount: 1,
-              manualDealCount: 1,
-              manualDealUnitPriceMedian: 26750,
-              manualLatestSampleAt: "2026-03-30T12:00:00.000Z",
+              generatedAt: "2026-04-01T14:46:36.602Z",
+              derivedFrom: "community-fallback",
+              listingUnitPriceMedian: null,
+              listingUnitPriceMin: null,
+              listingsCount: 0,
+              suspectedDealCount: 0,
+              manualDealCount: 0,
+              manualDealUnitPriceMedian: null,
+              manualLatestSampleAt: null,
             },
           ],
         },
@@ -463,30 +480,36 @@ describe("site App", () => {
     ).toBeInTheDocument();
 
     const comparisonView = screen.getByTestId("comparison-communities");
+    const boxiRow = within(comparisonView).getByTestId(
+      "comparison-community-boxi-huayuan",
+    );
+    expect(within(boxiRow).getByText("2居 100-120㎡")).toBeInTheDocument();
+    expect(within(boxiRow).getByText("下跌")).toBeInTheDocument();
+    expect(within(boxiRow).getByText("25,301 元/㎡")).toBeInTheDocument();
 
-    const boxiRow = within(comparisonView).getByText("柏溪花园").closest("li");
-    expect(boxiRow).not.toBeNull();
-    expect(within(boxiRow!).getByText("2居 100-120㎡")).toBeInTheDocument();
-    expect(within(boxiRow!).getByText("下跌")).toBeInTheDocument();
-    expect(within(boxiRow!).getByText("25,301 元/㎡")).toBeInTheDocument();
+    const lianhaiRow = within(comparisonView).getByTestId(
+      "comparison-community-lianhai-yuan",
+    );
+    expect(within(lianhaiRow).getByText("2居 90-110㎡")).toBeInTheDocument();
+    expect(within(lianhaiRow).getByText("待复核")).toBeInTheDocument();
+    expect(within(lianhaiRow).queryByText("上涨")).not.toBeInTheDocument();
 
-    const lianhaiRow = within(comparisonView).getByText("恋海园").closest("li");
-    expect(lianhaiRow).not.toBeNull();
-    expect(within(lianhaiRow!).getByText("2居 90-110㎡")).toBeInTheDocument();
-    expect(within(lianhaiRow!).getByText("待复核")).toBeInTheDocument();
-    expect(within(lianhaiRow!).queryByText("上涨")).not.toBeInTheDocument();
+    const wankeRow = within(comparisonView).getByTestId(
+      "comparison-community-wanke-dongdi",
+    );
+    expect(within(wankeRow).getByText("2居 85-90㎡")).toBeInTheDocument();
+    expect(within(wankeRow).getByText("样本不足")).toBeInTheDocument();
+    expect(within(wankeRow).queryByText("待复核")).not.toBeInTheDocument();
+    expect(within(wankeRow).getByText("暂无")).toBeInTheDocument();
+    expect(within(wankeRow).getByText("0 套")).toBeInTheDocument();
 
-    const wankeRow = within(comparisonView).getByText("万科东第").closest("li");
-    expect(wankeRow).not.toBeNull();
-    expect(within(wankeRow!).getByText("3居 100-105㎡")).toBeInTheDocument();
-    expect(within(wankeRow!).getByText("待复核")).toBeInTheDocument();
-    expect(within(wankeRow!).queryByText("横盘")).not.toBeInTheDocument();
-
-    const yijingRow = within(comparisonView).getByText("谊景村").closest("li");
-    expect(yijingRow).not.toBeNull();
-    expect(within(yijingRow!).getByText("2居 75-90㎡")).toBeInTheDocument();
-    expect(within(yijingRow!).getByText("待复核")).toBeInTheDocument();
-    expect(within(yijingRow!).queryByText("以价换量")).not.toBeInTheDocument();
+    const yijingRow = within(comparisonView).getByTestId(
+      "comparison-community-yijing-cun",
+    );
+    expect(within(yijingRow).getByText("2居 75-90㎡")).toBeInTheDocument();
+    expect(within(yijingRow).getByText("待复核")).toBeInTheDocument();
+    expect(within(yijingRow).queryByText("以价换量")).not.toBeInTheDocument();
+    expect(within(comparisonView).getAllByText("待复核")).toHaveLength(2);
 
     const manualInputLink = screen.getByRole("link", {
       name: "新增一条样本",

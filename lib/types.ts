@@ -1,9 +1,14 @@
 export interface CommunitySources {
   fangCommunityUrl: string | null;
   fangWeekreportUrl: string | null;
+  anjukeSaleSearchUrl: string | null;
 }
 
 export type CommunityStatus = "active" | "pending_verification";
+export type CommunitySourceProvider =
+  | "fang_mobile"
+  | "anjuke_sale_search"
+  | "none";
 
 export interface Community {
   id: string;
@@ -11,6 +16,7 @@ export interface Community {
   city: string;
   district: string;
   status: CommunityStatus;
+  sourceProvider: CommunitySourceProvider;
   sources: CommunitySources;
 }
 

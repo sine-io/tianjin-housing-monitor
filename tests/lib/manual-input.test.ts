@@ -18,7 +18,7 @@ const VALID_SEGMENT_IDS = new Set([
   "mingquan-2br-87-90",
   "boxi-2br-100-120",
   "lianhai-2br-90-110",
-  "wanke-3br-100-105",
+  "wanke-2br-85-90",
   "yijing-2br-75-90",
 ]);
 
@@ -26,7 +26,7 @@ const SEGMENT_ID_BY_COMMUNITY_ID = new Map([
   ["mingquan-huayuan", "mingquan-2br-87-90"],
   ["boxi-huayuan", "boxi-2br-100-120"],
   ["lianhai-yuan", "lianhai-2br-90-110"],
-  ["wanke-dongdi", "wanke-3br-100-105"],
+  ["wanke-dongdi", "wanke-2br-85-90"],
   ["yijing-cun", "yijing-2br-75-90"],
 ]);
 
@@ -89,6 +89,64 @@ describe("lib/manual-input validateManualInputFile", () => {
     ).toThrow(
       "Segment boxi-2br-100-120 does not belong to community mingquan-huayuan",
     );
+  });
+
+  it("accepts the canonical Wanke segment for wanke-dongdi", () => {
+    expect(
+      validateManualInputFile(
+        {
+          source: "fixture-test",
+          submittedAt: "2026-03-31T09:00:00.000Z",
+          samples: [
+            {
+              communityId: "wanke-dongdi",
+              segmentId: "wanke-2br-85-90",
+              sampleAt: "2026-03-30T12:00:00.000Z",
+              dealCount: 1,
+              dealUnitPriceYuanPerSqm: 19_300,
+            },
+          ],
+        },
+        VALID_COMMUNITY_IDS,
+        VALID_SEGMENT_IDS,
+        SEGMENT_ID_BY_COMMUNITY_ID,
+      ),
+    ).toEqual({
+      source: "fixture-test",
+      submittedAt: "2026-03-31T09:00:00.000Z",
+      samples: [
+        {
+          communityId: "wanke-dongdi",
+          segmentId: "wanke-2br-85-90",
+          sampleAt: "2026-03-30T12:00:00.000Z",
+          dealCount: 1,
+          dealUnitPriceYuanPerSqm: 19_300,
+        },
+      ],
+    });
+  });
+
+  it("rejects the retired Wanke 3-bedroom segment", () => {
+    expect(() =>
+      validateManualInputFile(
+        {
+          source: "fixture-test",
+          submittedAt: "2026-03-31T09:00:00.000Z",
+          samples: [
+            {
+              communityId: "wanke-dongdi",
+              segmentId: "wanke-3br-100-105",
+              sampleAt: "2026-03-30T12:00:00.000Z",
+              dealCount: 1,
+              dealUnitPriceYuanPerSqm: 19_300,
+            },
+          ],
+        },
+        VALID_COMMUNITY_IDS,
+        VALID_SEGMENT_IDS,
+        SEGMENT_ID_BY_COMMUNITY_ID,
+      ),
+    ).toThrow("Unknown segmentId: wanke-3br-100-105");
   });
 });
 

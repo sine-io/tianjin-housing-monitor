@@ -18,6 +18,18 @@ import { loadCommunities } from "../../lib/config";
 const REPO_RUNS_DIR = resolve("data/runs");
 const DEFAULT_FIXTURE_ROOT = resolve("tests/fixtures");
 const TSX_PATH = resolve("node_modules/.bin/tsx");
+const WANKE_FIXTURE_PATH = resolve(
+  DEFAULT_FIXTURE_ROOT,
+  "anjuke/sale-search/wanke-dongdi.html",
+);
+const WANKE_EMPTY_FIXTURE_PATH = resolve(
+  DEFAULT_FIXTURE_ROOT,
+  "anjuke/sale-search/wanke-dongdi-empty.html",
+);
+const WANKE_BLOCKED_FIXTURE_PATH = resolve(
+  DEFAULT_FIXTURE_ROOT,
+  "anjuke/sale-search/wanke-dongdi-blocked.html",
+);
 
 const expectedActiveCommunities = {
   "mingquan-huayuan": {
@@ -107,6 +119,14 @@ function listRunFiles(runsDir: string): string[] {
   return readdirSync(runsDir).sort();
 }
 
+function overwriteWankeFixture(fixtureRoot: string, html: string): void {
+  writeFileSync(
+    resolve(fixtureRoot, "anjuke/sale-search/wanke-dongdi.html"),
+    html,
+    "utf8",
+  );
+}
+
 function snapshotRunFiles(runsDir: string): Record<string, string> {
   return Object.fromEntries(
     listRunFiles(runsDir).map((entry) => [
@@ -117,13 +137,37 @@ function snapshotRunFiles(runsDir: string): Record<string, string> {
 }
 
 describe("scripts/collect.ts", () => {
+  const expectedWankeListingTeasers = [
+    {
+      title: "万科东第 南北通透两居",
+      roomCount: 2,
+      areaSqm: 89.3,
+      totalPriceWan: 155,
+      unitPriceYuanPerSqm: 17357,
+    },
+    {
+      title: "万科·东第 精装三室",
+      roomCount: 3,
+      areaSqm: 127.1,
+      totalPriceWan: 238,
+      unitPriceYuanPerSqm: 18726,
+    },
+    {
+      title: "万科 东第 高楼层采光好",
+      roomCount: 2,
+      areaSqm: 88,
+      totalPriceWan: 162,
+      unitPriceYuanPerSqm: 18410,
+    },
+  ] as const;
+
   afterEach(() => {
     while (temporaryRoots.length > 0) {
       rmSync(temporaryRoots.pop()!, { force: true, recursive: true });
     }
   });
 
-  it("marks pending-verification communities as skipped while preserving them in the run artifact", () => {
+  it("dispatches Wanke to the Anjuke provider while keeping pending-verification communities skipped", () => {
     const fixtureRoot = makeFixtureRoot();
     const runsDir = makeRunsDir();
     const repoRunsBefore = snapshotRunFiles(REPO_RUNS_DIR);
@@ -184,10 +228,28 @@ describe("scripts/collect.ts", () => {
     );
 
     for (const community of communities) {
-      if (community.status === "pending_verification") {
+      if (
+        community.status === "pending_verification" ||
+        community.sourceProvider === "none"
+      ) {
         expect(latestRun.communities[community.id]).toEqual({
           fangCommunity: {
             status: "skipped",
+          },
+          fangWeekreport: {
+            status: "skipped",
+          },
+        });
+        continue;
+      }
+
+      if (community.sourceProvider === "anjuke_sale_search") {
+        expect(latestRun.communities[community.id]).toEqual({
+          fangCommunity: {
+            status: "success",
+            referenceUnitPrice: 18_410,
+            listingCount: 3,
+            currentListingTeasers: expectedWankeListingTeasers,
           },
           fangWeekreport: {
             status: "skipped",
@@ -318,5 +380,118 @@ describe("scripts/collect.ts", () => {
         status: "skipped",
       },
     });
+    expect(latestRun.communities["wanke-dongdi"]).toEqual({
+      fangCommunity: {
+        status: "success",
+        referenceUnitPrice: 18_410,
+        listingCount: 3,
+        currentListingTeasers: expectedWankeListingTeasers,
+      },
+      fangWeekreport: {
+        status: "skipped",
+      },
+    });
   }, 15_000);
+
+  it("clears stale Wanke teaser-derived fields after a failed rerun in the same runs directory", () => {
+    const fixtureRoot = makeFixtureRoot();
+    const runsDir = makeRunsDir();
+
+    runCollect("--fixture", fixtureRoot, "--runs-dir", runsDir);
+    overwriteWankeFixture(
+      fixtureRoot,
+      readFileSync(WANKE_BLOCKED_FIXTURE_PATH, "utf8"),
+    );
+
+    runCollect("--fixture", fixtureRoot, "--runs-dir", runsDir);
+
+    const latestRun = readLatestRun(runsDir) as {
+      communities: Record<
+        string,
+        {
+          fangCommunity: {
+            status: string;
+            referenceUnitPrice?: number | null;
+            listingCount?: number | null;
+            currentListingTeasers?: Array<{
+              title: string | null;
+              roomCount: number | null;
+              areaSqm: number | null;
+              totalPriceWan: number | null;
+              unitPriceYuanPerSqm: number | null;
+            }>;
+          };
+          fangWeekreport: {
+            status: string;
+          };
+        }
+      >;
+    };
+
+    expect(latestRun.communities["wanke-dongdi"]).toEqual({
+      fangCommunity: {
+        status: "failed",
+        referenceUnitPrice: null,
+        listingCount: null,
+        currentListingTeasers: [],
+      },
+      fangWeekreport: {
+        status: "skipped",
+      },
+    });
+  }, 15_000);
+
+  it.each([
+    [
+      "empty-result fixture",
+      readFileSync(WANKE_EMPTY_FIXTURE_PATH, "utf8"),
+    ],
+    [
+      "blocked fixture",
+      readFileSync(WANKE_BLOCKED_FIXTURE_PATH, "utf8"),
+    ],
+    [
+      "results page with zero surviving valid listings",
+      readFileSync(WANKE_FIXTURE_PATH, "utf8")
+        .replaceAll("万科东第 南北通透两居", "万科 精装两居 急售")
+        .replaceAll("万科·东第 精装三室", "万科 花园 精装三室")
+        .replaceAll("万科 东第 高楼层采光好", "东第附近 高楼层采光好"),
+    ],
+  ])(
+    "marks Wanke collection as failed for %s",
+    (_scenario, html) => {
+      const fixtureRoot = makeFixtureRoot();
+      const runsDir = makeRunsDir();
+
+      overwriteWankeFixture(fixtureRoot, html);
+      runCollect("--fixture", fixtureRoot, "--runs-dir", runsDir);
+
+      const latestRun = readLatestRun(runsDir) as {
+        communities: Record<
+          string,
+          {
+            fangCommunity: {
+              status: string;
+            };
+            fangWeekreport: {
+              status: string;
+            };
+          }
+        >;
+      };
+
+      expect(latestRun.communities["wanke-dongdi"]).toEqual({
+        fangCommunity: {
+          status: "failed",
+          referenceUnitPrice: null,
+          listingCount: null,
+          currentListingTeasers: [],
+        },
+        fangWeekreport: {
+          status: "skipped",
+        },
+      });
+    },
+    15_000,
+  );
 });

@@ -16,20 +16,20 @@
     "areaMax": 120
   },
   {
+    "communityId": "wanke-dongdi",
+    "id": "wanke-2br-85-90",
+    "label": "2居 85-90㎡",
+    "rooms": 2,
+    "areaMin": 85,
+    "areaMax": 90
+  },
+  {
     "communityId": "lianhai-yuan",
     "id": "lianhai-2br-90-110",
     "label": "2居 90-110㎡",
     "rooms": 2,
     "areaMin": 90,
     "areaMax": 110
-  },
-  {
-    "communityId": "wanke-dongdi",
-    "id": "wanke-3br-100-105",
-    "label": "3居 100-105㎡",
-    "rooms": 3,
-    "areaMin": 100,
-    "areaMax": 105
   },
   {
     "communityId": "yijing-cun",

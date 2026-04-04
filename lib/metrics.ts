@@ -85,6 +85,16 @@ function maxOrZero(values: Array<number | null | undefined>): number {
   }, 0);
 }
 
+function aggregateListingsCount(entries: SegmentWindowObservation[]): number {
+  const medianCount = Math.round(median(entries.map((entry) => entry.listingsCount)) ?? 0);
+
+  if (medianCount > 0) {
+    return medianCount;
+  }
+
+  return maxOrZero(entries.map((entry) => entry.listingsCount));
+}
+
 export function aggregateSegmentWindow(
   entries: SegmentWindowObservation[],
   windowStart: string,
@@ -115,9 +125,7 @@ export function aggregateSegmentWindow(
         .map((entry) => entry.listingUnitPriceMin)
         .filter((value): value is number => value !== null),
     ),
-    listingsCount: Math.round(
-      median(windowEntries.map((entry) => entry.listingsCount)) ?? 0,
-    ),
+    listingsCount: aggregateListingsCount(windowEntries),
     suspectedDealCount: maxOrZero(
       windowEntries.map((entry) => entry.suspectedDealCount),
     ),

@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { z } from "zod";
 
 import { median } from "./metrics";
-import type { SegmentTemplate } from "./types";
+import type { Community, SegmentTemplate } from "./types";
 
 const isoDateTimeSchema = z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
   message: "Expected an ISO-8601 datetime string",
@@ -37,6 +37,12 @@ export interface ManualSampleSummary {
   manualLatestSampleAt: string | null;
 }
 
+export interface ManualInputValidationContext {
+  validCommunityIds: ReadonlySet<string>;
+  validSegmentIds: ReadonlySet<string>;
+  segmentIdByCommunityId: ReadonlyMap<string, string>;
+}
+
 const TIANJIN_UTC_OFFSET_HOURS = 8;
 const TIANJIN_UTC_OFFSET_MILLISECONDS =
   TIANJIN_UTC_OFFSET_HOURS * 60 * 60 * 1000;
@@ -57,6 +63,17 @@ export function createSegmentIdByCommunityId(
   return new Map(
     segments.map((segment) => [segment.communityId, segment.id] as const),
   );
+}
+
+export function createManualInputValidationContext(
+  communities: readonly Community[],
+  segments: readonly SegmentTemplate[],
+): ManualInputValidationContext {
+  return {
+    validCommunityIds: new Set(communities.map((community) => community.id)),
+    validSegmentIds: new Set(segments.map((segment) => segment.id)),
+    segmentIdByCommunityId: createSegmentIdByCommunityId(segments),
+  };
 }
 
 function readJsonFile(filePath: string): unknown {

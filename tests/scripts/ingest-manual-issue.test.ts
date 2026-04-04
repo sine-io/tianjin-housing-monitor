@@ -237,6 +237,50 @@ describe("scripts/ingest-manual-issue.ts", () => {
     );
   }, 15_000);
 
+  it("rejects the retired Wanke segment without writing an output file", () => {
+    const dataDir = makeTempDataDir();
+    const eventPath = resolve(dataDir, "..", "issues-event.json");
+
+    writeFileSync(
+      eventPath,
+      JSON.stringify(
+        {
+          issue: {
+            number: 323,
+            created_at: "2026-03-31T09:30:00.000Z",
+            body: buildIssueBody({
+              community: "万科东第 (wanke-dongdi)",
+              segment: "3居 100-105㎡ (wanke-3br-100-105)",
+            }),
+          },
+        },
+        null,
+        2,
+      ),
+    );
+
+    expect(() =>
+      execFileSync(
+        TSX_PATH,
+        [
+          "scripts/ingest-manual-issue.ts",
+          "--data-dir",
+          dataDir,
+          "--event-path",
+          eventPath,
+        ],
+        {
+          cwd: resolve("."),
+          stdio: "pipe",
+        },
+      ),
+    ).toThrow();
+
+    expect(existsSync(resolve(dataDir, "manual", "incoming", "323.json"))).toBe(
+      false,
+    );
+  }, 15_000);
+
   it("keeps the issue form options aligned with the 5 canonical communities and segment IDs", () => {
     const template = readFileSync(ISSUE_TEMPLATE_PATH, "utf8");
 
@@ -252,7 +296,7 @@ describe("scripts/ingest-manual-issue.ts", () => {
       "2居 87-90㎡ (mingquan-2br-87-90)",
       "2居 100-120㎡ (boxi-2br-100-120)",
       "2居 90-110㎡ (lianhai-2br-90-110)",
-      "3居 100-105㎡ (wanke-3br-100-105)",
+      "2居 85-90㎡ (wanke-2br-85-90)",
       "2居 75-90㎡ (yijing-2br-75-90)",
     ]);
   });

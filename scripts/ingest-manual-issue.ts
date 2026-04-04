@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 import { loadCommunities, loadSegments } from "../lib/config";
 import {
-  createSegmentIdByCommunityId,
+  createManualInputValidationContext,
   validateManualInputFile,
 } from "../lib/manual-input";
 import { DATA_DIR, resolveDataPaths } from "../lib/paths";
@@ -189,9 +189,10 @@ async function main(): Promise<void> {
   const paths = resolveDataPaths(dataDir);
   const communities = loadCommunities(paths.communitiesConfigPath);
   const segments = loadSegments(paths.segmentsConfigPath, communities);
-  const validCommunityIds = new Set(communities.map((community) => community.id));
-  const validSegmentIds = new Set(segments.map((segment) => segment.id));
-  const segmentIdByCommunityId = createSegmentIdByCommunityId(segments);
+  const validationContext = createManualInputValidationContext(
+    communities,
+    segments,
+  );
   const issue = readIssuePayload(resolve(resolvedEventPath));
   const sections = parseIssueSections(issue.body);
   const communityId = extractIdentifier(
@@ -221,9 +222,9 @@ async function main(): Promise<void> {
         },
       ],
     },
-    validCommunityIds,
-    validSegmentIds,
-    segmentIdByCommunityId,
+    validationContext.validCommunityIds,
+    validationContext.validSegmentIds,
+    validationContext.segmentIdByCommunityId,
   );
 
   mkdirSync(paths.manualIncomingDir, { recursive: true });

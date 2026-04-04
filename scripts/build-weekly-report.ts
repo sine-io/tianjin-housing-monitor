@@ -121,6 +121,9 @@ async function main(): Promise<void> {
   const primarySegmentByCommunity = new Map(
     segments.map((segment) => [segment.communityId, segment]),
   );
+  const segmentIdByCommunityId = new Map(
+    segments.map((segment) => [segment.communityId, segment.id] as const),
+  );
   const cityMarketPath = resolve(paths.seriesDir, "city-market", "tianjin.json");
   const cityMarketSeries = existsSync(cityMarketPath)
     ? readJsonFile<{ city: string; series: CityMarketSeriesEntry[] }>(cityMarketPath)
@@ -142,6 +145,7 @@ async function main(): Promise<void> {
         paths.manualAcceptedDir,
         validCommunityIds,
         validSegmentIds,
+        segmentIdByCommunityId,
       )
     : [];
 

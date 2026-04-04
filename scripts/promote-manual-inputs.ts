@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { loadCommunities, loadSegments } from "../lib/config";
 import { DATA_DIR, resolveDataPaths } from "../lib/paths";
 import {
-  createSegmentIdByCommunityId,
+  createManualInputValidationContext,
   validateManualInputFile,
 } from "../lib/manual-input";
 
@@ -34,9 +34,10 @@ async function main(): Promise<void> {
   const paths = resolveDataPaths(dataDir);
   const communities = loadCommunities(paths.communitiesConfigPath);
   const segments = loadSegments(paths.segmentsConfigPath, communities);
-  const validCommunityIds = new Set(communities.map((community) => community.id));
-  const validSegmentIds = new Set(segments.map((segment) => segment.id));
-  const segmentIdByCommunityId = createSegmentIdByCommunityId(segments);
+  const validationContext = createManualInputValidationContext(
+    communities,
+    segments,
+  );
 
   mkdirSync(paths.manualIncomingDir, { recursive: true });
   mkdirSync(paths.manualAcceptedDir, { recursive: true });
@@ -52,9 +53,9 @@ async function main(): Promise<void> {
     try {
       validateManualInputFile(
         JSON.parse(readFileSync(sourcePath, "utf8")) as unknown,
-        validCommunityIds,
-        validSegmentIds,
-        segmentIdByCommunityId,
+        validationContext.validCommunityIds,
+        validationContext.validSegmentIds,
+        validationContext.segmentIdByCommunityId,
       );
       renameSync(sourcePath, targetPath);
     } catch (error) {

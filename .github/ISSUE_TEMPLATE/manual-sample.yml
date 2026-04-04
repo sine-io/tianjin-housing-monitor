@@ -24,7 +24,7 @@ body:
         - 2居 87-90㎡ (mingquan-2br-87-90)
         - 2居 100-120㎡ (boxi-2br-100-120)
         - 2居 90-110㎡ (lianhai-2br-90-110)
-        - 3居 100-105㎡ (wanke-3br-100-105)
+        - 2居 85-90㎡ (wanke-2br-85-90)
         - 2居 75-90㎡ (yijing-2br-75-90)
     validations:
       required: true

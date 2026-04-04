@@ -277,6 +277,9 @@ async function main(): Promise<void> {
   const primarySegmentByCommunity = new Map(
     segments.map((segment) => [segment.communityId, segment]),
   );
+  const segmentIdByCommunityId = new Map(
+    segments.map((segment) => [segment.communityId, segment.id] as const),
+  );
   const validCommunityIds = new Set(communities.map((community) => community.id));
   const validSegmentIds = new Set(segments.map((segment) => segment.id));
   const runArtifacts = readRunArtifacts(paths.runsDir);
@@ -285,6 +288,7 @@ async function main(): Promise<void> {
         paths.manualAcceptedDir,
         validCommunityIds,
         validSegmentIds,
+        segmentIdByCommunityId,
       )
     : [];
 
