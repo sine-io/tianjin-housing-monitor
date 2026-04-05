@@ -349,6 +349,12 @@ describe("site App", () => {
     expect(
       screen.getByRole("heading", { name: "今日高优降价房源榜" }),
     ).toBeInTheDocument();
+    expect(screen.getByText("小区")).toBeInTheDocument();
+    expect(screen.getByText("面积")).toBeInTheDocument();
+    expect(screen.getByText("原价")).toBeInTheDocument();
+    expect(screen.getByText("现价")).toBeInTheDocument();
+    expect(screen.getByText("降幅")).toBeInTheDocument();
+    expect(screen.getByText("连续观测天数")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "最新动态信息流" }),
     ).toBeInTheDocument();
