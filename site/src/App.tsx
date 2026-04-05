@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { ChartPanel } from "./components/dashboard/ChartPanel";
 import { DroppedListingsTable } from "./components/dashboard/DroppedListingsTable";
 import { FocusedCommunitiesSection } from "./components/dashboard/FocusedCommunitiesSection";
+import { InventorySection } from "./components/dashboard/InventorySection";
 import { KpiCard } from "./components/dashboard/KpiCard";
 import { Sidebar } from "./components/dashboard/Sidebar";
 import { TimelineFeed } from "./components/dashboard/TimelineFeed";
@@ -62,6 +63,7 @@ export default function App(): React.JSX.Element {
 
   const kpis = viewModel?.kpis ?? [];
   const focusedCommunities = viewModel?.focusedCommunities ?? [];
+  const inventoryCommunities = viewModel?.inventoryCommunities ?? [];
   const droppedListings = viewModel?.droppedListings ?? [];
   const timelineItems = viewModel?.timelineItems ?? [];
 
@@ -125,6 +127,13 @@ export default function App(): React.JSX.Element {
 
               <section
                 id="inventory"
+                aria-label="房源全库专区"
+                className="scroll-mt-24"
+              >
+                <InventorySection items={inventoryCommunities} />
+              </section>
+
+              <section
                 aria-label="底部区"
                 className="grid gap-6 scroll-mt-24 xl:items-start xl:grid-cols-[minmax(0,2fr)_360px]"
               >

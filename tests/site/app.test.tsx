@@ -432,4 +432,18 @@ describe("site App", () => {
     expect(within(focusedSection).getByRole("heading", { name: "鸣泉花园" })).toBeInTheDocument();
     expect(within(focusedSection).getByRole("heading", { name: "万科东第" })).toBeInTheDocument();
   });
+
+  it("renders the inventory section with all monitored communities", async () => {
+    await renderLoadedApp();
+
+    const inventorySection = screen.getByRole("region", { name: "房源全库专区" });
+
+    expect(
+      within(inventorySection).getByRole("heading", { name: "房源全库" }),
+    ).toBeInTheDocument();
+    expect(
+      within(inventorySection).getAllByTestId("inventory-community-card"),
+    ).toHaveLength(2);
+    expect(within(inventorySection).getAllByText("房天下小区").length).toBeGreaterThan(0);
+  });
 });
