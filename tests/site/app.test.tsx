@@ -1,7 +1,7 @@
 /* @vitest-environment jsdom */
 
 import "@testing-library/jest-dom/vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { DashboardData } from "../../site/src/lib/load-json";
@@ -121,16 +121,22 @@ function makeSampleData(): DashboardData {
   };
 }
 
-async function renderResolvedLegacyHomepage(): Promise<void> {
+async function renderAppWithMockedData(): Promise<void> {
   render(<App />);
 
   await waitFor(() => {
-    expect(screen.queryByText("静态看板准备中")).not.toBeInTheDocument();
+    expect(mockLoadDashboardData).toHaveBeenCalledTimes(1);
   });
 
-  expect(
-    screen.getByRole("heading", { name: "用一页静态看板盯住鸣泉花园" }),
-  ).toBeInTheDocument();
+  const loadResult = mockLoadDashboardData.mock.results[0];
+
+  if (!loadResult || loadResult.type !== "return") {
+    throw new Error("loadDashboardData did not return a promise");
+  }
+
+  await act(async () => {
+    await loadResult.value;
+  });
 }
 
 describe("site App", () => {
@@ -144,7 +150,7 @@ describe("site App", () => {
   });
 
   it("renders the housing dashboard shell", async () => {
-    await renderResolvedLegacyHomepage();
+    await renderAppWithMockedData();
 
     expect(screen.getByText("Tianjin Housing Monitor")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "首页" })).toHaveAttribute(
@@ -158,7 +164,7 @@ describe("site App", () => {
   });
 
   it("renders KPI cards and dashboard content sections", async () => {
-    await renderResolvedLegacyHomepage();
+    await renderAppWithMockedData();
 
     expect(screen.getByText("今日降价套数")).toBeInTheDocument();
     expect(screen.getByText("核心小区挂牌均价走势 (近30天)")).toBeInTheDocument();
