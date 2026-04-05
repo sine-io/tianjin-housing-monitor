@@ -1,0 +1,146 @@
+{
+  "generatedAt": "2026-04-02T14:36:36.237Z",
+  "sources": {
+    "stats-gov": {
+      "status": "failed",
+      "latestMonth": "2026-02",
+      "city": "天津",
+      "secondaryHomePriceIndexMom": 99.5,
+      "secondaryHomePriceIndexYoy": 94
+    }
+  },
+  "communities": {
+    "mingquan-huayuan": {
+      "fangCommunity": {
+        "status": "success",
+        "referenceUnitPrice": 22981,
+        "listingCount": 90,
+        "recentDealHints": [
+          "西青热搜小区榜第60名",
+          "关注量超过同城98%的楼盘",
+          "二手房历史成交(177)"
+        ],
+        "currentListingTeasers": [
+          {
+            "title": "富力津门湖鸣泉花园 2室1厅!可议价!",
+            "roomCount": 2,
+            "areaSqm": 88.42,
+            "totalPriceWan": 199,
+            "unitPriceYuanPerSqm": 22506
+          },
+          {
+            "title": "鸣泉花园精装三室临梅江公园小区临湖",
+            "roomCount": 3,
+            "areaSqm": 132.77,
+            "totalPriceWan": 280,
+            "unitPriceYuanPerSqm": 21090
+          },
+          {
+            "title": "富力津门湖鸣泉花园3室2厅南",
+            "roomCount": 3,
+            "areaSqm": 147.57,
+            "totalPriceWan": 260,
+            "unitPriceYuanPerSqm": 17619
+          }
+        ]
+      },
+      "fangWeekreport": {
+        "status": "success",
+        "pricePoints": [
+          {
+            "label": "4月",
+            "priceYuanPerSqm": 22980
+          }
+        ],
+        "listingCount": null,
+        "districtName": "西青",
+        "districtPremiumPct": 7.94,
+        "momChangePct": -0.11,
+        "yoyChangePct": -10.44,
+        "availableRangeLabels": [
+          "近6月",
+          "近1年",
+          "近3年"
+        ]
+      }
+    },
+    "boxi-huayuan": {
+      "fangCommunity": {
+        "status": "success",
+        "referenceUnitPrice": 25453,
+        "listingCount": 58,
+        "recentDealHints": [
+          "西青热搜小区榜第37名",
+          "关注量超过同城98%的楼盘",
+          "二手房历史成交(122)"
+        ],
+        "currentListingTeasers": [
+          {
+            "title": "满五没尾款中间楼层能观湖景诚意出售",
+            "roomCount": 2,
+            "areaSqm": 103.18,
+            "totalPriceWan": 206,
+            "unitPriceYuanPerSqm": 19966
+          },
+          {
+            "title": "柏溪临湖三室过五年没大税业主急售",
+            "roomCount": 3,
+            "areaSqm": 136.86,
+            "totalPriceWan": 288,
+            "unitPriceYuanPerSqm": 21044
+          },
+          {
+            "title": "梅江临湖景观房业主诚心出售先到先得",
+            "roomCount": 3,
+            "areaSqm": 156.11,
+            "totalPriceWan": 420,
+            "unitPriceYuanPerSqm": 26905
+          }
+        ]
+      },
+      "fangWeekreport": {
+        "status": "success",
+        "pricePoints": [
+          {
+            "label": "4月",
+            "priceYuanPerSqm": 25453
+          }
+        ],
+        "listingCount": null,
+        "districtName": "西青",
+        "districtPremiumPct": 5.9,
+        "momChangePct": 0.6,
+        "yoyChangePct": -5.58,
+        "availableRangeLabels": [
+          "近6月",
+          "近1年",
+          "近3年"
+        ]
+      }
+    },
+    "lianhai-yuan": {
+      "fangCommunity": {
+        "status": "skipped"
+      },
+      "fangWeekreport": {
+        "status": "skipped"
+      }
+    },
+    "wanke-dongdi": {
+      "fangCommunity": {
+        "status": "skipped"
+      },
+      "fangWeekreport": {
+        "status": "skipped"
+      }
+    },
+    "yijing-cun": {
+      "fangCommunity": {
+        "status": "skipped"
+      },
+      "fangWeekreport": {
+        "status": "skipped"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 /* @vitest-environment jsdom */
 
 import "@testing-library/jest-dom/vitest";
-import { act, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../../site/src/lib/load-json", async () => {
@@ -314,6 +314,7 @@ async function renderLoadedApp() {
 beforeEach(() => {
   vi.useFakeTimers();
   vi.setSystemTime(NOW);
+  window.location.hash = "";
 });
 
 afterEach(() => {
@@ -402,5 +403,31 @@ describe("site App", () => {
       "dashboard-scroll-area",
       "overflow-y-auto",
     );
+  });
+
+  it("navigates to focused communities and renders the focused section", async () => {
+    await renderLoadedApp();
+
+    const homeLink = screen.getByRole("link", { name: "首页" });
+    const focusedLink = screen.getByRole("link", { name: "重点关注小区" });
+
+    expect(focusedLink).toHaveAttribute("href", "#focus-communities");
+
+    fireEvent.click(focusedLink);
+
+    expect(window.location.hash).toBe("#focus-communities");
+    expect(focusedLink).toHaveAttribute("aria-current", "page");
+    expect(homeLink).not.toHaveAttribute("aria-current");
+
+    const focusedSection = screen.getByRole("region", { name: "重点关注小区专区" });
+
+    expect(
+      within(focusedSection).getByRole("heading", { name: "重点关注小区" }),
+    ).toBeInTheDocument();
+    expect(within(focusedSection).getAllByTestId("focused-community-card")).toHaveLength(
+      2,
+    );
+    expect(within(focusedSection).getByRole("heading", { name: "鸣泉花园" })).toBeInTheDocument();
+    expect(within(focusedSection).getByRole("heading", { name: "万科东第" })).toBeInTheDocument();
   });
 });

@@ -1,0 +1,285 @@
+{
+  "generatedAt": "2026-04-01T07:20:41.842Z",
+  "sources": {
+    "stats-gov": {
+      "status": "failed",
+      "latestMonth": "2026-02",
+      "city": "天津",
+      "secondaryHomePriceIndexMom": 99.5,
+      "secondaryHomePriceIndexYoy": 94
+    }
+  },
+  "communities": {
+    "mingquan-huayuan": {
+      "fangCommunity": {
+        "status": "success",
+        "referenceUnitPrice": 23007,
+        "listingCount": 90,
+        "recentDealHints": [
+          "西青热搜小区榜第60名",
+          "关注量超过同城98%的楼盘",
+          "二手房历史成交(177)"
+        ],
+        "currentListingTeasers": [
+          {
+            "title": "富力津门湖鸣泉花园 2室1厅!可议价!",
+            "roomCount": 2,
+            "areaSqm": 88.42,
+            "totalPriceWan": 199,
+            "unitPriceYuanPerSqm": 22506
+          },
+          {
+            "title": "津门湖鸣泉花园,满五年唯一,有车位",
+            "roomCount": 4,
+            "areaSqm": 179.5,
+            "totalPriceWan": 320,
+            "unitPriceYuanPerSqm": 17828
+          },
+          {
+            "title": "鸣泉花园精装三室临梅江公园小区临湖",
+            "roomCount": 3,
+            "areaSqm": 132.77,
+            "totalPriceWan": 280,
+            "unitPriceYuanPerSqm": 21090
+          }
+        ]
+      },
+      "fangWeekreport": {
+        "status": "failed",
+        "pricePoints": [
+          {
+            "label": "3月",
+            "priceYuanPerSqm": 23006
+          }
+        ],
+        "listingCount": null,
+        "districtName": "西青",
+        "districtPremiumPct": 7.72,
+        "momChangePct": 0.99,
+        "yoyChangePct": -10.72,
+        "availableRangeLabels": [
+          "近6月",
+          "近1年",
+          "近3年"
+        ]
+      }
+    },
+    "jiajun-huayuan": {
+      "fangCommunity": {
+        "status": "success",
+        "referenceUnitPrice": 22234,
+        "listingCount": 147,
+        "recentDealHints": [
+          "西青人气小区榜第68名",
+          "关注量超过同城98%的楼盘",
+          "二手房历史成交(193)"
+        ],
+        "currentListingTeasers": [
+          {
+            "title": "西青 富力津门湖嘉郡花园 5室3厅 280.00㎡ 580万",
+            "roomCount": 5,
+            "areaSqm": 280,
+            "totalPriceWan": 580,
+            "unitPriceYuanPerSqm": 20714
+          },
+          {
+            "title": "嘉郡花园 临湖中间层 门口双公园 老客户房子 价格可议",
+            "roomCount": 2,
+            "areaSqm": 87.04,
+            "totalPriceWan": 140,
+            "unitPriceYuanPerSqm": 16085
+          },
+          {
+            "title": "嘉郡精装大平层没个税高楼层景观房",
+            "roomCount": 4,
+            "areaSqm": 276.56,
+            "totalPriceWan": 500,
+            "unitPriceYuanPerSqm": 18080
+          }
+        ]
+      },
+      "fangWeekreport": {
+        "status": "failed",
+        "pricePoints": [
+          {
+            "label": "3月",
+            "priceYuanPerSqm": 22233
+          }
+        ],
+        "listingCount": null,
+        "districtName": "西青",
+        "districtPremiumPct": 8.69,
+        "momChangePct": -0.53,
+        "yoyChangePct": -6.83,
+        "availableRangeLabels": [
+          "近6月",
+          "近1年",
+          "近3年"
+        ]
+      }
+    },
+    "yunshu-huayuan": {
+      "fangCommunity": {
+        "status": "success",
+        "referenceUnitPrice": 23403,
+        "listingCount": 103,
+        "recentDealHints": [
+          "西青人气小区榜第60名",
+          "关注量超过同城98%的楼盘",
+          "二手房历史成交(234)",
+          "法拍房历史成交(1)"
+        ],
+        "currentListingTeasers": [
+          {
+            "title": "富力津门湖云舒花园2室2厅1卫南朝向173.00万出售",
+            "roomCount": 2,
+            "areaSqm": 89,
+            "totalPriceWan": 173,
+            "unitPriceYuanPerSqm": 19438
+          },
+          {
+            "title": "此房满五年,楼层高,视野好,视野开阔,随时可看",
+            "roomCount": 2,
+            "areaSqm": 87.81,
+            "totalPriceWan": 154,
+            "unitPriceYuanPerSqm": 17538
+          },
+          {
+            "title": "云舒花园 通透大三室 中高层 无遮挡 诚意出售有",
+            "roomCount": 3,
+            "areaSqm": 152.13,
+            "totalPriceWan": 296,
+            "unitPriceYuanPerSqm": 19458
+          }
+        ]
+      },
+      "fangWeekreport": {
+        "status": "failed",
+        "pricePoints": [
+          {
+            "label": "3月",
+            "priceYuanPerSqm": 23402
+          }
+        ],
+        "listingCount": null,
+        "districtName": "西青",
+        "districtPremiumPct": 7.24,
+        "momChangePct": 2.69,
+        "yoyChangePct": -4.49,
+        "availableRangeLabels": [
+          "近6月",
+          "近1年",
+          "近3年"
+        ]
+      }
+    },
+    "boxi-huayuan": {
+      "fangCommunity": {
+        "status": "success",
+        "referenceUnitPrice": 25302,
+        "listingCount": 59,
+        "recentDealHints": [
+          "西青热搜小区榜第37名",
+          "关注量超过同城98%的楼盘",
+          "二手房历史成交(122)"
+        ],
+        "currentListingTeasers": [
+          {
+            "title": "津门湖柏溪花园视野开阔,临湖一=小区中间位置",
+            "roomCount": 3,
+            "areaSqm": 156,
+            "totalPriceWan": 480,
+            "unitPriceYuanPerSqm": 30769
+          },
+          {
+            "title": "富力津门湖柏溪花园3室2厅南北",
+            "roomCount": 3,
+            "areaSqm": 135.3,
+            "totalPriceWan": 329.8,
+            "unitPriceYuanPerSqm": 24376
+          },
+          {
+            "title": "满五没尾款中间楼层能观湖景诚意出售",
+            "roomCount": 2,
+            "areaSqm": 103.18,
+            "totalPriceWan": 206,
+            "unitPriceYuanPerSqm": 19966
+          }
+        ]
+      },
+      "fangWeekreport": {
+        "status": "failed",
+        "pricePoints": [
+          {
+            "label": "3月",
+            "priceYuanPerSqm": 25301
+          }
+        ],
+        "listingCount": null,
+        "districtName": "西青",
+        "districtPremiumPct": 5.91,
+        "momChangePct": 1.05,
+        "yoyChangePct": -7.32,
+        "availableRangeLabels": [
+          "近6月",
+          "近1年",
+          "近3年"
+        ]
+      }
+    },
+    "haiyi-changzhou-hanboyuan": {
+      "fangCommunity": {
+        "status": "success",
+        "referenceUnitPrice": 28064,
+        "listingCount": 72,
+        "recentDealHints": [
+          "西青热搜小区榜第85名",
+          "关注量超过同城98%的楼盘",
+          "二手房历史成交(210)"
+        ],
+        "currentListingTeasers": [
+          {
+            "title": "西青 海逸长洲瀚波园 4室3厅",
+            "roomCount": 4,
+            "areaSqm": 260,
+            "totalPriceWan": 399,
+            "unitPriceYuanPerSqm": 15346
+          },
+          {
+            "title": "河西精装海逸长洲瀚波园 2室1厅",
+            "roomCount": 2,
+            "areaSqm": 89.14,
+            "totalPriceWan": 198,
+            "unitPriceYuanPerSqm": 22212
+          },
+          {
+            "title": "李七庄街 · 瀚波园 · 3室 · 2厅",
+            "roomCount": 3,
+            "areaSqm": 138.31,
+            "totalPriceWan": 388,
+            "unitPriceYuanPerSqm": 28053
+          }
+        ]
+      },
+      "fangWeekreport": {
+        "status": "failed",
+        "pricePoints": [
+          {
+            "label": "3月",
+            "priceYuanPerSqm": 28064
+          }
+        ],
+        "listingCount": null,
+        "districtName": "西青",
+        "districtPremiumPct": 4.1,
+        "momChangePct": -1.4,
+        "yoyChangePct": -11.19,
+        "availableRangeLabels": [
+          "近6月",
+          "近1年",
+          "近3年"
+        ]
+      }
+    }
+  }
+}

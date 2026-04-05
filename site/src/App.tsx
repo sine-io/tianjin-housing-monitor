@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 import { ChartPanel } from "./components/dashboard/ChartPanel";
 import { DroppedListingsTable } from "./components/dashboard/DroppedListingsTable";
+import { FocusedCommunitiesSection } from "./components/dashboard/FocusedCommunitiesSection";
 import { KpiCard } from "./components/dashboard/KpiCard";
 import { Sidebar } from "./components/dashboard/Sidebar";
 import { TimelineFeed } from "./components/dashboard/TimelineFeed";
@@ -60,6 +61,7 @@ export default function App(): React.JSX.Element {
   }, []);
 
   const kpis = viewModel?.kpis ?? [];
+  const focusedCommunities = viewModel?.focusedCommunities ?? [];
   const droppedListings = viewModel?.droppedListings ?? [];
   const timelineItems = viewModel?.timelineItems ?? [];
 
@@ -70,7 +72,10 @@ export default function App(): React.JSX.Element {
         <div className="flex h-screen flex-col">
           <TopHeader lastUpdatedLabel={viewModel?.lastUpdatedLabel ?? "加载中"} />
           <main className="dashboard-scroll-area flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
-            <div className="mx-auto flex max-w-7xl flex-col gap-6">
+            <div
+              id="overview"
+              className="mx-auto flex max-w-7xl flex-col gap-6 scroll-mt-24"
+            >
               {errorMessage ? (
                 <section className="rounded-3xl border border-rose-500/20 bg-rose-500/10 p-5 text-sm text-rose-200">
                   数据加载失败：{errorMessage}
@@ -90,8 +95,9 @@ export default function App(): React.JSX.Element {
               </section>
 
               <section
+                id="price-radar"
                 aria-label="图表区"
-                className="grid gap-6 lg:grid-cols-2"
+                className="grid gap-6 scroll-mt-24 lg:grid-cols-2"
               >
                 <ChartPanel
                   title="核心小区挂牌均价走势 (近30天)"
@@ -110,8 +116,17 @@ export default function App(): React.JSX.Element {
               </section>
 
               <section
+                id="focus-communities"
+                aria-label="重点关注小区专区"
+                className="scroll-mt-24"
+              >
+                <FocusedCommunitiesSection items={focusedCommunities} />
+              </section>
+
+              <section
+                id="inventory"
                 aria-label="底部区"
-                className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_360px]"
+                className="grid gap-6 scroll-mt-24 xl:grid-cols-[minmax(0,2fr)_360px]"
               >
                 <DroppedListingsTable items={droppedListings} />
                 <TimelineFeed items={timelineItems} />

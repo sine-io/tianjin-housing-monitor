@@ -67,3 +67,19 @@ test("shows the built dashboard shell on desktop", async ({ page }) => {
   expect(await page.getByTestId("timeline-item").count()).toBeGreaterThanOrEqual(1);
   await expect(page.getByText("Live Feed")).toBeVisible();
 });
+
+test("navigates to the focused communities section from the sidebar", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await page.getByRole("link", { name: "重点关注小区" }).click();
+
+  await expect(page).toHaveURL(/#focus-communities$/);
+  await expect(
+    page.getByRole("region", { name: "重点关注小区专区" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "重点关注小区" }),
+  ).toBeVisible();
+});

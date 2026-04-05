@@ -12,7 +12,8 @@
     "build:site": "vite build",
     "build": "npm run build:data && npm run build:site",
     "test:e2e": "playwright test",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:e2e": "npm run build && vite preview"
   },
   "keywords": [
     "tianjin",

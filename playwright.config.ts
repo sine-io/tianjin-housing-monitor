@@ -1,17 +1,20 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const PLAYWRIGHT_PORT = process.env.PLAYWRIGHT_PORT ?? "4317";
+const PLAYWRIGHT_BASE_URL = `http://127.0.0.1:${PLAYWRIGHT_PORT}`;
+
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
   reporter: "html",
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: PLAYWRIGHT_BASE_URL,
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npm run preview -- --host 127.0.0.1 --strictPort",
-    reuseExistingServer: !process.env.CI,
-    url: "http://127.0.0.1:4173",
+    command: `npm run preview:e2e -- --host 127.0.0.1 --port ${PLAYWRIGHT_PORT} --strictPort`,
+    reuseExistingServer: false,
+    url: PLAYWRIGHT_BASE_URL,
   },
   projects: [
     {

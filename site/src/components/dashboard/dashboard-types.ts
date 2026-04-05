@@ -6,6 +6,7 @@ export type DashboardIconKey =
 
 export type KpiCardTone = "highlight" | "positive" | "neutral" | "negative";
 export type TimelineTone = "positive" | "negative" | "neutral";
+export type FocusedCommunityTone = "active" | "pending";
 
 export interface DashboardKpi {
   title: string;
@@ -33,4 +34,16 @@ export interface TimelineItem {
   description: string;
   time: string;
   tone: TimelineTone;
+}
+
+export interface FocusedCommunitySummary {
+  id: string;
+  name: string;
+  district: string;
+  segmentLabel: string;
+  latestPrice: string;
+  listingsCount: string;
+  verdict: string;
+  status: string;
+  tone: FocusedCommunityTone;
 }

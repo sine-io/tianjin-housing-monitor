@@ -3,6 +3,7 @@ import type {
   DashboardIconKey,
   DashboardKpi,
   DroppedListing,
+  FocusedCommunitySummary,
   TimelineItem,
   TimelineTone,
 } from "../components/dashboard/dashboard-types";
@@ -64,6 +65,7 @@ export interface RunArtifact {
 
 export interface DashboardViewModel {
   kpis: DashboardKpi[];
+  focusedCommunities: FocusedCommunitySummary[];
   droppedListings: DroppedListing[];
   timelineItems: TimelineItem[];
   lastUpdatedLabel: string;
@@ -116,6 +118,22 @@ function formatWanPrice(priceWan: number): string {
 
 function formatArea(areaSqm: number): string {
   return `${Math.round(areaSqm)}㎡`;
+}
+
+function formatPriceLabel(value: number | null | undefined): string {
+  if (value === null || value === undefined) {
+    return "暂无";
+  }
+
+  return `${value.toLocaleString("zh-CN")} 元/㎡`;
+}
+
+function formatListingCountLabel(value: number | null | undefined): string {
+  if (value === null || value === undefined) {
+    return "暂无";
+  }
+
+  return `${value} 套`;
 }
 
 function daysBetweenInclusive(startAt: string, endAt: string): number {
@@ -309,6 +327,43 @@ export function buildDashboardViewModel(
     ),
   ];
 
+  const focusedCommunities: FocusedCommunitySummary[] = data.communities.map(
+    (community) => {
+      const primarySegment = data.primarySegmentsByCommunityId[community.id];
+      const latestReportSegment = primarySegment
+        ? data.latestReport?.communities[community.id]?.segments[primarySegment.id]
+        : undefined;
+      const latestSeriesEntry = primarySegment
+        ? data.communitySeries[community.id]?.[primarySegment.id]?.series.at(-1)
+        : undefined;
+      const latestRunCommunity = latestRun?.communities[community.id];
+
+      return {
+        id: community.id,
+        name: community.name,
+        district: community.district,
+        segmentLabel: primarySegment?.label ?? "待配置",
+        latestPrice: formatPriceLabel(
+          latestReportSegment?.latest?.listingUnitPriceMedian ??
+            latestSeriesEntry?.listingUnitPriceMedian ??
+            latestRunCommunity?.fangCommunity.referenceUnitPrice ??
+            null,
+        ),
+        listingsCount: formatListingCountLabel(
+          latestReportSegment?.latest?.listingsCount ??
+            latestSeriesEntry?.listingsCount ??
+            latestRunCommunity?.fangCommunity.listingCount ??
+            null,
+        ),
+        verdict:
+          latestReportSegment?.verdict ??
+          (community.status === "pending_verification" ? "待复核" : "待观察"),
+        status: community.status === "active" ? "正常监控" : "待复核",
+        tone: community.status === "active" ? "active" : "pending",
+      };
+    },
+  );
+
   const droppedListings: DroppedListing[] = droppedSamples.map((sample) => ({
     id: sample.id,
     community: sample.communityName,
@@ -371,6 +426,7 @@ export function buildDashboardViewModel(
 
   return {
     kpis,
+    focusedCommunities,
     droppedListings,
     timelineItems,
     lastUpdatedLabel: latestRun

@@ -330,6 +330,22 @@ describe("dashboard-view", () => {
     });
   });
 
+  it("builds focused community summaries from the latest report data", () => {
+    const viewModel = buildDashboardViewModel(makeDashboardData(), makeRunArtifacts());
+
+    expect(viewModel.focusedCommunities).toHaveLength(2);
+    expect(viewModel.focusedCommunities[0]).toMatchObject({
+      name: "鸣泉花园",
+      district: "西青",
+      segmentLabel: "2居 87-90㎡",
+      latestPrice: "22,980 元/㎡",
+      listingsCount: "1 套",
+      verdict: "样本不足",
+      status: "正常监控",
+      tone: "active",
+    });
+  });
+
   it("derives timeline items for drop, alert, and refresh events", () => {
     vi.useFakeTimers();
     vi.setSystemTime(NOW);
