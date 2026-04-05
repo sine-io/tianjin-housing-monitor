@@ -90,7 +90,11 @@ test("navigates to inventory and settings sections from the sidebar", async ({
   await page.goto("/");
 
   await page.getByRole("link", { name: "房源全库" }).click();
+  const inventorySection = page.locator("#inventory");
   await expect(page).toHaveURL(/#inventory$/);
+  await expect(inventorySection).toHaveCount(1);
+  await expect(inventorySection).toHaveAttribute("aria-label", "房源全库专区");
+  await expect(inventorySection).toBeInViewport();
   await expect(
     page.getByRole("region", { name: "房源全库专区" }),
   ).toBeVisible();
@@ -99,7 +103,11 @@ test("navigates to inventory and settings sections from the sidebar", async ({
   ).toBeVisible();
 
   await page.getByRole("link", { name: "系统设置" }).click();
+  const settingsSection = page.locator("#settings");
   await expect(page).toHaveURL(/#settings$/);
+  await expect(settingsSection).toHaveCount(1);
+  await expect(settingsSection).toHaveAttribute("aria-label", "系统设置专区");
+  await expect(settingsSection).toBeInViewport();
   await expect(
     page.getByRole("region", { name: "系统设置专区" }),
   ).toBeVisible();
