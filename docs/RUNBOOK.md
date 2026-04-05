@@ -1,8 +1,8 @@
 # 房脉 PropPulse Runbook
 
-- Repository: https://github.com/sine-io/tianjin-housing-monitor
-- Site: https://www.sineio.top/tianjin-housing-monitor/
-- Manual sample issue form: https://github.com/sine-io/tianjin-housing-monitor/issues/new?template=manual-sample.yml
+- Repository: https://github.com/sine-io/proppulse
+- Site: https://www.sineio.top/proppulse/
+- Manual sample issue form: https://github.com/sine-io/proppulse/issues/new?template=manual-sample.yml
 
 ## Workflows
 
