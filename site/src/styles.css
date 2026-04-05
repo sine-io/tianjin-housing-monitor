@@ -17,3 +17,26 @@
     box-sizing: border-box;
   }
 }
+
+.dashboard-scroll-area {
+  scrollbar-color: #475569 #0f172a;
+  scrollbar-width: thin;
+}
+
+.dashboard-scroll-area::-webkit-scrollbar {
+  width: 12px;
+}
+
+.dashboard-scroll-area::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.dashboard-scroll-area::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #475569, #334155);
+  border: 2px solid #0f172a;
+  border-radius: 999px;
+}
+
+.dashboard-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #34d399, #475569);
+}

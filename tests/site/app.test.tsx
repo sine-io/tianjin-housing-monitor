@@ -104,6 +104,9 @@ describe("site App", () => {
     const contentScrollArea = container.querySelector("main");
 
     expect(appShell).toHaveClass("h-screen", "overflow-hidden");
-    expect(contentScrollArea).toHaveClass("overflow-y-auto");
+    expect(contentScrollArea).toHaveClass(
+      "dashboard-scroll-area",
+      "overflow-y-auto",
+    );
   });
 });

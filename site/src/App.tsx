@@ -34,7 +34,7 @@ export default function App(): React.JSX.Element {
       <div className="h-screen lg:pl-64">
         <div className="flex h-screen flex-col">
           <TopHeader lastUpdatedLabel="10分钟前" />
-          <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
+          <main className="dashboard-scroll-area flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
             <div className="mx-auto flex max-w-7xl flex-col gap-6">
               <section
                 aria-label="核心指标"
