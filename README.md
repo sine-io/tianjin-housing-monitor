@@ -1,8 +1,30 @@
 # 房脉 PropPulse
 
-PropPulse is a housing monitoring and price radar workspace. Data is collected into JSON, copied to `site/public/data`, and served as a Vite-built static dashboard.
+**房源监测与价格雷达**
 
-For day-to-day operations, see the runbook in [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
+房脉 PropPulse 是一个聚焦房源监测、价格趋势与降价线索发现的数据平台。
+它把公开房源数据、周报快照和手工补样整理成可持续更新的静态 Dashboard，帮助用户更高效地识别买房机会与市场变化。
+
+## 适用对象
+
+- 买房决策用户
+- 房产研究与内容团队
+- 顾问 / 中介 / 投资观察者
+- 需要长期跟踪小区与价格信号的人
+
+## 核心能力
+
+- **房源监测**：持续跟踪重点小区与目标房源
+- **价格趋势**：观察均价变化与阶段性信号
+- **降价线索**：突出识别高优降价样本
+- **静态看板**：用低成本方式稳定发布可视化结果
+- **手工补样**：在样本不足时补充可信成交信息
+
+## 入口
+
+- **Repository**: `https://github.com/sine-io/proppulse`
+- **Site**: `https://www.sineio.top/proppulse/`
+- **Runbook**: [`docs/RUNBOOK.md`](docs/RUNBOOK.md)
 
 ## Requirements
 
