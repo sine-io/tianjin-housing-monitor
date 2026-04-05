@@ -120,7 +120,7 @@ function readRunArtifacts(runsDir: string): RunArtifact[] {
   const dedupedRuns = new Map<string, RunArtifact>();
 
   for (const entry of readdirSync(runsDir).sort()) {
-    if (!entry.endsWith(".json")) {
+    if (!entry.endsWith(".json") || entry === "index.json") {
       continue;
     }
 

@@ -426,4 +426,32 @@ describe("scripts/build-series.ts", () => {
       runScript("scripts/build-series.ts", "--data-dir", workspace.dataDir),
     ).toThrowError(/does not belong to community/i);
   });
+
+  it("ignores runs index.json when reading run artifacts", () => {
+    const workspace = makeWorkspace();
+
+    collectFixturesIntoRuns(workspace);
+
+    const indexedRunFiles = listJsonFiles(workspace.runsDir).filter(
+      (fileName) => fileName !== "latest.json",
+    );
+
+    writeFileSync(
+      resolve(workspace.runsDir, "index.json"),
+      JSON.stringify({ files: indexedRunFiles }, null, 2),
+    );
+
+    runScript("scripts/build-series.ts", "--data-dir", workspace.dataDir);
+
+    const cityMarketPath = resolve(
+      workspace.dataDir,
+      "series",
+      "city-market",
+      "tianjin.json",
+    );
+    expect(existsSync(cityMarketPath)).toBe(true);
+
+    const cityMarketSeries = readJsonFile<{ series: unknown[] }>(cityMarketPath);
+    expect(cityMarketSeries.series.length).toBeGreaterThan(0);
+  });
 });
