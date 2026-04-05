@@ -27,6 +27,7 @@ describe("site App", () => {
     renderApp();
 
     expect(screen.getByText("Tianjin Housing Monitor")).toBeInTheDocument();
+    expect(screen.getByText("天津关注房源监控看板")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "首页" })).toHaveAttribute(
       "aria-current",
       "page",
