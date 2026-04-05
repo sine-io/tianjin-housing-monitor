@@ -80,12 +80,11 @@ async function main(): Promise<void> {
       .filter((entry) => entry.endsWith(".json") && entry !== "index.json")
       .sort();
     const indexedRunFiles = runFiles.filter((entry) => entry !== "latest.json");
+    const runIndexJson = JSON.stringify({ files: indexedRunFiles }, null, 2);
 
     cpSync(paths.runsDir, publicRunsDir, { recursive: true });
-    writeFileSync(
-      resolve(publicRunsDir, "index.json"),
-      JSON.stringify({ files: indexedRunFiles }, null, 2),
-    );
+    writeFileSync(resolve(paths.runsDir, "index.json"), runIndexJson);
+    writeFileSync(resolve(publicRunsDir, "index.json"), runIndexJson);
   }
 }
 

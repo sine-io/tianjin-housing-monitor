@@ -113,11 +113,20 @@ describe("scripts/prepare-public-data.ts", () => {
       readFileSync(resolve(publicDataDir, "runs", "latest.json"), "utf8"),
     ).toBe(JSON.stringify({ generatedAt: "2026-04-05T04:10:57.573Z" }, null, 2));
 
-    const runIndex = JSON.parse(
+    const sourceRunIndex = JSON.parse(
+      readFileSync(resolve(dataDir, "runs", "index.json"), "utf8"),
+    ) as { files: string[] };
+    const publicRunIndex = JSON.parse(
       readFileSync(resolve(publicDataDir, "runs", "index.json"), "utf8"),
     ) as { files: string[] };
 
-    expect(runIndex.files).toEqual(
+    expect(sourceRunIndex.files).toEqual(
+      expect.arrayContaining([
+        "2026-04-04T13-59-55.172Z.json",
+        "2026-04-05T04-10-57.573Z.json",
+      ]),
+    );
+    expect(publicRunIndex.files).toEqual(
       expect.arrayContaining([
         "2026-04-04T13-59-55.172Z.json",
         "2026-04-05T04-10-57.573Z.json",
@@ -133,6 +142,7 @@ describe("scripts/prepare-public-data.ts", () => {
     expect(
       existsSync(resolve(publicDataDir, "runs", "2026-04-04T13-59-55.172Z.json")),
     ).toBe(true);
+    expect(existsSync(resolve(dataDir, "runs", "index.json"))).toBe(true);
     expect(existsSync(resolve(publicDataDir, "runs", "index.json"))).toBe(true);
     expect(existsSync(resolve(publicDataDir, "latest-report.json"))).toBe(false);
   });
