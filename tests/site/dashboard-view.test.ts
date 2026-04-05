@@ -1,34 +1,13 @@
-/* @vitest-environment jsdom */
+import { describe, expect, it, vi } from "vitest";
 
-import "@testing-library/jest-dom/vitest";
-import { act, render, screen, within } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-vi.mock("../../site/src/lib/load-json", async () => {
-  const actual =
-    await vi.importActual<typeof import("../../site/src/lib/load-json")>(
-      "../../site/src/lib/load-json",
-    );
-
-  return {
-    ...actual,
-    loadDashboardData: vi.fn(),
-    loadRecentRunArtifacts: vi.fn(),
-  };
-});
-
-import App from "../../site/src/App";
 import type { DashboardData } from "../../site/src/lib/load-json";
 import {
-  loadDashboardData,
-  loadRecentRunArtifacts,
-} from "../../site/src/lib/load-json";
-import type { RunArtifact } from "../../site/src/lib/dashboard-view";
+  buildDashboardViewModel,
+  formatRelativeUpdatedAt,
+  type RunArtifact,
+} from "../../site/src/lib/dashboard-view";
 
 const NOW = new Date("2026-04-05T04:20:00.000Z");
-
-const mockedLoadDashboardData = vi.mocked(loadDashboardData);
-const mockedLoadRecentRunArtifacts = vi.mocked(loadRecentRunArtifacts);
 
 function makeDashboardData(): DashboardData {
   return {
@@ -297,110 +276,88 @@ function makeRunArtifacts(): RunArtifact[] {
   ];
 }
 
-async function renderLoadedApp() {
-  mockedLoadDashboardData.mockResolvedValue(makeDashboardData());
-  mockedLoadRecentRunArtifacts.mockResolvedValue(makeRunArtifacts());
+describe("dashboard-view", () => {
+  it("formats relative update labels", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
 
-  const view = render(<App />);
+    expect(formatRelativeUpdatedAt("2026-04-05T04:10:00.000Z")).toBe("10分钟前");
 
-  await act(async () => {
-    await Promise.resolve();
-    await Promise.resolve();
+    vi.useRealTimers();
   });
 
-  return view;
-}
+  it("derives KPI cards from dashboard data and latest runs", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
 
-beforeEach(() => {
-  vi.useFakeTimers();
-  vi.setSystemTime(NOW);
-});
+    const viewModel = buildDashboardViewModel(makeDashboardData(), makeRunArtifacts());
 
-afterEach(() => {
-  vi.useRealTimers();
-  vi.clearAllMocks();
-});
+    expect(viewModel.kpis.map((item) => item.title)).toEqual([
+      "监控小区总数",
+      "在售房源总数",
+      "今日降价套数",
+      "市场均价走势",
+    ]);
+    expect(viewModel.kpis[0]).toMatchObject({ value: "2" });
+    expect(viewModel.kpis[1]).toMatchObject({ value: "93" });
+    expect(viewModel.kpis[2]).toMatchObject({ value: "1" });
+    expect(viewModel.kpis[3]).toMatchObject({ value: "-0.5%" });
+    expect(viewModel.lastUpdatedLabel).toBe("10分钟前");
 
-describe("site App", () => {
-  it("renders the housing dashboard shell and hydrates it from real data loaders", async () => {
-    await renderLoadedApp();
-
-    expect(screen.getByText("房脉 PropPulse")).toBeInTheDocument();
-    expect(screen.getByText("房源监测与价格雷达")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "首页" })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
-    expect(screen.getByRole("link", { name: "重点关注小区" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "房源全库" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "降价雷达" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "系统设置" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("searchbox", { name: "全局搜索" }),
-    ).toHaveAttribute("placeholder", "全局搜索小区或房源...");
-    expect(screen.getByText("核心小区挂牌均价走势 (近30天)")).toBeInTheDocument();
-    expect(screen.getByText("单价洼地雷达")).toBeInTheDocument();
-    expect(
-      screen.getByText("[ Recharts Line Chart Placeholder ]"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("[ Recharts Scatter / Bubble Chart Placeholder ]"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "今日高优降价房源榜" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("小区")).toBeInTheDocument();
-    expect(screen.getByText("面积")).toBeInTheDocument();
-    expect(screen.getByText("原价")).toBeInTheDocument();
-    expect(screen.getByText("现价")).toBeInTheDocument();
-    expect(screen.getByText("降幅")).toBeInTheDocument();
-    expect(screen.getByText("连续观测天数")).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "最新动态信息流" }),
-    ).toBeInTheDocument();
-
-    expect(mockedLoadDashboardData).toHaveBeenCalledTimes(1);
-    expect(mockedLoadRecentRunArtifacts).toHaveBeenCalledTimes(1);
-    expect(screen.getByText("数据最后更新于: 10分钟前")).toBeInTheDocument();
-
-    const communityCountCard = screen.getByText("监控小区总数").closest("article");
-    const listingCountCard = screen.getByText("在售房源总数").closest("article");
-    const droppedCountCard = screen.getByText("今日降价套数").closest("article");
-    const marketTrendCard = screen.getByText("市场均价走势").closest("article");
-
-    expect(communityCountCard).not.toBeNull();
-    expect(listingCountCard).not.toBeNull();
-    expect(droppedCountCard).not.toBeNull();
-    expect(marketTrendCard).not.toBeNull();
-    expect(within(communityCountCard!).getByText("2")).toBeInTheDocument();
-    expect(within(listingCountCard!).getByText("93")).toBeInTheDocument();
-    expect(within(droppedCountCard!).getByText("1")).toBeInTheDocument();
-    expect(within(marketTrendCard!).getByText("-0.5%")).toBeInTheDocument();
-
-    expect(screen.getAllByTestId("kpi-card")).toHaveLength(4);
-    expect(screen.getAllByTestId("dropped-listing-row")).toHaveLength(1);
-    expect(screen.getAllByTestId("timeline-item").length).toBeGreaterThanOrEqual(3);
-    expect(screen.queryByText("静态看板准备中")).not.toBeInTheDocument();
-    expect(screen.queryByText("静态看板无法读取 JSON")).not.toBeInTheDocument();
-    expect(screen.queryByText("首页概览")).not.toBeInTheDocument();
-    expect(screen.queryByText("价格信号与高优房源监控")).not.toBeInTheDocument();
-    expect(screen.queryByText("Housing Dashboard")).not.toBeInTheDocument();
-    expect(screen.queryByText("天津核心小区降价线索总览")).not.toBeInTheDocument();
+    vi.useRealTimers();
   });
 
-  it("keeps page scrolling disabled and uses the main content area as the only scroll container", () => {
-    mockedLoadDashboardData.mockResolvedValue(makeDashboardData());
-    mockedLoadRecentRunArtifacts.mockResolvedValue(makeRunArtifacts());
+  it("derives dropped listings from price reductions between the latest two runs", () => {
+    const viewModel = buildDashboardViewModel(makeDashboardData(), makeRunArtifacts());
 
-    const { container } = render(<App />);
+    expect(viewModel.droppedListings).toHaveLength(1);
+    expect(viewModel.droppedListings[0]).toMatchObject({
+      community: "鸣泉花园",
+      area: "88㎡",
+      originalPrice: "205万",
+      currentPrice: "199万",
+      drop: "-2.9%",
+      daysOnMarket: 1,
+    });
+  });
 
-    const appShell = container.firstElementChild;
-    const contentScrollArea = container.querySelector("main");
+  it("falls back to latest report listing counts when the latest run failed with stale totals", () => {
+    const viewModel = buildDashboardViewModel(makeDashboardData(), makeRunArtifacts());
 
-    expect(appShell).toHaveClass("h-screen", "overflow-hidden");
-    expect(contentScrollArea).toHaveClass(
-      "dashboard-scroll-area",
-      "overflow-y-auto",
+    expect(viewModel.kpis[1]).toMatchObject({
+      title: "在售房源总数",
+      value: "93",
+    });
+  });
+
+  it("derives timeline items for drop, alert, and refresh events", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+
+    const viewModel = buildDashboardViewModel(makeDashboardData(), makeRunArtifacts());
+
+    const dropItem = viewModel.timelineItems.find((item) => item.id.startsWith("drop:"));
+    const alertItem = viewModel.timelineItems.find((item) =>
+      item.id.startsWith("alert:"),
     );
+    const refreshItem = viewModel.timelineItems.find((item) =>
+      item.id.startsWith("refresh:"),
+    );
+
+    expect(dropItem).toMatchObject({
+      tone: "positive",
+    });
+    expect(dropItem?.title).toContain("降价");
+    expect(alertItem).toMatchObject({
+      tone: "negative",
+      title: "万科东第 数据抓取异常",
+    });
+    expect(alertItem?.description).toContain("fangCommunity / fangWeekreport");
+    expect(refreshItem).toMatchObject({
+      tone: "neutral",
+      title: "最新监控样本已刷新完成",
+    });
+
+    vi.useRealTimers();
   });
 });

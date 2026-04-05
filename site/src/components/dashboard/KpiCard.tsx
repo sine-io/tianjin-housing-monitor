@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
-import type { DashboardKpi } from "./dashboard-data";
+import type { DashboardKpi } from "./dashboard-types";
 
 interface KpiCardProps extends Omit<DashboardKpi, "icon"> {
   icon: LucideIcon;

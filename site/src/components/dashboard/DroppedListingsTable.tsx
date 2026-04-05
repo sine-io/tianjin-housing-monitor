@@ -1,6 +1,6 @@
 import { ArrowDownRight } from "lucide-react";
 
-import type { DroppedListing } from "./dashboard-data";
+import type { DroppedListing } from "./dashboard-types";
 
 interface DroppedListingsTableProps {
   items: DroppedListing[];
@@ -15,7 +15,7 @@ export function DroppedListingsTable({
         <div>
           <h2 className="text-lg font-semibold text-white">今日高优降价房源榜</h2>
           <p className="mt-2 text-sm leading-6 text-slate-400">
-            结合降幅、上架天数与板块均价偏离，优先筛出可快速跟进的降价样本。
+            基于最近两次抓取中的真实降价样本，优先展示可持续跟踪的房源变化。
           </p>
         </div>
         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm font-medium text-emerald-300">
@@ -46,7 +46,7 @@ export function DroppedListingsTable({
                   降幅
                 </th>
                 <th scope="col" className="px-4 py-3 font-medium">
-                  上架天数
+                  连续观测天数
                 </th>
               </tr>
             </thead>

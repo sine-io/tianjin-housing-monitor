@@ -3,6 +3,7 @@ import type {
   CommunityStatus,
   SegmentTemplate,
 } from "../../../lib/types";
+import type { RunArtifact } from "./dashboard-view";
 
 export type CityMarketVerdict = "偏强" | "中性" | "偏弱";
 export type SegmentVerdict =
@@ -90,6 +91,10 @@ export interface DashboardData {
 type CommunityConfigEntry = Omit<Community, "status"> & {
   status?: CommunityStatus;
 };
+
+interface RunArtifactIndexFile {
+  files: string[];
+}
 
 function resolvePublicPath(path: string): string {
   const normalized = path.replace(/^\/+/, "");
@@ -221,4 +226,33 @@ export async function loadDashboardData(): Promise<DashboardData> {
     latestReport,
     communitySeries: Object.fromEntries(communitySeriesEntries),
   };
+}
+
+export async function loadRecentRunArtifacts(limit = 5): Promise<RunArtifact[]> {
+  if (limit <= 0) {
+    return [];
+  }
+
+  const indexFile = await loadOptionalJson<RunArtifactIndexFile>("data/runs/index.json");
+  const indexedFiles = [...(indexFile?.files ?? [])].sort().slice(-limit);
+
+  if (indexedFiles.length > 0) {
+    const artifacts = (
+      await Promise.all(
+        indexedFiles.map((fileName) =>
+          loadOptionalJson<RunArtifact>(`data/runs/${fileName}`),
+        ),
+      )
+    ).filter((artifact): artifact is RunArtifact => artifact !== null);
+
+    if (artifacts.length > 0) {
+      return artifacts.sort((left, right) =>
+        left.generatedAt.localeCompare(right.generatedAt),
+      );
+    }
+  }
+
+  const latestArtifact = await loadOptionalJson<RunArtifact>("data/runs/latest.json");
+
+  return latestArtifact ? [latestArtifact] : [];
 }

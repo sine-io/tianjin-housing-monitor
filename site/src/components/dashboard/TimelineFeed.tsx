@@ -1,6 +1,6 @@
 import { Activity, ArrowUpRight, ShieldAlert } from "lucide-react";
 
-import type { TimelineItem } from "./dashboard-data";
+import type { TimelineItem } from "./dashboard-types";
 
 interface TimelineFeedProps {
   items: TimelineItem[];

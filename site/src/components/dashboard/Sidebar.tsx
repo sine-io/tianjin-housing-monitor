@@ -67,7 +67,7 @@ export function Sidebar(): React.JSX.Element {
         <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
           <p className="font-medium text-white">今日策略</p>
           <p className="mt-2 leading-6 text-slate-400">
-            优先跟进 7-30 天内降价且低于板块均价的房源，避免被逆势抬价样本干扰。
+            优先复核最近两次抓取中的真实降价样本，并结合连续观测天数关注需要人工跟进的异常变化。
           </p>
         </div>
       </div>

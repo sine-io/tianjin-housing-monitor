@@ -1,4 +1,11 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { resolve } from "node:path";
 
 import { DATA_DIR, resolveDataPaths } from "../lib/paths";
@@ -65,6 +72,19 @@ async function main(): Promise<void> {
     cpSync(paths.reportsDir, resolve(paths.publicDir, "reports"), {
       recursive: true,
     });
+  }
+
+  if (existsSync(paths.runsDir)) {
+    const publicRunsDir = resolve(paths.publicDir, "runs");
+    const runFiles = readdirSync(paths.runsDir)
+      .filter((entry) => entry.endsWith(".json") && entry !== "index.json")
+      .sort();
+    const indexedRunFiles = runFiles.filter((entry) => entry !== "latest.json");
+    const runIndexJson = JSON.stringify({ files: indexedRunFiles }, null, 2);
+
+    cpSync(paths.runsDir, publicRunsDir, { recursive: true });
+    writeFileSync(resolve(paths.runsDir, "index.json"), runIndexJson);
+    writeFileSync(resolve(publicRunsDir, "index.json"), runIndexJson);
   }
 }
 

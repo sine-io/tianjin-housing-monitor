@@ -2,7 +2,10 @@ import { existsSync, readFileSync } from "node:fs";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { loadDashboardData } from "../../site/src/lib/load-json";
+import {
+  loadDashboardData,
+  loadRecentRunArtifacts,
+} from "../../site/src/lib/load-json";
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -270,5 +273,89 @@ describe("loadDashboardData", () => {
         "fangWeekreportUrl",
       ]);
     }
+  });
+});
+
+describe("loadRecentRunArtifacts", () => {
+  it("loads the most recent run artifacts from index.json in ascending generatedAt order", async () => {
+    installFetchMock({
+      "data/runs/index.json": jsonResponse({
+        files: [
+          "2026-04-05T04-10-57.573Z.json",
+          "2026-04-04T13-59-55.172Z.json",
+          "2026-04-03T14-08-04.569Z.json",
+        ],
+      }),
+      "data/runs/2026-04-04T13-59-55.172Z.json": jsonResponse({
+        generatedAt: "2026-04-04T13:59:55.172Z",
+        sources: {},
+        communities: {},
+      }),
+      "data/runs/2026-04-05T04-10-57.573Z.json": jsonResponse({
+        generatedAt: "2026-04-05T04:10:57.573Z",
+        sources: {},
+        communities: {},
+      }),
+      "data/runs/2026-04-03T14-08-04.569Z.json": jsonResponse({
+        generatedAt: "2026-04-03T14:08:04.569Z",
+        sources: {},
+        communities: {},
+      }),
+      "data/runs/latest.json": jsonResponse({
+        generatedAt: "2026-04-05T04:10:57.573Z",
+        sources: {},
+        communities: {},
+      }),
+    });
+
+    const runs = await loadRecentRunArtifacts(2);
+
+    expect(runs.map((run) => run.generatedAt)).toEqual([
+      "2026-04-04T13:59:55.172Z",
+      "2026-04-05T04:10:57.573Z",
+    ]);
+  });
+
+  it("falls back to latest.json when index.json is missing", async () => {
+    installFetchMock({
+      "data/runs/latest.json": jsonResponse({
+        generatedAt: "2026-04-05T04:10:57.573Z",
+        sources: {},
+        communities: {},
+      }),
+    });
+
+    const runs = await loadRecentRunArtifacts();
+
+    expect(runs.map((run) => run.generatedAt)).toEqual([
+      "2026-04-05T04:10:57.573Z",
+    ]);
+  });
+
+  it("skips missing indexed files and still returns available artifacts in ascending order", async () => {
+    installFetchMock({
+      "data/runs/index.json": jsonResponse({
+        files: [
+          "2026-04-05T04-10-57.573Z.json",
+          "2026-04-04T13-59-55.172Z.json",
+        ],
+      }),
+      "data/runs/2026-04-05T04-10-57.573Z.json": jsonResponse({
+        generatedAt: "2026-04-05T04:10:57.573Z",
+        sources: {},
+        communities: {},
+      }),
+      "data/runs/latest.json": jsonResponse({
+        generatedAt: "2026-04-05T04:10:57.573Z",
+        sources: {},
+        communities: {},
+      }),
+    });
+
+    const runs = await loadRecentRunArtifacts(5);
+
+    expect(runs.map((run) => run.generatedAt)).toEqual([
+      "2026-04-05T04:10:57.573Z",
+    ]);
   });
 });
