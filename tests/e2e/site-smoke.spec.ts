@@ -11,8 +11,9 @@ test("shows the built dashboard shell on desktop", async ({ page }) => {
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { name: "Tianjin Housing Monitor" }),
+    page.getByRole("heading", { name: "房脉 PropPulse" }),
   ).toBeVisible();
+  await expect(page.getByText("房源监测与价格雷达")).toBeVisible();
   await expect(page.getByRole("searchbox", { name: "全局搜索" })).toBeVisible();
   await expect(page.getByText("数据最后更新于: 10分钟前")).toBeVisible();
   await expect(page.getByText("今日降价套数")).toBeVisible();

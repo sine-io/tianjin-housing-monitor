@@ -1,7 +1,7 @@
 {
-  "name": "tianjin-housing-monitor",
+  "name": "proppulse",
   "version": "1.0.0",
-  "description": "Free-first Tianjin housing monitor workspace",
+  "description": "PropPulse housing monitoring and price radar workspace",
   "type": "module",
   "scripts": {
     "test": "vitest run",

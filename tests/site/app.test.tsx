@@ -26,8 +26,8 @@ describe("site App", () => {
   it("renders the housing dashboard shell", () => {
     renderApp();
 
-    expect(screen.getByText("Tianjin Housing Monitor")).toBeInTheDocument();
-    expect(screen.getByText("天津关注房源监控看板")).toBeInTheDocument();
+    expect(screen.getByText("房脉 PropPulse")).toBeInTheDocument();
+    expect(screen.getByText("房源监测与价格雷达")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "首页" })).toHaveAttribute(
       "aria-current",
       "page",

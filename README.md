@@ -1,6 +1,6 @@
-# Tianjin Housing Monitor
+# 房脉 PropPulse
 
-Static Tianjin housing monitor workspace. Data is collected into JSON, copied to `site/public/data`, and served as a Vite-built static dashboard.
+PropPulse is a housing monitoring and price radar workspace. Data is collected into JSON, copied to `site/public/data`, and served as a Vite-built static dashboard.
 
 For day-to-day operations, see the runbook in [`docs/RUNBOOK.md`](docs/RUNBOOK.md).
 

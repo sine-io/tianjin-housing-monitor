@@ -32,10 +32,10 @@ export function Sidebar(): React.JSX.Element {
             </div>
             <div>
               <p className="text-xs font-medium text-slate-400">
-                天津关注房源监控看板
+                房源监测与价格雷达
               </p>
               <h2 className="text-base font-semibold text-white">
-                Tianjin Housing Monitor
+                房脉 PropPulse
               </h2>
             </div>
           </div>
