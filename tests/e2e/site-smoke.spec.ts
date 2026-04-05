@@ -1,54 +1,58 @@
 import { expect, test } from "@playwright/test";
 
 test.use({
-  hasTouch: true,
-  isMobile: true,
   viewport: {
-    width: 390,
-    height: 844,
+    width: 1440,
+    height: 960,
   },
 });
 
-test("shows the built dashboard smoke path on mobile", async ({ page }) => {
+test("shows the built dashboard shell on desktop", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByTestId("market-card")).toBeVisible();
-
-  const segmentGrid = page.getByTestId("segment-grid");
-  await expect(segmentGrid.locator(".segment-card")).toHaveCount(1);
-
-  const mingquanSegmentCard = segmentGrid.locator(".segment-card").first();
-
-  await expect(mingquanSegmentCard).toBeVisible();
   await expect(
-    mingquanSegmentCard.getByRole("heading", {
-      name: "2居 87-90㎡",
-    }),
+    page.getByRole("heading", { name: "Tianjin Housing Monitor" }),
   ).toBeVisible();
-  await expect(mingquanSegmentCard).toContainText("鸣泉花园");
+  await expect(page.getByRole("searchbox", { name: "全局搜索" })).toBeVisible();
+  await expect(page.getByText("数据最后更新于: 10分钟前")).toBeVisible();
+  await expect(page.getByText("今日降价套数")).toBeVisible();
+  await expect(page.getByRole("link", { name: "重点关注小区" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "核心小区挂牌均价走势 (近30天)" }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "单价洼地雷达" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "今日高优降价房源榜" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "最新动态信息流" }),
+  ).toBeVisible();
 
-  await mingquanSegmentCard
-    .getByRole("button", { name: "查看 2居 87-90㎡ 详情" })
-    .click();
+  const droppedListingsTable = page.getByRole("table", {
+    name: "今日高优降价房源榜",
+  });
+  await expect(droppedListingsTable).toBeVisible();
+  await expect(
+    droppedListingsTable.getByRole("columnheader", { name: "小区" }),
+  ).toBeVisible();
+  await expect(
+    droppedListingsTable.getByRole("columnheader", { name: "面积" }),
+  ).toBeVisible();
+  await expect(
+    droppedListingsTable.getByRole("columnheader", { name: "原价" }),
+  ).toBeVisible();
+  await expect(
+    droppedListingsTable.getByRole("columnheader", { name: "现价" }),
+  ).toBeVisible();
+  await expect(
+    droppedListingsTable.getByRole("columnheader", { name: "降幅" }),
+  ).toBeVisible();
+  await expect(
+    droppedListingsTable.getByRole("columnheader", { name: "上架天数" }),
+  ).toBeVisible();
+  await expect(page.getByTestId("dropped-listing-row")).toHaveCount(4);
 
-  const comparisonView = page.getByTestId("comparison-communities");
-  await expect(comparisonView).toContainText("柏溪花园");
-  await expect(comparisonView).toContainText("恋海园");
-  await expect(comparisonView).toContainText("万科东第");
-  await expect(comparisonView).toContainText("谊景村");
-
-  const lianhaiRow = page.getByTestId("comparison-community-lianhai-yuan");
-  await expect(lianhaiRow).toContainText("2居 90-110㎡");
-  await expect(lianhaiRow).toContainText("待复核");
-
-  const wankeRow = page.getByTestId("comparison-community-wanke-dongdi");
-  await expect(wankeRow).toContainText("2居 85-90㎡");
-  await expect(wankeRow).toContainText("样本不足");
-  await expect(wankeRow).not.toContainText("待复核");
-
-  const yijingRow = page.getByTestId("comparison-community-yijing-cun");
-  await expect(yijingRow).toContainText("2居 75-90㎡");
-  await expect(yijingRow).toContainText("待复核");
-
-  await expect(page.getByRole("link", { name: "新增一条样本" })).toBeVisible();
+  await expect(droppedListingsTable.getByText("奥城公馆", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("timeline-item")).toHaveCount(4);
+  await expect(page.getByText("Live Feed")).toBeVisible();
 });
