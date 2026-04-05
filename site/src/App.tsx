@@ -29,9 +29,9 @@ const iconMap: Record<DashboardIconKey, typeof TrendingDown> = {
 
 export default function App(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="h-screen overflow-hidden bg-slate-950 text-slate-100">
       <Sidebar />
-      <div className="min-h-screen lg:pl-64">
+      <div className="h-screen lg:pl-64">
         <div className="flex h-screen flex-col">
           <TopHeader lastUpdatedLabel="10分钟前" />
           <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">

@@ -11,8 +11,8 @@ import {
   timelineItems,
 } from "../../site/src/components/dashboard/dashboard-data";
 
-function renderApp(): void {
-  render(<App />);
+function renderApp() {
+  return render(<App />);
 }
 
 const expectedKpiTitles = [
@@ -95,5 +95,15 @@ describe("site App", () => {
     expect(screen.getAllByTestId("timeline-item")).toHaveLength(
       timelineItems.length,
     );
+  });
+
+  it("keeps page scrolling disabled and uses the main content area as the only scroll container", () => {
+    const { container } = renderApp();
+
+    const appShell = container.firstElementChild;
+    const contentScrollArea = container.querySelector("main");
+
+    expect(appShell).toHaveClass("h-screen", "overflow-hidden");
+    expect(contentScrollArea).toHaveClass("overflow-y-auto");
   });
 });
