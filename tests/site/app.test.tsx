@@ -5,6 +5,11 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import App from "../../site/src/App";
+import {
+  dashboardKpis,
+  droppedListings,
+  timelineItems,
+} from "../../site/src/components/dashboard/dashboard-data";
 
 function renderApp(): void {
   render(<App />);
@@ -20,9 +25,14 @@ describe("site App", () => {
       "page",
     );
     expect(
-      screen.getByPlaceholderText("全局搜索小区或房源..."),
+      screen.getByRole("searchbox", { name: "全局搜索" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("searchbox", { name: "全局搜索" }),
+    ).toHaveAttribute("placeholder", "全局搜索小区或房源...");
     expect(screen.getByText("数据最后更新于: 10分钟前")).toBeInTheDocument();
+    expect(screen.queryByText("静态看板准备中")).not.toBeInTheDocument();
+    expect(screen.queryByText("静态看板无法读取 JSON")).not.toBeInTheDocument();
   });
 
   it("renders KPI cards and dashboard content sections", () => {
@@ -49,5 +59,19 @@ describe("site App", () => {
     expect(
       screen.getByRole("heading", { name: "最新动态信息流" }),
     ).toBeInTheDocument();
+  });
+
+  it("matches the static fixture counts for KPI cards, listings, and timeline", () => {
+    renderApp();
+
+    expect(screen.getAllByTestId("kpi-card")).toHaveLength(
+      dashboardKpis.length,
+    );
+    expect(screen.getAllByTestId("dropped-listing-row")).toHaveLength(
+      droppedListings.length,
+    );
+    expect(screen.getAllByTestId("timeline-item")).toHaveLength(
+      timelineItems.length,
+    );
   });
 });

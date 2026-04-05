@@ -27,19 +27,36 @@ export function DroppedListingsTable({
       <div className="mt-6 overflow-hidden rounded-3xl border border-slate-800">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-800 text-sm">
+            <caption className="sr-only">今日高优降价房源榜</caption>
             <thead className="bg-slate-950/80 text-left text-slate-400">
               <tr>
-                <th className="px-4 py-3 font-medium">小区</th>
-                <th className="px-4 py-3 font-medium">面积</th>
-                <th className="px-4 py-3 font-medium">原价</th>
-                <th className="px-4 py-3 font-medium">现价</th>
-                <th className="px-4 py-3 font-medium">降幅</th>
-                <th className="px-4 py-3 font-medium">上架天数</th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  小区
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  面积
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  原价
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  现价
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  降幅
+                </th>
+                <th scope="col" className="px-4 py-3 font-medium">
+                  上架天数
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800 bg-slate-900/60">
               {items.map((item) => (
-                <tr key={item.id} className="text-slate-200">
+                <tr
+                  key={item.id}
+                  data-testid="dropped-listing-row"
+                  className="text-slate-200"
+                >
                   <td className="px-4 py-4">
                     <div className="font-medium text-white">{item.community}</div>
                     <div className="mt-1 text-xs text-slate-400">{item.note}</div>

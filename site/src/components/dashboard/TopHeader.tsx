@@ -22,6 +22,7 @@ export function TopHeader({
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
               <input
                 type="search"
+                aria-label="全局搜索"
                 placeholder="全局搜索小区或房源..."
                 className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-11 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-emerald-400"
               />

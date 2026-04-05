@@ -31,6 +31,7 @@ export function KpiCard({
 }: KpiCardProps): React.JSX.Element {
   return (
     <article
+      data-testid="kpi-card"
       className={[
         "rounded-3xl border p-5 transition hover:-translate-y-0.5",
         toneClasses[tone],

@@ -48,6 +48,7 @@ export function TimelineFeed({
           return (
             <li
               key={item.id}
+              data-testid="timeline-item"
               className="rounded-3xl border border-slate-800 bg-slate-950/70 p-4"
             >
               <div className="flex gap-3">
