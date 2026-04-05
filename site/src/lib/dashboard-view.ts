@@ -147,8 +147,8 @@ function formatSourceProviderLabel(provider: CommunitySourceProvider): string {
       return "房天下小区";
     case "anjuke_sale_search":
       return "安居客搜索";
-    default:
-      return "待补充";
+    case "none":
+      return "无数据源";
   }
 }
 
