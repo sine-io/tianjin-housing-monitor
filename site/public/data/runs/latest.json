@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-07T14:50:10.301Z",
+  "generatedAt": "2026-04-08T04:09:35.410Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "津门湖柏溪花园小区中间位置,西缺洋房,可观湖",
+            "title": "津门湖湾游柏溪头排观湖的好房子点此了解",
             "roomCount": 3,
             "areaSqm": 155,
-            "totalPriceWan": 580,
-            "unitPriceYuanPerSqm": 37419
+            "totalPriceWan": 468,
+            "unitPriceYuanPerSqm": 30194
           },
           {
-            "title": "采光棒能观湖新装修3个月拎包入住给孩子换房出售",
+            "title": "李七庄街·柏溪花园·3室·2厅",
             "roomCount": 3,
-            "areaSqm": 160.08,
-            "totalPriceWan": 418,
-            "unitPriceYuanPerSqm": 26112
+            "areaSqm": 143,
+            "totalPriceWan": 310,
+            "unitPriceYuanPerSqm": 21678
           },
           {
-            "title": "津门湖柏溪花园 精装大三室 方便看房诚信出售",
+            "title": "李七庄街 · 柏溪花园 · 3室 · 2厅",
             "roomCount": 3,
-            "areaSqm": 155.26,
-            "totalPriceWan": 430,
-            "unitPriceYuanPerSqm": 27695
+            "areaSqm": 136.86,
+            "totalPriceWan": 350,
+            "unitPriceYuanPerSqm": 25574
           }
         ]
       },
