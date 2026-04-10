@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-09T15:01:19.642Z",
+  "generatedAt": "2026-04-10T04:19:12.763Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -50,7 +50,7 @@
         ],
         "listingCount": null,
         "districtName": "西青",
-        "districtPremiumPct": 7.94,
+        "districtPremiumPct": 7.93,
         "momChangePct": -0.11,
         "yoyChangePct": -10.44,
         "availableRangeLabels": [
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "津门湖柏溪花园视野开阔,临湖一=小区中间位置",
+            "title": "此房满五年,精装修。通透户型,好楼层,可观湖。",
             "roomCount": 3,
-            "areaSqm": 156,
-            "totalPriceWan": 480,
-            "unitPriceYuanPerSqm": 30769
-          },
-          {
-            "title": "津门湖柏溪园精装三室采光好靠近花园",
-            "roomCount": 3,
-            "areaSqm": 155.2,
-            "totalPriceWan": 500,
-            "unitPriceYuanPerSqm": 32216
+            "areaSqm": 130.23,
+            "totalPriceWan": 350,
+            "unitPriceYuanPerSqm": 26876
           },
           {
             "title": "富力津门湖柏溪花园3室2厅南北",
             "roomCount": 3,
-            "areaSqm": 134.7,
-            "totalPriceWan": 310,
-            "unitPriceYuanPerSqm": 23015
+            "areaSqm": 135.3,
+            "totalPriceWan": 350,
+            "unitPriceYuanPerSqm": 25869
+          },
+          {
+            "title": "柏溪临湖三室过五年没大税业主急售",
+            "roomCount": 3,
+            "areaSqm": 136.86,
+            "totalPriceWan": 288,
+            "unitPriceYuanPerSqm": 21044
           }
         ]
       },
@@ -104,7 +104,7 @@
         ],
         "listingCount": null,
         "districtName": "西青",
-        "districtPremiumPct": 5.9,
+        "districtPremiumPct": 5.89,
         "momChangePct": 0.6,
         "yoyChangePct": -5.58,
         "availableRangeLabels": [
