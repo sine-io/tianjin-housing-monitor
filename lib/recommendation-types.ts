@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const RECOMMENDATION_RESULT_SCHEMA_VERSION = 1;
 
 export type RecommendationAction =
@@ -82,4 +84,84 @@ export interface RecommendationResult {
   explanation: RecommendationExplanation;
   basketRanking: TargetBasketRankingEntry[];
   trace: RecommendationTrace;
+}
+
+const recommendationEvidenceItemSchema: z.ZodType<RecommendationEvidenceItem> = z
+  .object({
+    label: z.string().min(1),
+    summary: z.string().min(1),
+    value: z.string().min(1).optional(),
+  })
+  .strict();
+
+const targetBasketRankingEntrySchema: z.ZodType<TargetBasketRankingEntry> = z
+  .object({
+    communityId: z.string().min(1),
+    displayName: z.string().min(1),
+    score: z.number(),
+    reasoning: z.string().min(1),
+  })
+  .strict();
+
+const recommendationTraceSchema: z.ZodType<RecommendationTrace> = z
+  .object({
+    matchedRuleIds: z.array(z.string().min(1)),
+    blockingChecks: z.array(
+      z
+        .object({
+          reasonCode: z.union([
+            z.literal("invalid_input"),
+            z.literal("stale_anchor"),
+            z.literal("insufficient_evidence"),
+            z.literal("contradictory_signal"),
+          ]),
+          triggered: z.boolean(),
+        })
+        .strict(),
+    ),
+    notes: z.array(z.string()),
+  })
+  .strict();
+
+export const recommendationResultSchema: z.ZodType<RecommendationResult> = z
+  .object({
+    schemaVersion: z.literal(RECOMMENDATION_RESULT_SCHEMA_VERSION),
+    householdId: z.string().min(1),
+    configVersion: z.string().min(1),
+    sourceSnapshotId: z.string().min(1),
+    generatedAt: z.string().min(1),
+    blocking: z
+      .object({
+        isBlocked: z.boolean(),
+        reasonCode: z
+          .union([
+            z.literal("invalid_input"),
+            z.literal("stale_anchor"),
+            z.literal("insufficient_evidence"),
+            z.literal("contradictory_signal"),
+          ])
+          .nullable(),
+      })
+      .strict(),
+    action: z
+      .union([
+        z.literal("continue_wait"),
+        z.literal("can_view"),
+        z.literal("can_negotiate"),
+      ])
+      .nullable(),
+    explanation: z
+      .object({
+        strongestSupport: z.array(recommendationEvidenceItemSchema),
+        strongestCounterevidence: z.array(recommendationEvidenceItemSchema),
+        flipConditions: z.array(recommendationEvidenceItemSchema),
+      })
+      .strict(),
+    basketRanking: z.array(targetBasketRankingEntrySchema),
+    trace: recommendationTraceSchema,
+  })
+  .strict();
+
+export function validateRecommendationResult(value: unknown): RecommendationResult {
+  return recommendationResultSchema.parse(value);
 }
