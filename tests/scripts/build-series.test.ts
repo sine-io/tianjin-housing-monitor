@@ -112,9 +112,12 @@ function collectFixturesIntoRuns({
 }
 
 function overwriteRunArtifactsForPrimarySegmentCoverage(runsDir: string): void {
+  const fixedGeneratedAt = "2026-04-04T03:43:21.849Z";
+
   for (const fileName of listJsonFiles(runsDir)) {
     const filePath = resolve(runsDir, fileName);
     const runArtifact = readJsonFile<{
+      generatedAt: string;
       communities: Record<
         string,
         {
@@ -125,6 +128,7 @@ function overwriteRunArtifactsForPrimarySegmentCoverage(runsDir: string): void {
       >;
     }>(filePath);
 
+    runArtifact.generatedAt = fixedGeneratedAt;
     runArtifact.communities["mingquan-huayuan"]!.fangCommunity.currentListingTeasers =
       [
         {
