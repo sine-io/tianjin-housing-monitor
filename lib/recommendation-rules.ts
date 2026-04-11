@@ -7,10 +7,12 @@ import type {
 
 export interface RecommendationDerivedMetrics {
   anchorFreshness: AnchorFreshness;
+  decisionWindowMonths: 3 | 6 | 12;
   strongTargetCount: number;
   bestRelativeSpreadPct: number | null;
   bestMomentum: RecommendationMomentum | null;
   marketMom: number | null;
+  contradictorySignal: boolean;
 }
 
 type EvaluatorKey = keyof RecommendationDerivedMetrics;
@@ -20,7 +22,7 @@ type RuleOperator = "eq" | "lte" | "gte";
 export interface RuleCondition {
   evaluator: EvaluatorKey;
   operator: RuleOperator;
-  value: string | number | null;
+  value: string | number | boolean | null;
 }
 
 export interface BlockingRule {
@@ -56,25 +58,77 @@ export const blockingRules: BlockingRule[] = [
     reasonCode: "insufficient_evidence",
     conditions: [{ evaluator: "bestRelativeSpreadPct", operator: "eq", value: null }],
   },
+  {
+    id: "block-missing-market-context",
+    reasonCode: "insufficient_evidence",
+    conditions: [{ evaluator: "marketMom", operator: "eq", value: null }],
+  },
+  {
+    id: "block-contradictory-signal",
+    reasonCode: "contradictory_signal",
+    conditions: [{ evaluator: "contradictorySignal", operator: "eq", value: true }],
+  },
 ];
 
 export const actionRules: ActionRule[] = [
   {
+    id: "action-can-negotiate-fast-window",
+    action: "can_negotiate",
+    conditions: [
+      { evaluator: "decisionWindowMonths", operator: "eq", value: 3 },
+      { evaluator: "bestRelativeSpreadPct", operator: "lte", value: -6 },
+      { evaluator: "strongTargetCount", operator: "gte", value: 1 },
+      { evaluator: "marketMom", operator: "lte", value: 100.1 },
+    ],
+  },
+  {
     id: "action-can-negotiate",
     action: "can_negotiate",
     conditions: [
+      { evaluator: "decisionWindowMonths", operator: "eq", value: 6 },
       { evaluator: "bestRelativeSpreadPct", operator: "lte", value: -8 },
       { evaluator: "strongTargetCount", operator: "gte", value: 1 },
       { evaluator: "marketMom", operator: "lte", value: 99.8 },
     ],
   },
   {
+    id: "action-can-negotiate-slow-window",
+    action: "can_negotiate",
+    conditions: [
+      { evaluator: "decisionWindowMonths", operator: "eq", value: 12 },
+      { evaluator: "bestRelativeSpreadPct", operator: "lte", value: -10 },
+      { evaluator: "strongTargetCount", operator: "gte", value: 1 },
+      { evaluator: "marketMom", operator: "lte", value: 99.6 },
+    ],
+  },
+  {
+    id: "action-can-view-fast-window",
+    action: "can_view",
+    conditions: [
+      { evaluator: "decisionWindowMonths", operator: "eq", value: 3 },
+      { evaluator: "bestRelativeSpreadPct", operator: "lte", value: -2 },
+      { evaluator: "strongTargetCount", operator: "gte", value: 1 },
+      { evaluator: "marketMom", operator: "lte", value: 100.3 },
+    ],
+  },
+  {
     id: "action-can-view",
     action: "can_view",
     conditions: [
+      { evaluator: "decisionWindowMonths", operator: "eq", value: 6 },
       { evaluator: "bestRelativeSpreadPct", operator: "lte", value: -3 },
       { evaluator: "strongTargetCount", operator: "gte", value: 1 },
       { evaluator: "marketMom", operator: "lte", value: 100.2 },
+    ],
+  },
+  {
+    id: "action-can-view-slow-window",
+    action: "can_view",
+    conditions: [
+      { evaluator: "decisionWindowMonths", operator: "eq", value: 12 },
+      { evaluator: "bestRelativeSpreadPct", operator: "lte", value: -5 },
+      { evaluator: "strongTargetCount", operator: "gte", value: 1 },
+      { evaluator: "marketMom", operator: "lte", value: 100.0 },
     ],
   },
 ];

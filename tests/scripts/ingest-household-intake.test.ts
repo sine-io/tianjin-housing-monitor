@@ -160,6 +160,35 @@ describe("scripts/ingest-household-intake.ts", () => {
     expect(existsSync(resolve(privateRoot, "raw-intake"))).toBe(false);
   }, 15_000);
 
+  it("rejects unknown target basket community ids", () => {
+    const privateRoot = makeTempPrivateRoot();
+    const inputPath = makeInputPath(privateRoot, {
+      schemaVersion: 1,
+      householdId: "qinhe-to-meijiang",
+      submittedAt: "2026-04-11T12:00:00.000Z",
+      currentHome: {
+        anchorPriceWan: 210,
+        anchorUpdatedAt: "2026-04-10T12:00:00.000Z",
+      },
+      targetBasket: [{ communityId: "unknown-community" }],
+      decisionWindowMonths: 6,
+    });
+
+    expect(() =>
+      execFileSync(
+        TSX_PATH,
+        [
+          "scripts/ingest-household-intake.ts",
+          "--input-path",
+          inputPath,
+          "--private-root",
+          privateRoot,
+        ],
+        { cwd: resolve("."), stdio: "pipe" },
+      ),
+    ).toThrow(/Unknown target basket communityId/);
+  }, 15_000);
+
   it("keeps private intake artifacts outside public data roots", () => {
     const privateRoot = makeTempPrivateRoot();
     const inputPath = makeInputPath(privateRoot, {
@@ -192,5 +221,35 @@ describe("scripts/ingest-household-intake.ts", () => {
     expect(
       existsSync(resolve("site", "public", "data", "raw-intake", "qinhe-to-meijiang.json")),
     ).toBe(false);
+  }, 15_000);
+
+  it("rejects private roots nested under public data directories", () => {
+    const unsafePrivateRoot = resolve("site", "public", "data", "unsafe-household-intake");
+    temporaryRoots.push(unsafePrivateRoot);
+    const inputPath = makeInputPath(unsafePrivateRoot, {
+      schemaVersion: 1,
+      householdId: "qinhe-to-meijiang",
+      submittedAt: "2026-04-11T12:00:00.000Z",
+      currentHome: {
+        anchorPriceWan: 210,
+        anchorUpdatedAt: "2026-04-10T12:00:00.000Z",
+      },
+      targetBasket: [{ communityId: "mingquan-huayuan" }],
+      decisionWindowMonths: 6,
+    });
+
+    expect(() =>
+      execFileSync(
+        TSX_PATH,
+        [
+          "scripts/ingest-household-intake.ts",
+          "--input-path",
+          inputPath,
+          "--private-root",
+          unsafePrivateRoot,
+        ],
+        { cwd: resolve("."), stdio: "pipe" },
+      ),
+    ).toThrow(/Private artifact root must stay outside/);
   }, 15_000);
 });

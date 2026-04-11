@@ -73,12 +73,19 @@ function deriveMetrics(input: RecommendationInput): RecommendationDerivedMetrics
       input.generatedAt,
       DEFAULT_ANCHOR_STALE_AFTER_DAYS,
     ),
+    decisionWindowMonths: input.decisionWindowMonths,
     strongTargetCount: input.targetBasket.filter(
       (entry) => entry.signalStrength === "strong" && entry.relativeSpreadPct !== null,
     ).length,
     bestRelativeSpreadPct: matchingTopTarget?.relativeSpreadPct ?? null,
     bestMomentum: matchingTopTarget?.momentum ?? null,
     marketMom: input.marketContext.secondaryHomePriceIndexMom,
+    contradictorySignal:
+      matchingTopTarget !== undefined &&
+      matchingTopTarget.relativeSpreadPct !== null &&
+      matchingTopTarget.relativeSpreadPct <= -3 &&
+      (matchingTopTarget.momentum === "weakening" ||
+        (input.marketContext.secondaryHomePriceIndexMom ?? 0) > 100),
   };
 }
 
@@ -260,7 +267,7 @@ export function buildRecommendation(input: RecommendationInput): RecommendationR
     },
     basketRanking: rankedTargets,
     trace: {
-      matchedRuleIds: matchedActionRule ? [matchedActionRule.id] : [],
+      matchedRuleIds: [matchedActionRule?.id ?? "default-continue-wait"],
       blockingChecks: blockingRules.map((rule) => ({
         reasonCode: rule.reasonCode,
         triggered: false,

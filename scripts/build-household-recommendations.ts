@@ -1,10 +1,17 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { resolve, relative } from "node:path";
+import { resolve } from "node:path";
 
 import { loadCommunities, loadSegments } from "../lib/config";
-import { validateHouseholdConfig } from "../lib/household-config";
+import {
+  assertKnownTargetBasketCommunityIds,
+  validateHouseholdConfig,
+} from "../lib/household-config";
 import { buildRecommendation } from "../lib/recommendation-engine";
-import { resolveDataPaths, resolvePrivateArtifactPaths } from "../lib/paths";
+import {
+  assertPathOutsideRoots,
+  resolveDataPaths,
+  resolvePrivateArtifactPaths,
+} from "../lib/paths";
 import type { SegmentTemplate } from "../lib/types";
 
 const PRIVATE_ROOT_ENV_VAR = "PROPPULSE_PRIVATE_ROOT";
@@ -108,14 +115,6 @@ function sanitizeFileComponent(value: string): string {
   return value.replaceAll(/[^\w.-]+/g, "-");
 }
 
-function ensureOutside(path: string, root: string, label: string): void {
-  const rel = relative(root, path);
-
-  if (rel === "" || (!rel.startsWith("..") && rel !== ".")) {
-    throw new Error(`${label} must stay outside ${root}`);
-  }
-}
-
 function estimateTargetTotalPriceWan(
   listingUnitPriceMedian: number,
   segment: SegmentTemplate,
@@ -186,12 +185,18 @@ async function main(): Promise<void> {
   );
   const { report, snapshotId } = loadLatestReport(dataDir);
 
-  ensureOutside(privatePaths.privateRoot, dataPaths.dataDir, "Private artifact root");
-  ensureOutside(privatePaths.privateRoot, dataPaths.publicDir, "Private artifact root");
+  assertPathOutsideRoots(privatePaths.privateRoot, "Private artifact root", [
+    dataPaths.dataDir,
+    dataPaths.publicDir,
+  ]);
 
   mkdirSync(privatePaths.recommendationsDir, { recursive: true });
 
   for (const householdConfig of loadConfirmedHouseholdConfigs(privateRoot)) {
+    assertKnownTargetBasketCommunityIds(
+      householdConfig.targetBasket,
+      new Set(communities.map((community) => community.id)),
+    );
     const targetBasket = householdConfig.targetBasket.map((entry) => {
       const segment = segmentsByCommunityId.get(entry.communityId);
       const reportCommunity = report.communities[entry.communityId];
@@ -244,8 +249,10 @@ async function main(): Promise<void> {
       `${sanitizeFileComponent(householdConfig.configVersion)}--${snapshotId}.json`,
     );
 
-    ensureOutside(outputPath, dataPaths.dataDir, "Recommendation artifact");
-    ensureOutside(outputPath, dataPaths.publicDir, "Recommendation artifact");
+    assertPathOutsideRoots(outputPath, "Recommendation artifact", [
+      dataPaths.dataDir,
+      dataPaths.publicDir,
+    ]);
 
     mkdirSync(householdRecommendationDir, { recursive: true });
     writeFileSync(outputPath, JSON.stringify(result, null, 2));

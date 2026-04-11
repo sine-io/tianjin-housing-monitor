@@ -1,7 +1,12 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { resolvePrivateArtifactPaths } from "../lib/paths";
+import {
+  assertPathOutsideRoots,
+  defaultPublicDataDir,
+  DATA_DIR,
+  resolvePrivateArtifactPaths,
+} from "../lib/paths";
 import {
   validateRecommendationResult,
   type RecommendationResult,
@@ -44,6 +49,15 @@ function readJsonFile<T>(filePath: string): T {
   return JSON.parse(readFileSync(filePath, "utf8")) as T;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function formatAction(action: RecommendationResult["action"]): string {
   switch (action) {
     case "continue_wait":
@@ -64,7 +78,10 @@ function formatEvidenceList(
   const content =
     items.length > 0
       ? `<ul>${items
-          .map((item) => `<li><strong>${item.label}</strong>：${item.summary}</li>`)
+          .map(
+            (item) =>
+              `<li><strong>${escapeHtml(item.label)}</strong>：${escapeHtml(item.summary)}</li>`,
+          )
           .join("")}</ul>`
       : "<p>暂无</p>";
 
@@ -76,15 +93,15 @@ function renderMemoPage(result: RecommendationResult): string {
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <title>${result.householdId} recommendation memo</title>
+    <title>${escapeHtml(result.householdId)} recommendation memo</title>
   </head>
   <body>
     <main>
       <h1>${formatAction(result.action)}</h1>
-      <p>生成时间：${result.generatedAt}</p>
+      <p>生成时间：${escapeHtml(result.generatedAt)}</p>
       ${
         result.blocking.isBlocked
-          ? `<p>当前不建议依据这次结果行动。原因：${result.blocking.reasonCode}</p>`
+          ? `<p>当前不建议依据这次结果行动。原因：${escapeHtml(result.blocking.reasonCode ?? "unknown")}</p>`
           : "<p>这是当前家庭级置换动作建议。</p>"
       }
       ${formatEvidenceList("最强支持证据", result.explanation.strongestSupport)}
@@ -96,7 +113,7 @@ function renderMemoPage(result: RecommendationResult): string {
           ${result.basketRanking
             .map(
               (entry) =>
-                `<li><strong>${entry.displayName}</strong>：${entry.reasoning}</li>`,
+                `<li><strong>${escapeHtml(entry.displayName)}</strong>：${escapeHtml(entry.reasoning)}</li>`,
             )
             .join("")}
         </ol>
@@ -116,43 +133,53 @@ function renderFamilyBrief(result: RecommendationResult): string {
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <title>${result.householdId} family brief</title>
+    <title>${escapeHtml(result.householdId)} family brief</title>
   </head>
   <body>
     <main>
       <h1>${formatAction(result.action)}</h1>
       <p>${result.blocking.isBlocked ? "当前先不要依据这次结果行动。" : "这是给家人看的简版结论。"}</p>
-      <p>最强理由：${strongestSupport}</p>
-      <p>主要风险：${strongestCounterevidence}</p>
-      <p>如果情况变化：${flipCondition}</p>
+      <p>最强理由：${escapeHtml(strongestSupport)}</p>
+      <p>主要风险：${escapeHtml(strongestCounterevidence)}</p>
+      <p>如果情况变化：${escapeHtml(flipCondition)}</p>
     </main>
   </body>
 </html>`;
 }
 
 function renderAuditArtifact(result: RecommendationResult): string {
-  return `# Audit: ${result.householdId}
+  return `# Audit: ${escapeHtml(result.householdId)}
 
-- Generated at: ${result.generatedAt}
-- Action: ${formatAction(result.action)}
+- Generated at: ${escapeHtml(result.generatedAt)}
+- Action: ${escapeHtml(formatAction(result.action))}
 - Blocked: ${result.blocking.isBlocked}
-- Blocking reason: ${result.blocking.reasonCode ?? "none"}
-- Config version: ${result.configVersion}
-- Source snapshot: ${result.sourceSnapshotId}
+- Blocking reason: ${escapeHtml(result.blocking.reasonCode ?? "none")}
+- Config version: ${escapeHtml(result.configVersion)}
+- Source snapshot: ${escapeHtml(result.sourceSnapshotId)}
 
 ## Trace Notes
 
-${result.trace.notes.map((note) => `- ${note}`).join("\n")}
+${result.trace.notes.map((note) => `- ${escapeHtml(note)}`).join("\n")}
 
 ## Matched Rules
 
-${result.trace.matchedRuleIds.length > 0 ? result.trace.matchedRuleIds.map((ruleId) => `- ${ruleId}`).join("\n") : "- none"}
+${result.trace.matchedRuleIds.length > 0 ? result.trace.matchedRuleIds.map((ruleId) => `- ${escapeHtml(ruleId)}`).join("\n") : "- none"}
 `;
 }
 
 async function main(): Promise<void> {
   const { privateRoot } = parseCommandLineArguments(process.argv.slice(2));
   const privatePaths = resolvePrivateArtifactPaths(privateRoot);
+  assertPathOutsideRoots(privatePaths.privateRoot, "Private artifact root", [
+    DATA_DIR,
+    defaultPublicDataDir(),
+  ]);
+
+  const renderQueue: Array<{
+    householdId: string;
+    versionSlug: string;
+    result: RecommendationResult;
+  }> = [];
 
   for (const householdId of readdirSync(privatePaths.recommendationsDir).sort()) {
     const householdRecommendationDir = resolve(privatePaths.recommendationsDir, householdId);
@@ -166,17 +193,27 @@ async function main(): Promise<void> {
         readJsonFile(resolve(householdRecommendationDir, entry)),
       );
       const versionSlug = entry.replace(/\.json$/, "");
-      const outputDir = resolve(privatePaths.outputDir, householdId, versionSlug);
-      const auditDir = resolve(privatePaths.auditDir, householdId);
-
-      mkdirSync(outputDir, { recursive: true });
-      mkdirSync(auditDir, { recursive: true });
-
-      writeFileSync(resolve(outputDir, "memo.html"), renderMemoPage(result));
-      writeFileSync(resolve(outputDir, "family-brief.html"), renderFamilyBrief(result));
-      writeFileSync(resolve(auditDir, `${versionSlug}.md`), renderAuditArtifact(result));
+      renderQueue.push({ householdId, versionSlug, result });
     }
   }
+
+  for (const item of renderQueue) {
+    const outputDir = resolve(privatePaths.outputDir, item.householdId, item.versionSlug);
+    const auditDir = resolve(privatePaths.auditDir, item.householdId);
+
+    mkdirSync(outputDir, { recursive: true });
+    mkdirSync(auditDir, { recursive: true });
+
+    writeFileSync(resolve(outputDir, "memo.html"), renderMemoPage(item.result));
+    writeFileSync(
+      resolve(outputDir, "family-brief.html"),
+      renderFamilyBrief(item.result),
+    );
+    writeFileSync(
+      resolve(auditDir, `${item.versionSlug}.md`),
+      renderAuditArtifact(item.result),
+    );
+    }
 }
 
 main().catch((error: unknown) => {

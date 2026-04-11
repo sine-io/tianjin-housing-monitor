@@ -1,4 +1,4 @@
-import { dirname, posix, resolve } from "node:path";
+import { dirname, posix, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
@@ -78,6 +78,29 @@ export function resolvePrivateArtifactPaths(
     auditDir: resolve(resolvedPrivateRoot, "audit"),
     outputDir: resolve(resolvedPrivateRoot, "output"),
   };
+}
+
+export function assertPathOutsideRoots(
+  candidatePath: string,
+  label: string,
+  disallowedRoots: readonly string[],
+): void {
+  const resolvedCandidatePath = resolve(candidatePath);
+
+  for (const root of disallowedRoots) {
+    const resolvedRoot = resolve(root);
+    const relativePath = relative(resolvedRoot, resolvedCandidatePath);
+
+    if (
+      resolvedCandidatePath === resolvedRoot ||
+      (relativePath !== ".." &&
+        !relativePath.startsWith("../") &&
+        relativePath !== "." &&
+        relativePath.length > 0)
+    ) {
+      throw new Error(`${label} must stay outside ${resolvedRoot}`);
+    }
+  }
 }
 
 export function communitySegmentPath(

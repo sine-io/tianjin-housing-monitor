@@ -80,6 +80,66 @@ describe("lib/recommendation-engine buildRecommendation", () => {
     expect(result.blocking.reasonCode).toBe("insufficient_evidence");
   });
 
+  it("blocks on future anchors as invalid input", () => {
+    const result = buildRecommendation(
+      makeInput({
+        currentHome: {
+          anchorPriceWan: 210,
+          anchorUpdatedAt: "2026-04-12T12:00:00.000Z",
+        },
+      }),
+    );
+
+    expect(result.blocking).toEqual({
+      isBlocked: true,
+      reasonCode: "invalid_input",
+    });
+    expect(result.action).toBeNull();
+  });
+
+  it("blocks when market context is missing instead of defaulting to continue_wait", () => {
+    const result = buildRecommendation(
+      makeInput({
+        marketContext: {
+          secondaryHomePriceIndexMom: null,
+        },
+      }),
+    );
+
+    expect(result.blocking).toEqual({
+      isBlocked: true,
+      reasonCode: "insufficient_evidence",
+    });
+    expect(result.action).toBeNull();
+  });
+
+  it("blocks on contradictory signals", () => {
+    const result = buildRecommendation(
+      makeInput({
+        marketContext: {
+          secondaryHomePriceIndexMom: 100.4,
+          verdict: "中性",
+        },
+        targetBasket: [
+          {
+            communityId: "mingquan-huayuan",
+            displayName: "鸣泉花园",
+            relativeSpreadPct: -4.5,
+            listingCount: 5,
+            signalStrength: "strong",
+            momentum: "weakening",
+          },
+        ],
+      }),
+    );
+
+    expect(result.blocking).toEqual({
+      isBlocked: true,
+      reasonCode: "contradictory_signal",
+    });
+    expect(result.action).toBeNull();
+  });
+
   it.each([
     {
       name: "returns can_negotiate when spread is deeply favorable",
@@ -190,5 +250,41 @@ describe("lib/recommendation-engine buildRecommendation", () => {
       "boxi-huayuan",
       "wanke-dongdi",
     ]);
+  });
+
+  it("changes recommendation thresholds by decision window", () => {
+    const fastWindowResult = buildRecommendation(
+      makeInput({
+        decisionWindowMonths: 3,
+        targetBasket: [
+          {
+            communityId: "mingquan-huayuan",
+            displayName: "鸣泉花园",
+            relativeSpreadPct: -2.5,
+            listingCount: 5,
+            signalStrength: "strong",
+            momentum: "flat",
+          },
+        ],
+      }),
+    );
+    const slowWindowResult = buildRecommendation(
+      makeInput({
+        decisionWindowMonths: 12,
+        targetBasket: [
+          {
+            communityId: "mingquan-huayuan",
+            displayName: "鸣泉花园",
+            relativeSpreadPct: -2.5,
+            listingCount: 5,
+            signalStrength: "strong",
+            momentum: "flat",
+          },
+        ],
+      }),
+    );
+
+    expect(fastWindowResult.action).toBe("can_view");
+    expect(slowWindowResult.action).toBe("continue_wait");
   });
 });

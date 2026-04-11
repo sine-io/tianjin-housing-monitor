@@ -20,7 +20,6 @@ const householdIdSchema = z
 const targetBasketEntrySchema = z
   .object({
     communityId: z.string().trim().min(1),
-    weight: z.number().positive().max(1).optional(),
   })
   .strict();
 
@@ -96,6 +95,17 @@ export const rawHouseholdIntakeArtifactSchema = z
 export type RawHouseholdIntakeArtifact = z.infer<typeof rawHouseholdIntakeArtifactSchema>;
 
 export type AnchorFreshness = "fresh" | "stale" | "future";
+
+export function assertKnownTargetBasketCommunityIds(
+  targetBasket: HouseholdConfig["targetBasket"] | HouseholdIntake["targetBasket"],
+  validCommunityIds: ReadonlySet<string>,
+): void {
+  for (const entry of targetBasket) {
+    if (!validCommunityIds.has(entry.communityId)) {
+      throw new Error(`Unknown target basket communityId: ${entry.communityId}`);
+    }
+  }
+}
 
 export function validateHouseholdConfig(value: unknown): HouseholdConfig {
   return householdConfigSchema.parse(value);

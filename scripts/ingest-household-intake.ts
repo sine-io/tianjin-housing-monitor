@@ -2,10 +2,17 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import {
+  assertKnownTargetBasketCommunityIds,
   buildRawHouseholdIntakeArtifact,
   validateHouseholdIntake,
 } from "../lib/household-config";
-import { resolvePrivateArtifactPaths } from "../lib/paths";
+import { loadCommunities } from "../lib/config";
+import {
+  assertPathOutsideRoots,
+  defaultPublicDataDir,
+  DATA_DIR,
+  resolvePrivateArtifactPaths,
+} from "../lib/paths";
 
 const PRIVATE_ROOT_ENV_VAR = "PROPPULSE_PRIVATE_ROOT";
 
@@ -75,7 +82,15 @@ function makeRawArtifactPath(
 async function main(): Promise<void> {
   const { inputPath, privateRoot } = parseCommandLineArguments(process.argv.slice(2));
   const artifactPaths = resolvePrivateArtifactPaths(privateRoot);
+  assertPathOutsideRoots(artifactPaths.privateRoot, "Private artifact root", [
+    DATA_DIR,
+    defaultPublicDataDir(),
+  ]);
   const intake = validateHouseholdIntake(readJsonFile(inputPath));
+  assertKnownTargetBasketCommunityIds(
+    intake.targetBasket,
+    new Set(loadCommunities().map((community) => community.id)),
+  );
   const rawArtifact = buildRawHouseholdIntakeArtifact(intake);
   const outputPath = makeRawArtifactPath(
     artifactPaths.rawIntakeDir,

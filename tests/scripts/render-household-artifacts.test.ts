@@ -188,6 +188,9 @@ describe("scripts/render-household-artifacts.ts", () => {
     expect(existsSync(auditPath)).toBe(true);
     expect(readFileSync(auditPath, "utf8")).toContain("Matched Rules");
     expect(readFileSync(auditPath, "utf8")).toContain("default-continue-wait");
+    expect(readFileSync(auditPath, "utf8")).toContain("Blocking reason: none");
+    expect(readFileSync(auditPath, "utf8")).toContain("Config version: 2026-04-11T12:00:00.000Z");
+    expect(readFileSync(auditPath, "utf8")).toContain("Source snapshot: snapshot-2026-04-11");
   }, 15_000);
 
   it("fails cleanly on malformed recommendation results without generating partial output", () => {
@@ -209,5 +212,159 @@ describe("scripts/render-household-artifacts.ts", () => {
     expect(existsSync(resolve(privateRoot, "output", "qinhe-to-meijiang"))).toBe(
       false,
     );
+  }, 15_000);
+
+  it("does not write partial output when a later recommendation file is malformed", () => {
+    const privateRoot = makeTempPrivateRoot();
+    writeRecommendation(privateRoot, {
+      schemaVersion: 1,
+      householdId: "qinhe-to-meijiang",
+      configVersion: "2026-04-11T12:00:00.000Z",
+      sourceSnapshotId: "snapshot-2026-04-11",
+      generatedAt: "2026-04-11T12:00:00.000Z",
+      blocking: { isBlocked: false, reasonCode: null },
+      action: "continue_wait",
+      explanation: {
+        strongestSupport: [{ label: "支持", summary: "继续等待更稳。" }],
+        strongestCounterevidence: [{ label: "反证", summary: "也许会错过窗口。" }],
+        flipConditions: [{ label: "翻转", summary: "价差进入 -3% 及以下时升级。" }],
+      },
+      basketRanking: [],
+      trace: {
+        matchedRuleIds: ["default-continue-wait"],
+        blockingChecks: [{ reasonCode: "insufficient_evidence", triggered: false }],
+        notes: ["top-target:mingquan-huayuan"],
+      },
+    });
+    writeFileSync(
+      resolve(
+        privateRoot,
+        "recommendations",
+        "qinhe-to-meijiang",
+        "2026-04-12T12-00-00.000Z--snapshot-2026-04-12.json",
+      ),
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          householdId: "qinhe-to-meijiang",
+        },
+        null,
+        2,
+      ),
+    );
+
+    expect(() =>
+      execFileSync(
+        TSX_PATH,
+        ["scripts/render-household-artifacts.ts", "--private-root", privateRoot],
+        { cwd: resolve("."), stdio: "pipe" },
+      ),
+    ).toThrow();
+
+    expect(existsSync(resolve(privateRoot, "output", "qinhe-to-meijiang"))).toBe(
+      false,
+    );
+  }, 15_000);
+
+  it("escapes dynamic strings in rendered html outputs", () => {
+    const privateRoot = makeTempPrivateRoot();
+    writeRecommendation(privateRoot, {
+      schemaVersion: 1,
+      householdId: "qinhe-<script>",
+      configVersion: "2026-04-11T12:00:00.000Z",
+      sourceSnapshotId: "snapshot-2026-04-11",
+      generatedAt: "2026-04-11T12:00:00.000Z",
+      blocking: { isBlocked: false, reasonCode: null },
+      action: "continue_wait",
+      explanation: {
+        strongestSupport: [{ label: "<b>支持</b>", summary: "<script>alert(1)</script>" }],
+        strongestCounterevidence: [{ label: "反证", summary: "也许会错过窗口。" }],
+        flipConditions: [{ label: "翻转", summary: "价差进入 -3% 及以下时升级。" }],
+      },
+      basketRanking: [
+        {
+          communityId: "mingquan-huayuan",
+          displayName: "<img src=x>",
+          score: 1,
+          reasoning: "<script>basket</script>",
+        },
+      ],
+      trace: {
+        matchedRuleIds: ["default-continue-wait"],
+        blockingChecks: [{ reasonCode: "insufficient_evidence", triggered: false }],
+        notes: ["top-target:<unsafe>"],
+      },
+    });
+
+    execFileSync(
+      TSX_PATH,
+      ["scripts/render-household-artifacts.ts", "--private-root", privateRoot],
+      { cwd: resolve("."), stdio: "pipe" },
+    );
+
+    const memoHtml = readFileSync(
+      resolve(
+        privateRoot,
+        "output",
+        "qinhe-to-meijiang",
+        "2026-04-11T12-00-00.000Z--snapshot-2026-04-11",
+        "memo.html",
+      ),
+      "utf8",
+    );
+
+    expect(memoHtml).toContain("&lt;script&gt;alert(1)&lt;/script&gt;");
+    expect(memoHtml).toContain("&lt;img src=x&gt;");
+    expect(memoHtml).not.toContain("<script>alert(1)</script>");
+  }, 15_000);
+
+  it("rejects private roots nested under public data directories", () => {
+    const unsafePrivateRoot = resolve("site", "public", "data", "unsafe-render-artifacts");
+    const recommendationDir = resolve(
+      unsafePrivateRoot,
+      "recommendations",
+      "qinhe-to-meijiang",
+    );
+    mkdirSync(recommendationDir, { recursive: true });
+    temporaryRoots.push(unsafePrivateRoot);
+
+    writeFileSync(
+      resolve(
+        recommendationDir,
+        "2026-04-11T12-00-00.000Z--snapshot-2026-04-11.json",
+      ),
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          householdId: "qinhe-to-meijiang",
+          configVersion: "2026-04-11T12:00:00.000Z",
+          sourceSnapshotId: "snapshot-2026-04-11",
+          generatedAt: "2026-04-11T12:00:00.000Z",
+          blocking: { isBlocked: false, reasonCode: null },
+          action: "continue_wait",
+          explanation: {
+            strongestSupport: [{ label: "支持", summary: "继续等待更稳。" }],
+            strongestCounterevidence: [{ label: "反证", summary: "也许会错过窗口。" }],
+            flipConditions: [{ label: "翻转", summary: "价差进入 -3% 及以下时升级。" }],
+          },
+          basketRanking: [],
+          trace: {
+            matchedRuleIds: ["default-continue-wait"],
+            blockingChecks: [{ reasonCode: "insufficient_evidence", triggered: false }],
+            notes: ["top-target:mingquan-huayuan"],
+          },
+        },
+        null,
+        2,
+      ),
+    );
+
+    expect(() =>
+      execFileSync(
+        TSX_PATH,
+        ["scripts/render-household-artifacts.ts", "--private-root", unsafePrivateRoot],
+        { cwd: resolve("."), stdio: "pipe" },
+      ),
+    ).toThrow(/Private artifact root must stay outside/);
   }, 15_000);
 });

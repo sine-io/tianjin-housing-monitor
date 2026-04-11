@@ -162,7 +162,18 @@ describe("scripts/build-household-recommendations.ts", () => {
       householdId: "qinhe-to-meijiang",
       configVersion: "2026-04-11T12:00:00.000Z",
       sourceSnapshotId: "2026-04-11T12-00-00.000Z",
+      blocking: {
+        isBlocked: false,
+        reasonCode: null,
+      },
+      action: "can_view",
     });
+    expect(result.explanation.strongestSupport[0]?.summary).toContain("看房");
+    expect(result.basketRanking[0]).toMatchObject({
+      communityId: "mingquan-huayuan",
+      displayName: "鸣泉花园",
+    });
+    expect(result.trace.notes).toContain("top-target:mingquan-huayuan");
   }, 15_000);
 
   it("preserves prior recommendation versions when configVersion changes", () => {
@@ -263,5 +274,98 @@ describe("scripts/build-household-recommendations.ts", () => {
         { cwd: resolve("."), stdio: "pipe" },
       ),
     ).toThrow();
+  }, 15_000);
+
+  it("treats manual samples as strong signal when listing count alone is thin", () => {
+    const { dataDir, privateRoot } = makeTempWorkspace();
+    writeCurrentHouseholdConfig(privateRoot, "2026-04-11T12:00:00.000Z");
+    writeFileSync(
+      resolve(dataDir, "series", "city-market", "tianjin.json"),
+      JSON.stringify(
+        {
+          city: "天津",
+          series: [
+            {
+              date: "2026-04-11",
+              generatedAt: "2026-04-11T12:00:00.000Z",
+              sourceMonth: "2026-03",
+              secondaryHomePriceIndexMom: 99.8,
+              secondaryHomePriceIndexYoy: 95.2,
+              verdict: "偏弱",
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+    );
+    writeFileSync(
+      resolve(dataDir, "reports", "2026-04-11.json"),
+      JSON.stringify(
+        {
+          generatedAt: "2026-04-11T12:00:00.000Z",
+          weekEnding: "2026-04-11",
+          cityMarket: {
+            date: "2026-04-11",
+            generatedAt: "2026-04-11T12:00:00.000Z",
+            sourceMonth: "2026-03",
+            secondaryHomePriceIndexMom: 99.8,
+            secondaryHomePriceIndexYoy: 95.2,
+            verdict: "偏弱",
+          },
+          communities: {
+            "mingquan-huayuan": {
+              name: "鸣泉花园",
+              district: "西青",
+              segments: {
+                "mingquan-2br-87-90": {
+                  label: "2居 87-90㎡",
+                  verdict: "横盘",
+                  latest: {
+                    listingUnitPriceMedian: 22800,
+                    listingUnitPriceMin: 22800,
+                    listingsCount: 1,
+                    suspectedDealCount: 0,
+                    manualDealCount: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+        null,
+        2,
+      ),
+    );
+
+    execFileSync(
+      TSX_PATH,
+      [
+        "scripts/build-household-recommendations.ts",
+        "--data-dir",
+        dataDir,
+        "--private-root",
+        privateRoot,
+      ],
+      { cwd: resolve("."), stdio: "pipe" },
+    );
+
+    const recommendationFiles = readdirSync(
+      resolve(privateRoot, "recommendations", "qinhe-to-meijiang"),
+    );
+    const result = JSON.parse(
+      readFileSync(
+        resolve(
+          privateRoot,
+          "recommendations",
+          "qinhe-to-meijiang",
+          recommendationFiles[0]!,
+        ),
+        "utf8",
+      ),
+    );
+
+    expect(result.blocking.isBlocked).toBe(false);
+    expect(result.action).toBe("can_view");
   }, 15_000);
 });

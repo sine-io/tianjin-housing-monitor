@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  assertKnownTargetBasketCommunityIds,
   classifyAnchorFreshness,
   HOUSEHOLD_CONFIG_SCHEMA_VERSION,
   validateHouseholdConfig,
@@ -21,7 +22,7 @@ describe("lib/household-config validateHouseholdConfig", () => {
         },
         targetBasket: [
           { communityId: "mingquan-huayuan" },
-          { communityId: "boxi-huayuan", weight: 0.8 },
+          { communityId: "boxi-huayuan" },
         ],
         decisionWindowMonths: 6,
       }),
@@ -36,7 +37,7 @@ describe("lib/household-config validateHouseholdConfig", () => {
       },
       targetBasket: [
         { communityId: "mingquan-huayuan" },
-        { communityId: "boxi-huayuan", weight: 0.8 },
+        { communityId: "boxi-huayuan" },
       ],
       decisionWindowMonths: 6,
     });
@@ -76,6 +77,26 @@ describe("lib/household-config validateHouseholdConfig", () => {
         decisionWindowMonths: 5,
       }),
     ).toThrow();
+  });
+});
+
+describe("lib/household-config assertKnownTargetBasketCommunityIds", () => {
+  it("accepts community ids present in the allowlist", () => {
+    expect(() =>
+      assertKnownTargetBasketCommunityIds(
+        [{ communityId: "mingquan-huayuan" }],
+        new Set(["mingquan-huayuan"]),
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects unknown community ids", () => {
+    expect(() =>
+      assertKnownTargetBasketCommunityIds(
+        [{ communityId: "unknown-community" }],
+        new Set(["mingquan-huayuan"]),
+      ),
+    ).toThrow("Unknown target basket communityId: unknown-community");
   });
 });
 
