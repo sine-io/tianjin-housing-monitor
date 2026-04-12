@@ -1,4 +1,4 @@
-import { dirname, posix, resolve } from "node:path";
+import { dirname, posix, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
@@ -22,6 +22,17 @@ export interface DataPaths {
   manualAcceptedDir: string;
   communitiesConfigPath: string;
   segmentsConfigPath: string;
+}
+
+export interface PrivateArtifactPaths {
+  privateRoot: string;
+  rawIntakeDir: string;
+  householdsDir: string;
+  householdsCurrentDir: string;
+  householdsHistoryDir: string;
+  recommendationsDir: string;
+  auditDir: string;
+  outputDir: string;
 }
 
 export function defaultPublicDataDir(dataDir: string = DATA_DIR): string {
@@ -49,6 +60,47 @@ export function resolveDataPaths(
     communitiesConfigPath: resolve(configDir, "communities.json"),
     segmentsConfigPath: resolve(configDir, "segments.json"),
   };
+}
+
+export function resolvePrivateArtifactPaths(
+  privateRoot: string,
+): PrivateArtifactPaths {
+  const resolvedPrivateRoot = resolve(privateRoot);
+  const householdsDir = resolve(resolvedPrivateRoot, "households");
+
+  return {
+    privateRoot: resolvedPrivateRoot,
+    rawIntakeDir: resolve(resolvedPrivateRoot, "raw-intake"),
+    householdsDir,
+    householdsCurrentDir: resolve(householdsDir, "current"),
+    householdsHistoryDir: resolve(householdsDir, "history"),
+    recommendationsDir: resolve(resolvedPrivateRoot, "recommendations"),
+    auditDir: resolve(resolvedPrivateRoot, "audit"),
+    outputDir: resolve(resolvedPrivateRoot, "output"),
+  };
+}
+
+export function assertPathOutsideRoots(
+  candidatePath: string,
+  label: string,
+  disallowedRoots: readonly string[],
+): void {
+  const resolvedCandidatePath = resolve(candidatePath);
+
+  for (const root of disallowedRoots) {
+    const resolvedRoot = resolve(root);
+    const relativePath = relative(resolvedRoot, resolvedCandidatePath);
+
+    if (
+      resolvedCandidatePath === resolvedRoot ||
+      (relativePath !== ".." &&
+        !relativePath.startsWith("../") &&
+        relativePath !== "." &&
+        relativePath.length > 0)
+    ) {
+      throw new Error(`${label} must stay outside ${resolvedRoot}`);
+    }
+  }
 }
 
 export function communitySegmentPath(

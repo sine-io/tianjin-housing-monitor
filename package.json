@@ -7,6 +7,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "collect": "tsx scripts/collect.ts",
+    "build:household-recommendations": "tsx scripts/build-household-recommendations.ts",
+    "render:household-artifacts": "tsx scripts/render-household-artifacts.ts",
     "promote:manual": "tsx scripts/promote-manual-inputs.ts",
     "build:data": "tsx scripts/promote-manual-inputs.ts && tsx scripts/build-series.ts && tsx scripts/build-weekly-report.ts && tsx scripts/prepare-public-data.ts",
     "build:site": "vite build",
