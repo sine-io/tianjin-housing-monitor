@@ -67,3 +67,23 @@ export interface SettingsItem {
   value: string;
   description: string;
 }
+
+export interface PublicRecommendationDemoCardItem {
+  title: string;
+  action: string;
+  strongestReason: string;
+  href: string;
+}
+
+export interface PublicRecommendationDemoSectionItem {
+  title: string;
+  description: string;
+  action: string;
+  strongestSupport: string[];
+  strongestCounterevidence: string[];
+  flipConditions: string[];
+  basketRanking: Array<{
+    community: string;
+    reasoning: string;
+  }>;
+}

@@ -13,6 +13,8 @@ import { DroppedListingsTable } from "./components/dashboard/DroppedListingsTabl
 import { FocusedCommunitiesSection } from "./components/dashboard/FocusedCommunitiesSection";
 import { InventorySection } from "./components/dashboard/InventorySection";
 import { KpiCard } from "./components/dashboard/KpiCard";
+import { PublicRecommendationDemoCard } from "./components/dashboard/PublicRecommendationDemoCard";
+import { PublicRecommendationDemoSection } from "./components/dashboard/PublicRecommendationDemoSection";
 import { SettingsSection } from "./components/dashboard/SettingsSection";
 import { Sidebar } from "./components/dashboard/Sidebar";
 import { TimelineFeed } from "./components/dashboard/TimelineFeed";
@@ -63,6 +65,21 @@ export default function App(): React.JSX.Element {
   }, []);
 
   const kpis = viewModel?.kpis ?? [];
+  const publicRecommendationCard = viewModel?.publicRecommendationCard ?? {
+    title: "改善型置换建议",
+    action: "加载中",
+    strongestReason: "正在生成公开 recommendation 参考。",
+    href: "#recommendation-demo",
+  };
+  const publicRecommendationSection = viewModel?.publicRecommendationSection ?? {
+    title: "改善型置换建议",
+    description: "基于公开市场数据生成的改善型置换参考输出。",
+    action: "加载中",
+    strongestSupport: ["公开 recommendation 正在加载。"],
+    strongestCounterevidence: ["请稍后查看完整 recommendation 内容。"],
+    flipConditions: ["公开 recommendation 正在加载。"],
+    basketRanking: [],
+  };
   const focusedCommunities = viewModel?.focusedCommunities ?? [];
   const inventoryCommunities = viewModel?.inventoryCommunities ?? [];
   const droppedListings = viewModel?.droppedListings ?? [];
@@ -99,6 +116,22 @@ export default function App(): React.JSX.Element {
                     return <KpiCard key={item.title} icon={Icon} {...rest} />;
                   })}
                 </section>
+
+                <section
+                  id="recommendation-entry"
+                  aria-label="公开置换建议卡片"
+                  className="scroll-mt-24"
+                >
+                  <PublicRecommendationDemoCard item={publicRecommendationCard} />
+                </section>
+              </section>
+
+              <section
+                id="recommendation-demo"
+                aria-label="公开置换建议详情"
+                className="scroll-mt-24"
+              >
+                <PublicRecommendationDemoSection item={publicRecommendationSection} />
               </section>
 
               <section

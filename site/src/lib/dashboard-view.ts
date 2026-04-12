@@ -6,10 +6,13 @@ import type {
   DroppedListing,
   FocusedCommunitySummary,
   InventoryCommunitySummary,
+  PublicRecommendationDemoCardItem,
+  PublicRecommendationDemoSectionItem,
   SettingsItem,
   TimelineItem,
   TimelineTone,
 } from "../components/dashboard/dashboard-types";
+import { buildPublicRecommendationDemo } from "./public-recommendation-demo";
 
 type SourceStatus = "success" | "failed" | "skipped";
 
@@ -68,6 +71,8 @@ export interface RunArtifact {
 
 export interface DashboardViewModel {
   kpis: DashboardKpi[];
+  publicRecommendationCard: PublicRecommendationDemoCardItem;
+  publicRecommendationSection: PublicRecommendationDemoSectionItem;
   focusedCommunities: FocusedCommunitySummary[];
   inventoryCommunities: InventoryCommunitySummary[];
   droppedListings: DroppedListing[];
@@ -345,6 +350,7 @@ export function buildDashboardViewModel(
       "shield-alert",
     ),
   ];
+  const publicRecommendationDemo = buildPublicRecommendationDemo(data);
 
   const inventoryCommunities: InventoryCommunitySummary[] = data.communities.map(
     (community) => {
@@ -505,6 +511,8 @@ export function buildDashboardViewModel(
 
   return {
     kpis,
+    publicRecommendationCard: publicRecommendationDemo.card,
+    publicRecommendationSection: publicRecommendationDemo.section,
     focusedCommunities,
     inventoryCommunities,
     droppedListings,

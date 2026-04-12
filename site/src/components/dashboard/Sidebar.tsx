@@ -4,6 +4,7 @@ import {
   Home,
   Radar,
   Settings,
+  Sparkles,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -15,6 +16,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "首页", href: "#overview", icon: Home },
+  { label: "置换建议", href: "#recommendation-demo", icon: Sparkles },
   { label: "重点关注小区", href: "#focus-communities", icon: Building2 },
   { label: "房源全库", href: "#inventory", icon: Database },
   { label: "降价雷达", href: "#price-radar", icon: Radar },

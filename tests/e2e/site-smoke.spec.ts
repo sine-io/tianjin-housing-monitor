@@ -17,6 +17,10 @@ test("shows the built dashboard shell on desktop", async ({ page }) => {
   await expect(page.getByRole("searchbox", { name: "全局搜索" })).toBeVisible();
   await expect(page.getByText(/^数据最后更新于:/)).toBeVisible();
   await expect(page.getByText("今日降价套数")).toBeVisible();
+  await expect(page.getByRole("link", { name: "置换建议" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "改善型置换建议" }).first(),
+  ).toBeVisible();
   await expect(page.getByRole("link", { name: "重点关注小区" })).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "核心小区挂牌均价走势 (近30天)" }),
@@ -24,6 +28,9 @@ test("shows the built dashboard shell on desktop", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "单价洼地雷达" })).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "今日高优降价房源榜" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "目标小区篮子排序" }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "最新动态信息流" }),
@@ -66,6 +73,22 @@ test("shows the built dashboard shell on desktop", async ({ page }) => {
   await expect(page.getByTestId("timeline-item").first()).toBeVisible();
   expect(await page.getByTestId("timeline-item").count()).toBeGreaterThanOrEqual(1);
   await expect(page.getByText("Live Feed")).toBeVisible();
+});
+
+test("navigates to the public recommendation detail section from the sidebar", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await page.getByRole("link", { name: "置换建议" }).click();
+
+  await expect(page).toHaveURL(/#recommendation-demo$/);
+  await expect(
+    page.getByRole("region", { name: "公开置换建议详情" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "目标小区篮子排序" }),
+  ).toBeVisible();
 });
 
 test("uses a dark document background outside the app shell", async ({ page }) => {

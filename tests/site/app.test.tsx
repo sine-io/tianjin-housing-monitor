@@ -47,6 +47,19 @@ function makeDashboardData(): DashboardData {
         },
       },
       {
+        id: "boxi-huayuan",
+        name: "柏溪花园",
+        city: "天津",
+        district: "西青",
+        status: "active",
+        sourceProvider: "fang_mobile",
+        sources: {
+          fangCommunityUrl: "https://example.com/boxi/community",
+          fangWeekreportUrl: "https://example.com/boxi/weekreport",
+          anjukeSaleSearchUrl: null,
+        },
+      },
+      {
         id: "wanke-dongdi",
         name: "万科东第",
         city: "天津",
@@ -68,6 +81,14 @@ function makeDashboardData(): DashboardData {
         rooms: 2,
         areaMin: 87,
         areaMax: 90,
+      },
+      {
+        communityId: "boxi-huayuan",
+        id: "boxi-2br-100-120",
+        label: "2居 100-120㎡",
+        rooms: 2,
+        areaMin: 100,
+        areaMax: 120,
       },
       {
         communityId: "wanke-dongdi",
@@ -94,6 +115,14 @@ function makeDashboardData(): DashboardData {
         rooms: 2,
         areaMin: 85,
         areaMax: 90,
+      },
+      "boxi-huayuan": {
+        communityId: "boxi-huayuan",
+        id: "boxi-2br-100-120",
+        label: "2居 100-120㎡",
+        rooms: 2,
+        areaMin: 100,
+        areaMax: 120,
       },
     },
     cityMarket: {
@@ -133,6 +162,23 @@ function makeDashboardData(): DashboardData {
                 listingUnitPriceMin: 22980,
                 listingsCount: 1,
                 suspectedDealCount: 177,
+                manualDealCount: 0,
+              },
+            },
+          },
+        },
+        "boxi-huayuan": {
+          name: "柏溪花园",
+          district: "西青",
+          segments: {
+            "boxi-2br-100-120": {
+              label: "2居 100-120㎡",
+              verdict: "横盘",
+              latest: {
+                listingUnitPriceMedian: 23300,
+                listingUnitPriceMin: 23300,
+                listingsCount: 3,
+                suspectedDealCount: 2,
                 manualDealCount: 0,
               },
             },
@@ -201,6 +247,31 @@ function makeDashboardData(): DashboardData {
               listingUnitPriceMin: 24300,
               listingsCount: 3,
               suspectedDealCount: 12,
+              manualDealCount: 0,
+              manualDealUnitPriceMedian: null,
+              manualLatestSampleAt: null,
+            },
+          ],
+        },
+      },
+      "boxi-huayuan": {
+        "boxi-2br-100-120": {
+          communityId: "boxi-huayuan",
+          communityName: "柏溪花园",
+          segmentId: "boxi-2br-100-120",
+          segmentLabel: "2居 100-120㎡",
+          rooms: 2,
+          areaMin: 100,
+          areaMax: 120,
+          series: [
+            {
+              date: "2026-04-04",
+              generatedAt: "2026-04-04T03:43:21.849Z",
+              derivedFrom: "community-fallback",
+              listingUnitPriceMedian: 23300,
+              listingUnitPriceMin: 23300,
+              listingsCount: 3,
+              suspectedDealCount: 2,
               manualDealCount: 0,
               manualDealUnitPriceMedian: null,
               manualLatestSampleAt: null,
@@ -336,6 +407,8 @@ describe("site App", () => {
     expect(screen.getByRole("link", { name: "房源全库" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "降价雷达" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "系统设置" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "置换建议" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "改善型置换建议" })).toBeInTheDocument();
     expect(
       screen.getByRole("searchbox", { name: "全局搜索" }),
     ).toHaveAttribute("placeholder", "全局搜索小区或房源...");
@@ -349,6 +422,9 @@ describe("site App", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "今日高优降价房源榜" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "目标小区篮子排序" }),
     ).toBeInTheDocument();
     expect(screen.getByText("小区")).toBeInTheDocument();
     expect(screen.getByText("面积")).toBeInTheDocument();
@@ -373,8 +449,8 @@ describe("site App", () => {
     expect(listingCountCard).not.toBeNull();
     expect(droppedCountCard).not.toBeNull();
     expect(marketTrendCard).not.toBeNull();
-    expect(within(communityCountCard!).getByText("2")).toBeInTheDocument();
-    expect(within(listingCountCard!).getByText("93")).toBeInTheDocument();
+    expect(within(communityCountCard!).getByText("3")).toBeInTheDocument();
+    expect(within(listingCountCard!).getByText("96")).toBeInTheDocument();
     expect(within(droppedCountCard!).getByText("1")).toBeInTheDocument();
     expect(within(marketTrendCard!).getByText("-0.5%")).toBeInTheDocument();
 
@@ -427,9 +503,10 @@ describe("site App", () => {
       within(focusedSection).getByRole("heading", { name: "重点关注小区" }),
     ).toBeInTheDocument();
     expect(within(focusedSection).getAllByTestId("focused-community-card")).toHaveLength(
-      2,
+      3,
     );
     expect(within(focusedSection).getByRole("heading", { name: "鸣泉花园" })).toBeInTheDocument();
+    expect(within(focusedSection).getByRole("heading", { name: "柏溪花园" })).toBeInTheDocument();
     expect(within(focusedSection).getByRole("heading", { name: "万科东第" })).toBeInTheDocument();
   });
 
@@ -451,6 +528,32 @@ describe("site App", () => {
 
     expect(
       within(inventorySection).getByRole("heading", { name: "房源全库" }),
+    ).toBeInTheDocument();
+  });
+
+  it("navigates to the public recommendation detail section", async () => {
+    await renderLoadedApp();
+
+    const recommendationLink = screen.getByRole("link", { name: "置换建议" });
+
+    expect(recommendationLink).toHaveAttribute("href", "#recommendation-demo");
+
+    fireEvent.click(recommendationLink);
+
+    expect(window.location.hash).toBe("#recommendation-demo");
+
+    const recommendationSection = screen.getByRole("region", {
+      name: "公开置换建议详情",
+    });
+
+    expect(recommendationSection).toHaveAttribute("id", "recommendation-demo");
+    expect(
+      within(recommendationSection).getByRole("heading", {
+        name: "改善型置换建议",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(recommendationSection).getByText("最强支持证据"),
     ).toBeInTheDocument();
   });
 
@@ -489,9 +592,12 @@ describe("site App", () => {
     ).toBeInTheDocument();
     expect(
       within(inventorySection).getAllByTestId("inventory-community-card"),
-    ).toHaveLength(2);
+    ).toHaveLength(3);
     expect(
       within(inventorySection).getByRole("heading", { name: "鸣泉花园" }),
+    ).toBeInTheDocument();
+    expect(
+      within(inventorySection).getByRole("heading", { name: "柏溪花园" }),
     ).toBeInTheDocument();
     expect(
       within(inventorySection).getByRole("heading", { name: "万科东第" }),
