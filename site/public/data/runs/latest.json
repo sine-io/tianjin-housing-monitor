@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-12T14:05:13.517Z",
+  "generatedAt": "2026-04-13T04:30:40.429Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -25,18 +25,18 @@
             "unitPriceYuanPerSqm": 22506
           },
           {
-            "title": "鸣泉花园精装三室临梅江公园小区临湖",
-            "roomCount": 3,
-            "areaSqm": 132.77,
-            "totalPriceWan": 280,
-            "unitPriceYuanPerSqm": 21090
-          },
-          {
             "title": "津门湖鸣泉花园,满五年唯一,有车位",
             "roomCount": 4,
             "areaSqm": 179.5,
             "totalPriceWan": 320,
             "unitPriceYuanPerSqm": 17828
+          },
+          {
+            "title": "鸣泉花园精装三室临梅江公园小区临湖",
+            "roomCount": 3,
+            "areaSqm": 132.77,
+            "totalPriceWan": 280,
+            "unitPriceYuanPerSqm": 21090
           }
         ]
       },
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "津门湖柏溪花园视野开阔,临湖一=小区中间位置",
-            "roomCount": 3,
-            "areaSqm": 156,
-            "totalPriceWan": 480,
-            "unitPriceYuanPerSqm": 30769
+            "title": "观景好房,视野棒,精装两室带阳台!",
+            "roomCount": 2,
+            "areaSqm": 104,
+            "totalPriceWan": 240,
+            "unitPriceYuanPerSqm": 23077
           },
           {
-            "title": "富力津门湖柏溪花园3室2厅南北",
-            "roomCount": 3,
-            "areaSqm": 135.3,
-            "totalPriceWan": 350,
-            "unitPriceYuanPerSqm": 25869
+            "title": "柏溪花园新登记两室有钥匙随时能看诚意出售",
+            "roomCount": 2,
+            "areaSqm": 100.54,
+            "totalPriceWan": 220,
+            "unitPriceYuanPerSqm": 21882
           },
           {
-            "title": "柏溪洋房好楼层视野号采光好",
+            "title": "诚意出售一手自住房源通透三居",
             "roomCount": 3,
-            "areaSqm": 135.3,
-            "totalPriceWan": 338,
-            "unitPriceYuanPerSqm": 24982
+            "areaSqm": 136.86,
+            "totalPriceWan": 289,
+            "unitPriceYuanPerSqm": 21117
           }
         ]
       },
