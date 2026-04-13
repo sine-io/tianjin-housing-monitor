@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-13T04:30:40.429Z",
+  "generatedAt": "2026-04-13T14:56:56.947Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -10,7 +10,7 @@
       "fangCommunity": {
         "status": "success",
         "referenceUnitPrice": 22981,
-        "listingCount": 88,
+        "listingCount": 89,
         "recentDealHints": [
           "西青热搜小区榜第60名",
           "关注量超过同城98%的楼盘",
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "观景好房,视野棒,精装两室带阳台!",
-            "roomCount": 2,
-            "areaSqm": 104,
-            "totalPriceWan": 240,
-            "unitPriceYuanPerSqm": 23077
-          },
-          {
-            "title": "柏溪花园新登记两室有钥匙随时能看诚意出售",
-            "roomCount": 2,
-            "areaSqm": 100.54,
-            "totalPriceWan": 220,
-            "unitPriceYuanPerSqm": 21882
-          },
-          {
-            "title": "诚意出售一手自住房源通透三居",
+            "title": "南北通透三居室精装修近地铁采光无遮挡",
             "roomCount": 3,
-            "areaSqm": 136.86,
-            "totalPriceWan": 289,
-            "unitPriceYuanPerSqm": 21117
+            "areaSqm": 134.7,
+            "totalPriceWan": 330,
+            "unitPriceYuanPerSqm": 24499
+          },
+          {
+            "title": "富力津门湖柏溪花园3室2厅南北",
+            "roomCount": 3,
+            "areaSqm": 135.55,
+            "totalPriceWan": 338,
+            "unitPriceYuanPerSqm": 24936
+          },
+          {
+            "title": "柏溪洋房好楼层视野号采光好",
+            "roomCount": 3,
+            "areaSqm": 135.3,
+            "totalPriceWan": 338,
+            "unitPriceYuanPerSqm": 24982
           }
         ]
       },
