@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-14T04:20:03.512Z",
+  "generatedAt": "2026-04-14T14:57:37.003Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -10,7 +10,7 @@
       "fangCommunity": {
         "status": "success",
         "referenceUnitPrice": 22981,
-        "listingCount": 89,
+        "listingCount": 87,
         "recentDealHints": [
           "西青热搜小区榜第60名",
           "关注量超过同城98%的楼盘",
@@ -25,18 +25,18 @@
             "unitPriceYuanPerSqm": 22506
           },
           {
-            "title": "鸣泉花园精装三室临梅江公园小区临湖",
-            "roomCount": 3,
-            "areaSqm": 132.77,
-            "totalPriceWan": 280,
-            "unitPriceYuanPerSqm": 21090
-          },
-          {
             "title": "津门湖鸣泉花园,满五年唯一,有车位",
             "roomCount": 4,
             "areaSqm": 179.5,
             "totalPriceWan": 320,
             "unitPriceYuanPerSqm": 17828
+          },
+          {
+            "title": "鸣泉花园全明通透三居低楼层无遮挡观湖景",
+            "roomCount": 3,
+            "areaSqm": 146.81,
+            "totalPriceWan": 358,
+            "unitPriceYuanPerSqm": 24386
           }
         ]
       },
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "津门湖湾游柏溪头排观湖的好房子点此了解",
+            "title": "津门湖柏溪园精装三室采光好靠近花园",
             "roomCount": 3,
-            "areaSqm": 155,
-            "totalPriceWan": 468,
-            "unitPriceYuanPerSqm": 30194
+            "areaSqm": 155.2,
+            "totalPriceWan": 500,
+            "unitPriceYuanPerSqm": 32216
           },
           {
-            "title": "观景好房,视野棒,精装两室带阳台!",
+            "title": "柏溪花园,洋房带电梯,临湖,凤凰层",
+            "roomCount": 3,
+            "areaSqm": 155.64,
+            "totalPriceWan": 438,
+            "unitPriceYuanPerSqm": 28142
+          },
+          {
+            "title": "业主诚意出售可观湖景明厨明卫有意咨询",
             "roomCount": 2,
-            "areaSqm": 104,
-            "totalPriceWan": 240,
-            "unitPriceYuanPerSqm": 23077
-          },
-          {
-            "title": "柏溪洋房好楼层视野号采光好",
-            "roomCount": 3,
-            "areaSqm": 135.3,
-            "totalPriceWan": 338,
-            "unitPriceYuanPerSqm": 24982
+            "areaSqm": 97.93,
+            "totalPriceWan": 246,
+            "unitPriceYuanPerSqm": 25120
           }
         ]
       },
