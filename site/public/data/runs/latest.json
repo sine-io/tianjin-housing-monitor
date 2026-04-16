@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-16T04:25:35.660Z",
+  "generatedAt": "2026-04-16T15:07:28.375Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -32,11 +32,11 @@
             "unitPriceYuanPerSqm": 17828
           },
           {
-            "title": "满五唯一换房急卖,价格还能谈看房随时中间位置好楼层",
+            "title": "富力津门湖鸣泉花园2室1厅南",
             "roomCount": 2,
-            "areaSqm": 87.31,
-            "totalPriceWan": 164,
-            "unitPriceYuanPerSqm": 18784
+            "areaSqm": 87.33,
+            "totalPriceWan": 139,
+            "unitPriceYuanPerSqm": 15917
           }
         ]
       },
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "富力津门湖柏溪花园2室1厅南",
+            "title": "津门湖柏溪花园小高层温馨两居室业主诚意出售",
             "roomCount": 2,
-            "areaSqm": 97.93,
-            "totalPriceWan": 194,
-            "unitPriceYuanPerSqm": 19811
+            "areaSqm": 88.92,
+            "totalPriceWan": 228,
+            "unitPriceYuanPerSqm": 25642
           },
           {
-            "title": "梅江商圈柏溪花园2室2厅",
-            "roomCount": 2,
-            "areaSqm": 97.93,
-            "totalPriceWan": 280,
-            "unitPriceYuanPerSqm": 28592
-          },
-          {
-            "title": "柏溪临湖三室过五年没大税业主急售",
+            "title": "富力津门湖柏溪花园3室2厅南北",
             "roomCount": 3,
-            "areaSqm": 136.86,
-            "totalPriceWan": 288,
-            "unitPriceYuanPerSqm": 21044
+            "areaSqm": 135.3,
+            "totalPriceWan": 350,
+            "unitPriceYuanPerSqm": 25869
+          },
+          {
+            "title": "前排是洋房采光无遮挡视野开阔精装修看房方便",
+            "roomCount": 3,
+            "areaSqm": 160.08,
+            "totalPriceWan": 335,
+            "unitPriceYuanPerSqm": 20928
           }
         ]
       },
