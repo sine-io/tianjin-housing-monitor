@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-19T04:24:07.477Z",
+  "generatedAt": "2026-04-19T14:05:51.722Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -32,11 +32,11 @@
             "unitPriceYuanPerSqm": 17828
           },
           {
-            "title": "南北通透,价格美丽,精装修,采光很好",
+            "title": "明泉花园,正规三室,通透,面积适中,可观湖景。",
             "roomCount": 3,
-            "areaSqm": 137.37,
-            "totalPriceWan": 275,
-            "unitPriceYuanPerSqm": 20019
+            "areaSqm": 147,
+            "totalPriceWan": 460,
+            "unitPriceYuanPerSqm": 31293
           }
         ]
       },
@@ -64,7 +64,7 @@
       "fangCommunity": {
         "status": "success",
         "referenceUnitPrice": 25453,
-        "listingCount": 61,
+        "listingCount": 60,
         "recentDealHints": [
           "西青热搜小区榜第37名",
           "关注量超过同城98%的楼盘",
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "梅江商圈柏溪花园3室2厅",
+            "title": "津门湖柏溪花园 精装大三室 方便看房诚信出售",
             "roomCount": 3,
-            "areaSqm": 156,
-            "totalPriceWan": 550,
-            "unitPriceYuanPerSqm": 35256
+            "areaSqm": 155.26,
+            "totalPriceWan": 430,
+            "unitPriceYuanPerSqm": 27695
           },
           {
-            "title": "此房满五年,精装修。通透户型,好楼层,可观湖。",
-            "roomCount": 3,
-            "areaSqm": 130.23,
-            "totalPriceWan": 350,
-            "unitPriceYuanPerSqm": 26876
-          },
-          {
-            "title": "柏溪花园 新出精装两室 方便看房 适合居住",
+            "title": "满五没尾款中间楼层能观湖景诚意出售",
             "roomCount": 2,
-            "areaSqm": 88.92,
-            "totalPriceWan": 278,
-            "unitPriceYuanPerSqm": 31264
+            "areaSqm": 103.18,
+            "totalPriceWan": 206,
+            "unitPriceYuanPerSqm": 19966
+          },
+          {
+            "title": "津门湖柏溪花园三室将近30万全新装修采光好拎包住",
+            "roomCount": 3,
+            "areaSqm": 134.7,
+            "totalPriceWan": 355,
+            "unitPriceYuanPerSqm": 26355
           }
         ]
       },
