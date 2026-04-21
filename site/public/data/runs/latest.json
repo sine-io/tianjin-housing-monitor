@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-20T14:59:39.093Z",
+  "generatedAt": "2026-04-21T04:22:09.967Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -12,7 +12,7 @@
         "referenceUnitPrice": 22981,
         "listingCount": 87,
         "recentDealHints": [
-          "西青人气小区榜第100名",
+          "西青热搜小区榜第60名",
           "关注量超过同城98%的楼盘",
           "二手房历史成交(178)"
         ],
@@ -32,11 +32,11 @@
             "unitPriceYuanPerSqm": 17828
           },
           {
-            "title": "津门湖鸣泉花园小高层+全明三居+人车分流+直通地库",
-            "roomCount": 3,
-            "areaSqm": 114.4,
-            "totalPriceWan": 240,
-            "unitPriceYuanPerSqm": 20980
+            "title": "鸣泉花园小高层两梯三户小区环境好急售",
+            "roomCount": 2,
+            "areaSqm": 87,
+            "totalPriceWan": 193,
+            "unitPriceYuanPerSqm": 22184
           }
         ]
       },
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "梅江临湖景观房业主诚心出售先到先得",
-            "roomCount": 3,
-            "areaSqm": 156.11,
-            "totalPriceWan": 420,
-            "unitPriceYuanPerSqm": 26905
-          },
-          {
-            "title": "临湖观景三室湖景相伴演绎美好生活楼层高视野棒",
-            "roomCount": 3,
-            "areaSqm": 155.26,
-            "totalPriceWan": 487,
-            "unitPriceYuanPerSqm": 31367
-          },
-          {
-            "title": "梅江商圈柏溪花园2室2厅",
+            "title": "富力津门湖柏溪花园2室1厅南",
             "roomCount": 2,
-            "areaSqm": 89.92,
-            "totalPriceWan": 265,
-            "unitPriceYuanPerSqm": 29471
+            "areaSqm": 97.93,
+            "totalPriceWan": 194,
+            "unitPriceYuanPerSqm": 19811
+          },
+          {
+            "title": "此房满五年,精装修。通透户型,好楼层,可观湖。",
+            "roomCount": 3,
+            "areaSqm": 130.23,
+            "totalPriceWan": 350,
+            "unitPriceYuanPerSqm": 26876
+          },
+          {
+            "title": "富力津门湖柏溪花园3室2厅南北",
+            "roomCount": 3,
+            "areaSqm": 156.85,
+            "totalPriceWan": 450,
+            "unitPriceYuanPerSqm": 28690
           }
         ]
       },
