@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T04:41:33.462Z",
+  "generatedAt": "2026-04-22T15:03:09.960Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -32,11 +32,11 @@
             "unitPriceYuanPerSqm": 17828
           },
           {
-            "title": "此房满五,楼位好,1楼全阳面,业主诚心卖",
+            "title": "满五唯一换房急卖,价格还能谈看房随时中间位置好楼层",
             "roomCount": 2,
-            "areaSqm": 87.33,
-            "totalPriceWan": 199,
-            "unitPriceYuanPerSqm": 22788
+            "areaSqm": 87.31,
+            "totalPriceWan": 164,
+            "unitPriceYuanPerSqm": 18784
           }
         ]
       },
@@ -72,6 +72,13 @@
         ],
         "currentListingTeasers": [
           {
+            "title": "业主诚意出售可观湖景明厨明卫有意咨询",
+            "roomCount": 2,
+            "areaSqm": 97.93,
+            "totalPriceWan": 246,
+            "unitPriceYuanPerSqm": 25120
+          },
+          {
             "title": "柏溪花园满五唯一采光好观湖",
             "roomCount": 3,
             "areaSqm": 140.03,
@@ -79,18 +86,11 @@
             "unitPriceYuanPerSqm": 19139
           },
           {
-            "title": "采光棒能观湖新装修3个月拎包入住给孩子换房出售",
+            "title": "津门湖柏溪园精装三室采光好靠近花园",
             "roomCount": 3,
-            "areaSqm": 160.08,
-            "totalPriceWan": 418,
-            "unitPriceYuanPerSqm": 26112
-          },
-          {
-            "title": "柏溪精装两室好楼层近地铁随时可看",
-            "roomCount": 2,
-            "areaSqm": 103.18,
-            "totalPriceWan": 268,
-            "unitPriceYuanPerSqm": 25975
+            "areaSqm": 155.2,
+            "totalPriceWan": 500,
+            "unitPriceYuanPerSqm": 32216
           }
         ]
       },
