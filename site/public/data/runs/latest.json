@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-23T04:23:19.045Z",
+  "generatedAt": "2026-04-23T15:22:37.911Z",
   "sources": {
     "stats-gov": {
       "status": "failed"
@@ -10,7 +10,7 @@
       "fangCommunity": {
         "status": "success",
         "referenceUnitPrice": 22981,
-        "listingCount": 87,
+        "listingCount": 85,
         "recentDealHints": [
           "西青热搜小区榜第60名",
           "关注量超过同城98%的楼盘",
@@ -32,11 +32,11 @@
             "unitPriceYuanPerSqm": 17828
           },
           {
-            "title": "津门湖精装三室,通透全明,小区临湖,挨着梅江公园",
-            "roomCount": 3,
-            "areaSqm": 132.74,
-            "totalPriceWan": 298,
-            "unitPriceYuanPerSqm": 22450
+            "title": "满五唯一换房急卖,价格还能谈看房随时中间位置好楼层",
+            "roomCount": 2,
+            "areaSqm": 87.31,
+            "totalPriceWan": 164,
+            "unitPriceYuanPerSqm": 18784
           }
         ]
       },
@@ -64,7 +64,7 @@
       "fangCommunity": {
         "status": "success",
         "referenceUnitPrice": 25453,
-        "listingCount": 59,
+        "listingCount": 60,
         "recentDealHints": [
           "西青热搜小区榜第37名",
           "关注量超过同城98%的楼盘",
@@ -72,25 +72,25 @@
         ],
         "currentListingTeasers": [
           {
-            "title": "富力津门湖柏溪花园3室2厅南北",
+            "title": "柏溪花园满五唯一采光好观湖",
             "roomCount": 3,
-            "areaSqm": 134.7,
-            "totalPriceWan": 310,
-            "unitPriceYuanPerSqm": 23015
+            "areaSqm": 140.03,
+            "totalPriceWan": 268,
+            "unitPriceYuanPerSqm": 19139
           },
           {
-            "title": "富力津门湖柏溪花园3室2厅南北",
+            "title": "正南看湖,景观视野开阔小高层,业主诚心卖",
             "roomCount": 3,
-            "areaSqm": 135.55,
-            "totalPriceWan": 338,
-            "unitPriceYuanPerSqm": 24936
+            "areaSqm": 163.65,
+            "totalPriceWan": 570,
+            "unitPriceYuanPerSqm": 34831
           },
           {
-            "title": "富力津门湖柏溪花园3室2厅南北",
-            "roomCount": 3,
-            "areaSqm": 144.9,
-            "totalPriceWan": 370,
-            "unitPriceYuanPerSqm": 25535
+            "title": "梅江商圈柏溪花园2室2厅",
+            "roomCount": 2,
+            "areaSqm": 89.92,
+            "totalPriceWan": 265,
+            "unitPriceYuanPerSqm": 29471
           }
         ]
       },
