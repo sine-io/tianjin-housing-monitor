@@ -318,6 +318,18 @@
       "manualDealCount": 0,
       "manualDealUnitPriceMedian": null,
       "manualLatestSampleAt": null
+    },
+    {
+      "date": "2026-04-26",
+      "generatedAt": "2026-04-26T04:32:08.003Z",
+      "derivedFrom": "community-fallback",
+      "listingUnitPriceMedian": null,
+      "listingUnitPriceMin": null,
+      "listingsCount": 0,
+      "suspectedDealCount": 0,
+      "manualDealCount": 0,
+      "manualDealUnitPriceMedian": null,
+      "manualLatestSampleAt": null
     }
   ]
 }
